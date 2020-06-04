@@ -153,6 +153,7 @@
     <ClInclude Include="Plansza.h" />
     <ClInclude Include="Pole.h" />
     <ClInclude Include="Resolution.h" />
+    <ClInclude Include="Textbox.h" />
     <ClInclude Include="Uzytkownik.h" />
   </ItemGroup>
   <ItemGroup>
@@ -166,6 +167,7 @@
     <ClCompile Include="Plansza.cpp" />
     <ClCompile Include="Pole.cpp" />
     <ClCompile Include="Resolution.cpp" />
+    <ClCompile Include="Textbox.cpp" />
     <ClCompile Include="Uzytkownik.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -1,4 +1,5 @@
 #include "Interfejs.h"
+#include "Textbox.h"
 
 
 #define WX 800
@@ -21,6 +22,16 @@ void Interfejs::StartWindow()
     sf::Vector2f sc = pos.scale();
     backgroud.scale(sc.x, sc.y);
 
+    sf::Font czcionka;
+    if (!czcionka.loadFromFile("BRLNSR.TTF"))
+    {
+        std::cerr << "Blad wczytania czcionki";
+    }
+
+    Textbox bar(20, sf::Color::White, true);
+    bar.setPosition({ 100, 100 });
+    bar.setLimit(true, 30);
+    bar.setFont(czcionka);
 
 
 
@@ -51,6 +62,12 @@ void Interfejs::StartWindow()
 
     while (window.isOpen())
     {
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Enter)) {
+            bar.setSelected(true);
+        }
+        else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) {
+            bar.setSelected(false);
+        }
         
         while (window.pollEvent(event))
         {
@@ -110,6 +127,10 @@ void Interfejs::StartWindow()
 
                 }
             }
+            if (event.type == sf::Event::TextEntered)
+            {
+                bar.typedOn(event);
+            }
         }
 
         // clear the window with black color
@@ -121,6 +142,7 @@ void Interfejs::StartWindow()
         {
            window.draw(b1);
            window.draw(b2);
+           bar.drawTo(window);
         }
         else
         {
