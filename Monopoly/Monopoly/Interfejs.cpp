@@ -23,8 +23,6 @@ void Interfejs::StartWindow()
 
 
 
-
-
     // dwa stany okna 
     // 1 okno wstêpne
     // 2 onko wpisywania adresu ip 
@@ -43,71 +41,59 @@ void Interfejs::StartWindow()
     b1.setPosition(szer * 0.15, wys * 0.75);
     b2.setPosition(szer * 0.85 - (300.f * sc.x*2), wys * 0.75);
     b3.setPosition(szer * 0.5 - 300.f * sc.x, wys * 0.63);
-    b1.frame_pos(szer * 0.15, wys * 0.75);
-    b2.frame_pos(szer * 0.85 - (300.f * sc.x * 2), wys * 0.75);
-    b3.frame_pos(szer * 0.5 - 300.f * sc.x, wys * 0.63);
+
+
+
 
     sf::Event event;
+    float factor_x = 1; // zmienne do podzielenia x i y myszki 
+    float factor_y = 1;
 
     while (window.isOpen())
     {
         
         while (window.pollEvent(event))
         {
-            // "close requested" event: we close the window
             if (event.type == sf::Event::Closed)
                 window.close();
             if (event.type == sf::Event::Resized)
             {
-                int prev_szer = szer;
-                int prev_wys = wys;
-                std::cout << "new width: " << event.size.width << std::endl;
-                std::cout << "new height: " << event.size.height << std::endl;
-                szer = event.size.width;
-                wys = event.size.height;
-                b1.frame_scale(b1.size_x * szer / prev_szer, b1.size_y * wys / prev_wys);
-                b2.frame_scale(b2.size_x * szer / prev_szer, b2.size_y * wys / prev_wys);
-                b3.frame_scale(b3.size_x * szer / prev_szer, b3.size_y * wys / prev_wys);
-                b1.frame_pos(szer * 0.15, wys * 0.75);
-                b2.frame_pos(szer * 0.85 - b1.size_x, wys * 0.75);
-                b3.frame_pos(szer * 0.5 - b3.size_x/2, wys * 0.63);
-
-               // window.setSize(sf::Vector2u(szer - szer / 2, wys - wys / 3));
+                 factor_x = (float)event.size.width / szer;
+                 factor_y = (float)event.size.height / wys;
             }
             if (event.type == sf::Event::MouseMoved)
             {
-                    b1.mouse_move(event.mouseMove.x, event.mouseMove.y);
-                    b2.mouse_move(event.mouseMove.x, event.mouseMove.y);
-                    b3.mouse_move(event.mouseMove.x, event.mouseMove.y);
-                    std::cout << "new mouse x: " << event.mouseMove.x << std::endl;
-                    std::cout << "new mouse y: " << event.mouseMove.y << std::endl;
+                event.mouseMove.x /= factor_x;
+                event.mouseMove.y /= factor_y;
             }
             if (event.type == sf::Event::MouseButtonPressed)
             {
-                if (event.mouseButton.button == sf::Mouse::Left)
-                {
-                    if (state == 0)
-                    {
-                        if (b1.click(event.mouseButton.x, event.mouseButton.y) == true)
-                        {
-                            std::cout << "nacisnieto klawisz 1\n";
-                        }
-                        if (b2.click(event.mouseButton.x, event.mouseButton.y) == true)
-                        {
-                            state = 1;
-                            std::cout << "nacisnieto klawisz 2\n";
-                        }
-                    }
-                    else
-                    {
-                        if (b3.click(event.mouseButton.x, event.mouseButton.y) == true)
-                        {
-                            state = 0;
-                            return;
-                            std::cout << "nacisnieto klawisz 1\n";
-                        }
-                    }
+                event.mouseButton.x /= factor_x;
+                event.mouseButton.y /= factor_y;
+            }
 
+
+
+
+            if (state == 0)
+            {
+                if (b1.event(event) == true)
+                {
+                    std::cout << "nacisnieto klawisz 1\n";
+                }
+                if (b2.event(event) == true)
+                {
+                    state = 1;
+                    std::cout << "nacisnieto klawisz 2\n";
+                }
+            }
+            else
+            {
+                if (b3.event(event) == true)
+                {
+                    state = 0;
+                    return;
+                    std::cout << "nacisnieto klawisz 1\n";
                 }
             }
         }
@@ -119,14 +105,13 @@ void Interfejs::StartWindow()
         window.draw(backgroud);
         if (state == 0)
         {
-           window.draw(b1);
-           window.draw(b2);
+            b1.drawTo(window);
+            b2.drawTo(window);
         }
         else
         {
-            window.draw(b3);
+            b3.drawTo(window);
         }
-
         // end the current frame
         window.display();
     }
@@ -153,83 +138,3 @@ void Interfejs::DrawThread()
 
 
 
-
-
-Button::Button(sf::Vector2f vect, std::string def_tex_string, std::string click_tex_string, std::string text) : sf::Sprite()
-{
-
-    if (!this->def_tex.loadFromFile(def_tex_string))
-    {
-        std::cerr << "blad ladowania tekstury przycisku ekranu startowego \n";
-        return;
-    }
-    if (!this->click_tex.loadFromFile(click_tex_string))
-    {
-        std::cerr << "blad ladowania tekstury przycisku ekranu startowego \n";
-        return;
-    }
-
-
-    size_x = vect.x;
-    size_y = vect.y;
-
-    this->set_change(false);
-}
-Button::Button(sf::Vector2f vect, sf::Texture def_tex, sf::Texture click_tex , std::string text) :  def_tex(def_tex ), click_tex(click_tex)
-{
-    size_x = vect.x;
-    size_y = vect.y;
-
-    this->set_change(false);
-}
-Button::~Button()
-{
-}
-
-bool Button::mouse_move(int mouse_x_pos, int mouse_y_pos)
-{
-    sf::Vector2f pos = sf::Vector2f(this->frame_x,this->frame_y);
-    if (mouse_x_pos > pos.x && mouse_x_pos < (pos.x + this->size_x) && mouse_y_pos > pos.y&& mouse_y_pos < (pos.y + this->size_y))
-    {
-        this->set_change(true);
-        return true;
-    }
-    else
-    {
-        this->set_change(false);
-        return false;
-
-    }
-}
-
-bool Button::click(int mouse_x_pos, int mouse_y_pos)
-{
-    return this->mouse_move(mouse_x_pos, mouse_y_pos);
-}
-
-
-void Button::set_change(bool on)
-{
-
-    if (on == 1)
-    {
-        this->setTexture(this->click_tex);
-    }
-    else
-    {
-        this->setTexture(this->def_tex);
-    }
-
-}
-
-void Button::frame_scale(int x, int y)
-{
-    this->size_x = x;
-    this->size_y = y;
-}
-
-void Button::frame_pos(int x, int y)
-{
-    this->frame_x = x;
-    this->frame_y = y;
-}

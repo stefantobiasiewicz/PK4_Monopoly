@@ -127,7 +127,7 @@ int main()
 
     komunikacja.StartWindow();
 
-   // return 0;
+    return 0;
 
     BazaDanych baza;
     std::cout << sf::VideoMode::getDesktopMode().width - WIDTH_MIN << ", " << sf::VideoMode::getDesktopMode().height - HEIGHT_MIN << endl;
