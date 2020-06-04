@@ -1,0 +1,9 @@
+rozmiary grafik:
+basic - pełne 4k 16:9
+karty tytuł własności - 700 x 1200
+plansze - 2160 x 2160
+dom/hotel - 400 x 400
+button_1 - 300 x 80
+button_2(koło) - 100 x 100
+miniatury_nieruchomości - 300 x 100
+pionek - 60 x 60

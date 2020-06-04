@@ -1,10 +1,5 @@
-#include <iostream>
-#include <conio.h>
-#include <SFML/Graphics.hpp>
-#include <SFML/Network.hpp>
-#include <SFML/System.hpp>
-#include <SFML/Window.hpp>
 #include "Karta.h"
+
 
 using namespace std;
 
@@ -16,28 +11,66 @@ using namespace std;
 
 
 
-	Ulica::Ulica(const sf::Texture& tekstura, float x, float y, int cena, int cena_dom, int cena_hotel, vector<int>& czynsze, string nazwa) : Karta(tekstura, x, y)
+	Ulica::Ulica(sf::Texture& tekstura, float x, float y, int cena, int cena_dom, vector<int>& czynsze, string nazwa) : Karta(tekstura, x, y)
 	{
 		this->cena = cena;
 		this->cena_dom = cena_dom;
-		this->cena_hotel = cena_hotel;
 		this->czynsze = czynsze;
-		this->nazwa;
+		this->nazwa = nazwa;
 
 	};
 
 
 
-	Dworzec_Uzyt_Pub::Dworzec_Uzyt_Pub(const sf::Texture& tekstura, float x, float y, int cena, vector<int>& czynsze, string nazwa) : Karta(tekstura, x, y)
+	Dworzec_Uzyt_Pub::Dworzec_Uzyt_Pub(sf::Texture& tekstura, float x, float y, int cena, vector<int>& czynsze, string nazwa) : Karta(tekstura, x, y)
 	{
 		this->cena = cena;
 		this->czynsze = czynsze;
 		this->nazwa = nazwa;
+
 	};
 
 
-	Szansa_Kasa_Spoleczna::Szansa_Kasa_Spoleczna(const sf::Texture& tekstura, float x, float y, string nazwa, void (*funkcja)(void)) : Karta(tekstura, x, y)
+	Szansa_Kasa_Spoleczna::Szansa_Kasa_Spoleczna(sf::Texture& tekstura, float x, float y, string nazwa, void (*funkcja)(void)) : Karta(tekstura, x, y)
 	{
 		this->nazwa = nazwa;
 		this->funkcja = funkcja;
 	};
+
+	void Ulica::obsluga_ruchu(Uzytkownik& uzyt)
+	{
+		if (this->wlasciciel == nullptr && uzyt.portfel >= this->cena)
+		{
+			zakupy(uzyt);
+		}
+		else
+		{
+			if (this->wlasciciel != &uzyt)
+			{
+				//pobierz_czynsz();
+			}
+			else
+			{
+				std::cout << "Nie mozesz kupic tego obiektu!";
+			}
+		}
+	}
+
+	bool Ulica::zakupy(Uzytkownik& uzyt)
+	{
+		bool decyzja;
+		std::cout << "Czy chcesz zakupic obiekt o nazwie: " << this->nazwa << "?" << std::endl;
+		cin >> decyzja;
+		if (decyzja)
+		{
+			uzyt.portfel = uzyt.portfel - this->cena;
+			uzyt.karty_nieruchomosci.push_back(this->nazwa);
+			this->wlasciciel = &uzyt;
+			return 1;
+		}
+		else
+		{
+			return 0;
+		}
+	}
+	
