@@ -21,5 +21,19 @@
     <ClCompile Include="karta.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Obiekt_Na_Planszy.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Karta.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Internet.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Obiekt_Na_Planszy.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
