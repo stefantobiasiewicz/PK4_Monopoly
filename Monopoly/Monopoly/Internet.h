@@ -3,38 +3,35 @@
 #include <iostream>
 #include <list>
 #include <thread>
+#include <vector>
 
 class Internet
 {
-public:
-	sf::TcpSocket socket;
+private:
+
+	bool SerCli; // serwer - 0 klient - 1
+
+	sf::IpAddress IPserv; // ip serwera 
+	int port;
+
+	std::vector<sf::TcpSocket*> sockets;	// wektor soketów 
 	sf::TcpListener listener;
-	sf::IpAddress ip;
-	char connectionType; // czy prgoram bêdzie dzi¹³ jako server czy jako klijent
 
-	std::list<char> dane;
+	bool isConnected;
 
-	sf::Packet Packet_data;
-	char data[100];
+public:
+	Internet(bool sercli , int port); // konstruktor serwera 
+	Internet(bool sercli , sf::IpAddress Serv, int port); // konstruktor klienta 
 
-	std::thread* watek;
+	void setIP(sf::IpAddress Serv);	// ustawia ip
+	void setPort(int port);
 
-	//domyœlnie w³aczany jest tryb servera 
-	Internet(char type , sf::IpAddress ip );
-	void begin(); // funkcja w³¹czaj¹ca transmisje
-	void end();
-	std::thread run();		// funkcja dzia³aj¹ca w tle i nas³uchuj¹ca 
-	void listen();
+	sf::Socket::Status setConnection();	// funkcja ³aczaca komputery 
 
-	int available(); // funcja sprawdza czy sa jakieœ dane do odczytu 
-	char read();
-	void write();
-
-	void flush(); // funkcja czeka a¿ wszystkie dane zostan¹ wys³ane 
+	void Send(sf::Packet packet, int kt = 0 /* oznacza z którym soketem chcemy rozmawiac */);		// funkcja wsy³ajaca dane
+	bool Recive(sf::Packet& packet, int kt = 0 /* oznacza z którym soketem chcemy rozmawiac */);	// funkcja zwraca ture gdy odebra³a nowe dane
 
 
-	//bool transmit();
-	std::string recive();
-
+	~Internet();
 };
 

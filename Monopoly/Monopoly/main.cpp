@@ -120,14 +120,64 @@ int main()
 
 
 
+    *******************************************************************************/
 
-    ******************************************************************************/
+    char serv;
+    std::cin >> serv;
+    if (serv == 's')
+    {
+        Internet internety(0, 64000);
+
+        while (serv == 's')
+        {
+            if(internety.setConnection()==sf::Socket::Status::Done)
+            std::cout << "poloczono \n";
+            cin >> serv;
+        }
+        cin >> serv;
+        sf::Packet paket;
+        int x;
+        while (serv == 'a')
+        {
+            internety.Recive(paket);
+            paket >> x;
+            std::cout << x << '\n';
+            cin >> serv;
+        }
+    }
+    else if (serv == 'c')
+    {
+        Internet internety(true,sf::IpAddress::getLocalAddress(), 64000);
+        while (internety.setConnection() != sf::Socket::Status::Done)
+        {
+            internety.setConnection();
+            std::cout << "lacze...\n";
+        }
+        cin >> serv;
+        sf::Packet paket;
+        int x = 0;
+        paket << x;
+        while (serv == 'a')
+        {
+            internety.Send(paket);
+            std::cout << "podaj cyferke:";
+            std::cin >> x;
+            paket.clear();
+            paket << x;
+            cin >> serv;
+        }
+    }
+
+
+
+    return 0;
+    //*****************************************************************************
     BazaDanych Dorotka;
     Interfejs komunikacja(&Dorotka);
 
     komunikacja.StartWindow();
 
-    return 0;
+    //return 0;
 
     BazaDanych baza;
     std::cout << sf::VideoMode::getDesktopMode().width - WIDTH_MIN << ", " << sf::VideoMode::getDesktopMode().height - HEIGHT_MIN << endl;

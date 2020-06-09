@@ -1,70 +1,104 @@
 #include "Internet.h"
 
 
-Internet::Internet(char type , sf::IpAddress ip ) : connectionType(type), ip(ip)
-{
-	this->watek = nullptr;
 
-	if (type == 's')
+Internet::Internet(bool sercli, int port) // konstruktor serwera 
+{
+	if (sercli)
 	{
-		this->listener.listen(60123);
-		this->listener.accept(this->socket);
+		std::cerr << "zly konstruktor \n";
+		return;
 	}
-	else if (type == 'c')
+	this->SerCli = sercli;
+	this->port = port;
+	this->isConnected = false;
+	//this->listener.setBlocking(false);	// ustawienie trybu nie blokujacego 
+	if (this->listener.listen(this->port) != sf::Socket::Done)
 	{
-		sf::Socket::Status status = this->socket.connect(this->ip, 60123);
+		// error...
+		std::cerr << "nie znaleziono portu listener error \n";
+	}
+}
+Internet::Internet(bool sercli, sf::IpAddress Serv, int port) // konstruktor klienta
+{
+	if (!sercli)
+	{
+		std::cerr << "zly konstruktor \n";
+		return;
+	}
+	this->SerCli = sercli;
+	this->IPserv = Serv;
+	this->port = port;
+	this->isConnected = false;
+	sf::TcpSocket *client = new sf::TcpSocket;
+	//client->setBlocking(false); // ustawienie trybu nie blokujacego 
+	this->sockets.push_back(client); // pierwszy socket w tablicy i jedyny to jestem ja 
+}
+
+void Internet::setIP(sf::IpAddress Serv)	// ustawia ip
+{
+	this->IPserv = Serv;
+}
+void Internet::setPort(int port)
+{
+	this->port = port;
+}
+
+sf::Socket::Status Internet::setConnection()	// funkcja ³aczaca komputery 
+{
+	sf::Socket::Status status;
+	if (this->SerCli)	// klient
+	{
+		status = this->sockets[0]->connect(this->IPserv, this->port);
 		if (status != sf::Socket::Done)
 		{
 			// error...
+			std::cerr << "blad polaczenia z serverem\n";
+		}
+		else
+			this->isConnected = true;
+	}
+	else	// server
+	{
+		sf::TcpSocket* client = new sf::TcpSocket;
+		status = listener.accept(*client);
+		if (status != sf::Socket::Done)
+		{
+			// error...
+			std::cerr << "blad polaczenia z socketem ? ? ? \n";   //*************************************************************
+		}
+		else
+		{
+			//client->setBlocking(false);	// ustawienie soketu w trybie nie blikujacym 
+			this->sockets.push_back(client);
 		}
 	}
-
+	return status;
 }
 
-void Internet::begin() // funkcja w³¹czaj¹ca transmisje
+void Internet::Send(sf::Packet packet, int kt)		// funkcja wsy³ajaca dane
 {
-	this->watek = &this->run();
-}
-void Internet::end()
-{
-	this->watek->~thread();
-	this->watek = nullptr;
-}
-
-std::thread Internet::run()
-{
-	return std::thread(&Internet::run, this);
-}
-void Internet::listen()
-{
-	/// funkcja ktora wype³nia liste danych odczytanych z tcp
-}
-
-int Internet::available()
-{
-	return dane.size();
-}
-char Internet::read()
-{
-	if (this->socket.receive(this->Packet_data) != sf::Socket::Done)
+	sf::Socket::Status state = sockets[kt]->send(packet);
+	while(state == sf::Socket::Partial)
 	{
-
-	}
-//	char data = dane.front();
-//	dane.pop_front();
-//	return data;
-	return 'a';
-}
-void Internet::write()
-{
-	if (this->socket.send(this->Packet_data) != sf::Socket::Done)
-	{
-
+		state = sockets[kt]->send(packet);
 	}
 }
-
-void Internet::flush() // funkcja czeka a¿ wszystkie dane zostan¹ wys³ane 
+bool Internet::Recive(sf::Packet& packet, int kt)	// funkcja zwraca ture gdy odebra³a nowe dane
 {
+	sf::Socket::Status state = sockets[kt]->receive(packet);
+	if (state == sf::Socket::Done)
+	{
+		return true;
+	}
+	return false;
+}
 
+
+
+
+
+Internet::~Internet()
+{
 
 }
