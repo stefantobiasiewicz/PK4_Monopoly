@@ -32,10 +32,15 @@ void Textbox::inputLogic(int charTyped)
 	textbox.setString(text.str() + "_");  //"_" na koñcu jako kursor
 }
 
-Textbox::Textbox(int size, sf::Color color, bool sel)
+Textbox::Textbox(int size, sf::Color color_text, bool sel, float bar_length, sf::Vector2f pos, sf::Color color_shape) : Klik_Prostokat({0.f, 0.f}, pos, color_shape)
 {
+	this->shape.setSize({bar_length, (float)size * 1.33335f });
+	this->shape.setOutlineColor(sf::Color(0, 0, 0));
+	this->shape.setOutlineThickness(2.f);
+
+	textbox.setPosition(pos);
 	textbox.setCharacterSize(size);
-	textbox.setFillColor(color);
+	textbox.setFillColor(color_text);
 	isSelected = sel;
 
 	//sprawd¿ czy textbox jest klikniêty i wypisz "_" lub nie
@@ -53,6 +58,7 @@ void Textbox::setFont(sf::Font& font)
 void Textbox::setPosition(sf::Vector2f point)
 {
 	textbox.setPosition(point);
+	this->shape.setPosition(point);
 }
 
 void Textbox::setLimit(bool ToF)
@@ -80,6 +86,12 @@ void Textbox::setSelected(bool sel)
 		}
 		textbox.setString(newT);
 	}
+	else
+	{
+		std::string temp = text.str();
+		temp = temp + '_';
+		textbox.setString(temp);
+	}
 }
 
 std::string Textbox::getText()
@@ -89,7 +101,40 @@ std::string Textbox::getText()
 
 void Textbox::drawTo(sf::RenderWindow& window)
 {
+	window.draw(this->shape);
 	window.draw(textbox);
+}
+
+bool Textbox::click(int mouse_x, int mouse_y)
+{
+	setSelected(Klik_Prostokat::click(mouse_x, mouse_y));
+	is_mouse_on(mouse_x, mouse_y);
+	return isSelected;
+}
+
+bool Textbox::is_mouse_on(int mouse_x, int mouse_y)
+{
+	sf::Vector2f pos = this->shape.getPosition();
+	if (mouse_x > pos.x&& mouse_x < (pos.x + this->getSize().x) && mouse_y > pos.y&& mouse_y < (pos.y + this->getSize().y))
+	{
+		shape.setOutlineThickness(5.f);
+		return true;
+	}
+	else
+	{
+		if (!isSelected)
+		{
+			shape.setOutlineThickness(2.f);
+		}
+		return false;
+
+	}
+}
+
+void Textbox::EnterTheText(sf::Event event)
+{
+	setSelected(false);
+	is_mouse_on(event.mouseButton.x, event.mouseButton.y);
 }
 
 void Textbox::typedOn(sf::Event input)
@@ -98,8 +143,14 @@ void Textbox::typedOn(sf::Event input)
 	{
 		int charTyped = input.text.unicode;
 
+		if (charTyped == ENTER_KEY)
+		{
+			EnterTheText(input);
+
+		}
+
 		//tylko znaki klasyczne
-		if (charTyped < 128)
+		if (isSelected == true && charTyped < 128)
 		{
 			if (hasLimit)
 			{

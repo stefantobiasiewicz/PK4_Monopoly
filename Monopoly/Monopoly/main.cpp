@@ -206,6 +206,7 @@ int main()
         main_window.draw(pionek2_s);
         main_window.draw(pionek3_s);
         main_window.draw(pionek4_s);
+
         main_window.display();
         Sleep(1000);
         }
@@ -222,7 +223,9 @@ int main()
    std::cout << endl << baza.pola[5].nazwa;
     system("pause");
     return 0;
+
 }
+
 
 
 

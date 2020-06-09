@@ -18,9 +18,9 @@ public:
 	void scale(float factorX, float factorY);
 	void setPosition(float x, float y);
 
-	void set_frame_scale(int x, int y);	//
-	void set_frame_pos(int x, int y);	// funkcja ustawiajaca pozycje ramki przyciskania
-	void set_window_size(int x, int y);
+	//void set_frame_scale(int x, int y);	//
+	//void set_frame_pos(int x, int y);	// funkcja ustawiajaca pozycje ramki przyciskania
+	//void set_window_size(int x, int y);
 
 	void drawTo(sf::RenderWindow& window); // funkcja rysujaca przycisk
 
