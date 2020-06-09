@@ -20,7 +20,7 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
-    <ProjectGuid>{F1C3286B-C6C1-4E36-8B84-0198B74FC3E6}</ProjectGuid>
+    <ProjectGuid>{D043A20D-EC72-4FBE-8951-FE6D71771F25}</ProjectGuid>
     <RootNamespace>Monopoly</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
@@ -87,10 +87,13 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(SolutionDir)LIB_SFML/include;C:\Program Files (x86)\Visual Leak Detector\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(SolutionDir)LIB_SFML/lib;C:\Program Files (x86)\Visual Leak Detector\lib\Win32</AdditionalLibraryDirectories>
+      <AdditionalDependencies>sfml-audio-d.lib;sfml-graphics-d.lib;sfml-network-d.lib;sfml-system-d.lib;sfml-window-d.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -99,10 +102,13 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>$(SolutionDir)LIB_SFML/include;C:\Program Files (x86)\Visual Leak Detector\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>$(SolutionDir)LIB_SFML/lib;C:\Program Files (x86)\Visual Leak Detector\lib\Win32</AdditionalLibraryDirectories>
+      <AdditionalDependencies>sfml-audio-d.lib;sfml-graphics-d.lib;sfml-network-d.lib;sfml-system-d.lib;sfml-window-d.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -138,11 +144,35 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp" />
-    <ClCompile Include="Pole.cpp" />
+    <ClInclude Include="BazaDanych.h" />
+    <ClInclude Include="Button.h" />
+    <ClInclude Include="elementy_graficzne.h" />
+    <ClInclude Include="Game.h" />
+    <ClInclude Include="Interfejs.h" />
+    <ClInclude Include="Internet.h" />
+    <ClInclude Include="Karta.h" />
+    <ClInclude Include="Obiekt_Na_Planszy.h" />
+    <ClInclude Include="Plansza.h" />
+    <ClInclude Include="Pole.h" />
+    <ClInclude Include="Resolution.h" />
+    <ClInclude Include="Textbox.h" />
+    <ClInclude Include="Uzytkownik.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Pole.h" />
+    <ClCompile Include="BazaDanych.cpp" />
+    <ClCompile Include="Button.cpp" />
+    <ClCompile Include="elementy_graficzne.cpp" />
+    <ClCompile Include="Game.cpp" />
+    <ClCompile Include="Interfejs.cpp" />
+    <ClCompile Include="Internet.cpp" />
+    <ClCompile Include="karta.cpp" />
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="Obiekt_Na_Planszy.cpp" />
+    <ClCompile Include="Plansza.cpp" />
+    <ClCompile Include="Pole.cpp" />
+    <ClCompile Include="Resolution.cpp" />
+    <ClCompile Include="Textbox.cpp" />
+    <ClCompile Include="Uzytkownik.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

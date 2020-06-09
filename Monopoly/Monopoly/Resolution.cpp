@@ -1,0 +1,25 @@
+#include "Resolution.h"
+
+
+
+
+Resolution::Resolution()
+{
+	w_res = sf::VideoMode::getDesktopMode().width;
+	h_res = sf::VideoMode::getDesktopMode().height;
+}
+int Resolution::x(float width)
+{
+	return w_res * width * 0.01;
+}
+int Resolution::y(float height)
+{
+	return h_res * height * 0.01;
+}
+sf::Vector2f Resolution::scale()
+{
+	sf::Vector2f v;
+	v.x = w_res / 3840.0f;
+	v.y = h_res / 2160.0f;
+	return v;
+}
