@@ -39,16 +39,30 @@ void Interfejs::StartWindow()
     nick.setPosition(wsp_x * pos.x(50) - 200, wsp_y * pos.y(50) - 80);
     nick.setFillColor({ 77, 0, 0 });
 
-    Textbox bar(40, sf::Color(77, 0, 0), false, 400, sf::Vector2f{ wsp_x * pos.x(50) - 200, wsp_y * pos.y(50) - 10 }, sf::Color(204, 204, 204));
-    // bar.setPosition(sf::Vector2f( wsp_x * pos.x(50)-200, wsp_y * pos.y(50) - 10  ));
-    bar.setLimit(true, 15);
-    bar.setFont(czcionka);
+    sf::Text id;
+    id.setString("Podaj swoje IP, do ktorego przylacza sie inni gracze:");
+    id.setCharacterSize(30);
+    id.setFont(czcionka);
+    id.setPosition(wsp_x * pos.x(35) - 200, wsp_y * pos.y(50) - 80);
+    id.setFillColor({ 77, 0, 0 });
+
+    Textbox nick_enter(40, sf::Color(77, 0, 0), false, 400, sf::Vector2f{ wsp_x * pos.x(50) - 200, wsp_y * pos.y(50) - 10 }, sf::Color(204, 204, 204));
+    nick_enter.setLimit(true, 15);
+    nick_enter.setFont(czcionka);
+
+    Textbox IP_enter(40, sf::Color(77, 0, 0), false, 400, sf::Vector2f{ wsp_x * pos.x(50) - 200, wsp_y * pos.y(50) - 10 }, sf::Color(204, 204, 204));
+    IP_enter.setLimit(true, 15);
+    IP_enter.setFont(czcionka);
+
+    Klik_Kolo zielony(sf::Vector2f{ wsp_x * pos.x(70) - 200, wsp_y * pos.y(70) - 10 }, "\grafiki/pionek2.png");
+    Klik_Kolo niebieski(sf::Vector2f{ wsp_x * pos.x(30) - 200, wsp_y * pos.y(30) - 10 }, "\grafiki/pionek1.png");
+    
 
 
     // dwa stany okna 
     // 1 okno wstêpne
     // 2 onko wpisywania adresu ip 
-    bool state = 0;
+    int state = 0;
 
     szer = szer - szer / 2;
     wys = wys - wys / 3;
@@ -92,37 +106,47 @@ void Interfejs::StartWindow()
                 event.mouseButton.x /= factor_x;
                 event.mouseButton.y /= factor_y;
             }
-            if (event.type == sf::Event::TextEntered)
-            {
-                bar.typedOn(event);
-            }
 
-            if (!state)
+            if (state == 0)
             {
                 if (b1.event(event) == true)
                 {
-                    std::cout << "nacisnieto klawisz 1\n";
+                    std::cout << "nacisnieto klawisz stworz gre\n";
+                    state = 2;
                 }
                 if (b2.event(event) == true)
                 {
                     state = 1;
-                    std::cout << "nacisnieto klawisz 2\n";
+                    std::cout << "nacisnieto klawisz dolacz do gry\n";
                 }
-                if (bar.event(event))  //naciœniêto textbox
+                if (nick_enter.event(event) == true)  //naciœniêto textbox
                 {
-
-                    std::cout << "kdsjfkj";
+                    std::cout << "nacisnieto nick_enter";
                 }
-
-
             }
-            else
+            else if (state == 1)
             {
                 if (b3.event(event) == true)
                 {
                     state = 0;
-                    return;
-                    std::cout << "nacisnieto klawisz 1\n";
+                    std::cout << "nacisnieto klawisz dolacz do gry\n";
+                }
+            }
+            else if (state == 2)
+            {
+                if (IP_enter.event(event) == true)
+                {
+                    std::cout << "Nacisnieto IP_enter";
+                }
+                if (zielony.event(event) == true)
+                {
+                    std::cout<<"nacisnieto zielony";
+                    niebieski.setSelected(false);
+                }
+                if (niebieski.event(event) == true)
+                {
+                    std::cout << "nacisnieto niebieski";
+                    zielony.setSelected(false);
                 }
             }
 
@@ -135,16 +159,23 @@ void Interfejs::StartWindow()
         window.draw(backgroud);
         if (!state)
         {
-            bar.drawTo(window);
+            nick_enter.drawTo(window);
             window.draw(nick);
 
             b1.drawTo(window);
             b2.drawTo(window);
 
         }
-        else
+        else if (state == 1)
         {
             b3.drawTo(window);
+        }
+        else if (state == 2)
+        {
+            IP_enter.drawTo(window);
+            window.draw(id);
+            zielony.drawTo(window);
+            niebieski.drawTo(window);
         }
         // end the current frame
         window.display();

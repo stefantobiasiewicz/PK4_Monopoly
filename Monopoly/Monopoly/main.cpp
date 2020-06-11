@@ -129,7 +129,7 @@ int main()
 
 return 0;
 
-    std::cout << "podaj s to byc serverem ; c to byc klientem :";
+   /* std::cout << "podaj s to byc serverem ; c to byc klientem :";
 
     char serv;
     std::cin >> serv;
@@ -178,7 +178,7 @@ return 0;
 
         }
 
-    }
+    }*/
     /*
         else if (serv == 'c')
     {
@@ -207,14 +207,14 @@ return 0;
 
 
 
-    return 0;
+   // return 0;
     //*****************************************************************************
     BazaDanych Dorotka;
     Interfejs komunikacja(&Dorotka);
 
     komunikacja.StartWindow();
 
-    //return 0;
+    return 0;
 
     BazaDanych baza;
     std::cout << sf::VideoMode::getDesktopMode().width - WIDTH_MIN << ", " << sf::VideoMode::getDesktopMode().height - HEIGHT_MIN << endl;

@@ -55,4 +55,6 @@ public:
 
 	void EnterTheText(sf::Event event);
 
+	bool event(sf::Event event);
+
 };
