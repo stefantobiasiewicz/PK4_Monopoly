@@ -137,6 +137,18 @@ void Textbox::EnterTheText(sf::Event event)
 	is_mouse_on(event.mouseButton.x, event.mouseButton.y);
 }
 
+bool Textbox::event(sf::Event event)
+{
+	if (event.type == sf::Event::TextEntered)
+	{
+		this->typedOn(event);
+
+	}
+	bool czy_klikniety = Klikalny::event(event);
+	return czy_klikniety;
+
+}
+
 void Textbox::typedOn(sf::Event input)
 {
 	if (isSelected)
