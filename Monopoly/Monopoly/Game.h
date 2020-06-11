@@ -16,7 +16,7 @@ class Game
 public:
 	bool EndOfGame;
 	bool InternetStart;
-	bool InterfejsStar;
+	bool InterfejsStart;
 
 	BazaDanych* baza;
 	Internet* internet;

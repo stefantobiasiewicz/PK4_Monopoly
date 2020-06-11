@@ -9,7 +9,7 @@ Game::Game()
 	internet = nullptr;
 	interfejs = nullptr;
 	InternetStart = 0;
-	InterfejsStar = 0;
+	InterfejsStart = 0;
 }
 
 void Game::Run()
@@ -27,7 +27,7 @@ void Game::Run()
 		}
 		//***********************************************************************
 		// interfejs 
-		if (InterfejsStar)
+		if (InterfejsStart)
 		{
 
 		}
