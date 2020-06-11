@@ -16,7 +16,7 @@
 
 #include <conio.h>
 
-
+#include "Game.h"
 
 #define WIDTH_MIN 0
 #define HEIGHT_MIN 0
@@ -124,7 +124,10 @@ int main()
 
     *******************************************************************************/
 
+    Game Gra;
+    Gra.Run();
 
+return 0;
 
     std::cout << "podaj s to byc serverem ; c to byc klientem :";
 

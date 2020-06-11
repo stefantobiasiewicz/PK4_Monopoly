@@ -48,6 +48,12 @@
     <ClInclude Include="Button.h">
       <Filter>Pliki nagłówkowe</Filter>
     </ClInclude>
+    <ClInclude Include="elementy_graficzne.h">
+      <Filter>Pliki nagłówkowe</Filter>
+    </ClInclude>
+    <ClInclude Include="Textbox.h">
+      <Filter>Pliki nagłówkowe</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="karta.cpp">
@@ -88,6 +94,12 @@
     </ClCompile>
     <ClCompile Include="Pole.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="elementy_graficzne.cpp">
+      <Filter>Pliki źródłowe</Filter>
+    </ClCompile>
+    <ClCompile Include="Textbox.cpp">
+      <Filter>Pliki źródłowe</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -13,24 +13,31 @@
 
 class Interfejs
 {
-
-public:
 	sf::RenderWindow* MainWindow;
-	Plansza * PoleGry;
-	BazaDanych* resources;
+	Plansza* PoleGry;
+	BazaDanych* Dane;
+public:
 
-	Interfejs(BazaDanych* res) : resources(res)
-	{
-		//MainWindow = new sf::RenderWindow(sf::VideoMode(1000, 800), "My window");
-		//PoleGry = new Plansza(std::string("res/p.png"));
-	}
-	~Interfejs()
-	{
-		delete MainWindow;
-		delete PoleGry;
-	}
+
+	Interfejs(BazaDanych* res);
+	~Interfejs();
 
 	void StartWindow();
+
+	// funkcja tworzaca/usuwajaca nowe okno 
+	void CreateMainWindow();
+	void DeleteMainWindow();
+
+	// funkjca obslugujaca eventy
+	void EventFunction();
+	/*	mozna zrobic klase wirtualna do obslugi eventow
+		kazda klasa ktora obsluguje te eventy ma funkcje event ktora zostaje nadpisana
+		nasz interfejs ma wektor wskaznikow na obiekty klasy eventowej * w ktorym znajduja sie wszystkie pobiekty
+		ktore maja byæ obsuiwane
+	*/
+
+	// funkcja rysjujaca okno
+	void DrawFunction();
 
 
 	// funkcja do odpalenia przez w¹tek 
