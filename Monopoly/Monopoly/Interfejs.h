@@ -19,8 +19,14 @@ class Interfejs
 public:
 
 
-	Interfejs(BazaDanych* res);
-	~Interfejs();
+	Interfejs(BazaDanych* res) : Dane(res)
+	{
+
+	}
+	~Interfejs()
+	{
+		
+	}
 
 	void StartWindow();
 
