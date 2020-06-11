@@ -14,6 +14,8 @@
 #include <chrono>
 #include <Windows.h>
 
+#include <conio.h>
+
 
 
 #define WIDTH_MIN 0
@@ -122,32 +124,62 @@ int main()
 
     *******************************************************************************/
 
+
+
+    std::cout << "podaj s to byc serverem ; c to byc klientem :";
+
     char serv;
     std::cin >> serv;
+
     if (serv == 's')
     {
         Internet internety(0, 64000);
 
-        while (serv == 's')
+        std::cout << "klijknij/uderz w kalwiature aby zatrzymac przyjmowanie klientow\n";
+        while (!_kbhit())
         {
-            if(internety.setConnection()==sf::Socket::Status::Done)
-            std::cout << "poloczono \n";
-            cin >> serv;
+            if (internety.setConnection() == sf::Socket::Status::Done)
+            {
+                std::cout << "poloczono;\n";
+            }
         }
-        cin >> serv;
-        sf::Packet paket;
-        int x;
-        while (serv == 'a')
+        int liczbaKlientow = internety.getClientCount();
+        std::cout << "liczba polaczonych klientow: " << liczbaKlientow << ";\n";
+        for (int i = 0; i < liczbaKlientow; i++)
         {
-            internety.Recive(paket);
-            paket >> x;
-            std::cout << x << '\n';
-            cin >> serv;
+            sf::Packet pakiet;
+            pakiet << "hue hue\n" << 5 + i;
+            internety.Send(pakiet, i);
         }
+
     }
-    else if (serv == 'c')
+    else
     {
-        Internet internety(true,sf::IpAddress::getLocalAddress(), 64000);
+        Internet internety(true, sf::IpAddress::getLocalAddress(), 64000);
+        while (internety.setConnection() != sf::Socket::Status::Done)
+        {
+            cout << "proboje laczyc ponownie\n";
+        }
+        std::cout << "poloczono;\n";
+        while (!_kbhit())
+        {
+            sf::Packet pakiet;
+            if (internety.Recive(pakiet))
+            {
+                string s;
+                int intrrr;
+                pakiet >> s;
+                pakiet >> intrrr;
+                std::cout << "odebrano:" << s << "  " << intrrr;
+            }
+
+        }
+
+    }
+    /*
+        else if (serv == 'c')
+    {
+        
         while (internety.setConnection() != sf::Socket::Status::Done)
         {
             internety.setConnection();
@@ -167,6 +199,8 @@ int main()
             cin >> serv;
         }
     }
+    */
+
 
 
 

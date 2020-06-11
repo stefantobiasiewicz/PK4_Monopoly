@@ -12,7 +12,8 @@ Internet::Internet(bool sercli, int port) // konstruktor serwera
 	this->SerCli = sercli;
 	this->port = port;
 	this->isConnected = false;
-	//this->listener.setBlocking(false);	// ustawienie trybu nie blokujacego 
+	this->listener.setBlocking(false);	// ustawienie trybu nie blokujacego 
+	//this->selector(listener);
 	if (this->listener.listen(this->port) != sf::Socket::Done)
 	{
 		// error...
@@ -49,14 +50,18 @@ sf::Socket::Status Internet::setConnection()	// funkcja ³aczaca komputery
 	sf::Socket::Status status;
 	if (this->SerCli)	// klient
 	{
-		status = this->sockets[0]->connect(this->IPserv, this->port);
+		status = this->sockets[0]->connect(this->IPserv, this->port , sf::seconds(10));
 		if (status != sf::Socket::Done)
 		{
 			// error...
 			std::cerr << "blad polaczenia z serverem\n";
 		}
 		else
+		{
 			this->isConnected = true;
+			this->sockets[0]->setBlocking(false);		// ustawienie trybu nieblokujacego 
+		}
+
 	}
 	else	// server
 	{
@@ -65,11 +70,12 @@ sf::Socket::Status Internet::setConnection()	// funkcja ³aczaca komputery
 		if (status != sf::Socket::Done)
 		{
 			// error...
+			delete client;
 			std::cerr << "blad polaczenia z socketem ? ? ? \n";   //*************************************************************
 		}
 		else
 		{
-			//client->setBlocking(false);	// ustawienie soketu w trybie nie blikujacym 
+			client->setBlocking(false);	// ustawienie soketu w trybie nie blikujacym 
 			this->sockets.push_back(client);
 		}
 	}
@@ -94,7 +100,10 @@ bool Internet::Recive(sf::Packet& packet, int kt)	// funkcja zwraca ture gdy ode
 	return false;
 }
 
-
+int Internet::getClientCount()
+{
+	return sockets.size();
+}
 
 
 

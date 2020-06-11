@@ -17,6 +17,8 @@ private:
 	std::vector<sf::TcpSocket*> sockets;	// wektor soketów 
 	sf::TcpListener listener;
 
+	sf::SocketSelector selector;
+
 	bool isConnected;
 
 public:
@@ -31,6 +33,7 @@ public:
 	void Send(sf::Packet packet, int kt = 0 /* oznacza z którym soketem chcemy rozmawiac */);		// funkcja wsy³ajaca dane
 	bool Recive(sf::Packet& packet, int kt = 0 /* oznacza z którym soketem chcemy rozmawiac */);	// funkcja zwraca ture gdy odebra³a nowe dane
 
+	int getClientCount();
 
 	~Internet();
 };
