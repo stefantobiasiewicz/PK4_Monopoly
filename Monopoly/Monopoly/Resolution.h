@@ -17,4 +17,7 @@ public:
 	int x(float width);
 	int y(float height);
 	sf::Vector2f scale();
+
+	int GetW_res();
+	int GetH_res();
 };

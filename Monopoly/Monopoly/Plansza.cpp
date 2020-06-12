@@ -2,6 +2,15 @@
 
 
 
+Plansza::Plansza(std::string file)
+{
+	if (!this->tekstura.loadFromFile(file))
+		std::cerr << "nie wczytano tekstury: planszy\n";
+
+	Background.setTexture(this->tekstura);
+	auto SizeB = tekstura.getSize();
+	renderTexture.create(SizeB.x, SizeB.y);		// trzeba usttawic wielkoœæ planszy 
+}
 
 void Plansza::SetObject(Obiekt_Na_Planszy* obj)
 {

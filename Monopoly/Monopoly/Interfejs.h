@@ -10,29 +10,36 @@
 #include "BazaDanych.h"
 #include "Resolution.h"
 #include "Button.h"
+#include "elementy_graficzne.h"
 
 class Interfejs
 {
 	sf::RenderWindow* MainWindow;
 	Plansza* PoleGry;
 	BazaDanych* Dane;
+
+	std::vector<Klikalny*> KlikObject;
+
 public:
 
 
-	Interfejs(BazaDanych* res) : Dane(res)
-	{
-
-	}
-	~Interfejs()
-	{
-		
-	}
+	Interfejs(BazaDanych* res);
+	~Interfejs();
 
 	void StartWindow();
 
 	// funkcja tworzaca/usuwajaca nowe okno 
 	void CreateMainWindow();
 	void DeleteMainWindow();
+
+
+	// funkcja zwraca czy okno jest otwarte
+	bool IsOpen();
+
+
+	// zastapienie petli glownej SFML-owskiej
+	void MainFunction();
+
 
 	// funkjca obslugujaca eventy
 	void EventFunction();
@@ -46,8 +53,19 @@ public:
 	void DrawFunction();
 
 
-	// funkcja do odpalenia przez w¹tek 
-	void DrawThread();
+	// funkcja tworzaca/usuwajaca plansze
+	void CreatePlansza(std::string = "\grafiki / planszaG.jpg");
+	void DeletePlansza();
+
+	// funkcja tworzaca przycisk
+	void CreateButtons();
+
+	// funkcja tworzaca textbaty
+	void CreateTextbar();
+
+
+	// funkcja tworzaca nowe okno z informacja
+	void CreateMessageWindow(std::string tekst);
 
 };
 

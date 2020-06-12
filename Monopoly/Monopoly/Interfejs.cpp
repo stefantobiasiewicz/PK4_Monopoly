@@ -5,11 +5,15 @@
 #define WX 800
 #define WY 600
 
+#define WIDTH_MIN 0
+#define HEIGHT_MIN 0
+
 void Interfejs::StartWindow()
 {
     float szer = sf::VideoMode::getDesktopMode().width;
     float wys = sf::VideoMode::getDesktopMode().height;
     sf::RenderWindow window(sf::VideoMode(szer - szer / 2, wys - wys / 3), "Monopoly Okno Startowe");
+    window.setFramerateLimit(60);
     sf::Texture window_tex;
     if (!window_tex.loadFromFile("\grafiki/start.jpg"))
     {
@@ -183,22 +187,120 @@ void Interfejs::StartWindow()
 }
 
 
-/*void Interfejs::DrawThread()
+
+Interfejs::Interfejs(BazaDanych* res) : Dane(res)
 {
-    while (this->MainWindow->isOpen())
+    PoleGry = nullptr;
+    MainWindow = nullptr;
+}
+Interfejs::~Interfejs()
+{
+    DeleteMainWindow();
+    DeletePlansza();
+}
+
+
+
+void Interfejs::CreateMainWindow()
+{
+    MainWindow = new sf::RenderWindow(sf::VideoMode(sf::VideoMode::getDesktopMode().width - WIDTH_MIN, sf::VideoMode::getDesktopMode().height - HEIGHT_MIN), "Monopoly");
+    MainWindow->setFramerateLimit(60);
+}
+void Interfejs::DeleteMainWindow()
+{
+    delete MainWindow;
+    MainWindow = nullptr;
+}
+
+bool Interfejs::IsOpen()
+{
+    return MainWindow->isOpen();
+}
+
+void Interfejs::MainFunction()
+{
+    if (MainWindow->isOpen())
     {
+        EventFunction();
+        DrawFunction();
+    }
+}
+
+void Interfejs::EventFunction()
+{
+    sf::Event event;
+    while (MainWindow->pollEvent(event))
+    {
+        // "close requested" event: we close the window
+        if (event.type == sf::Event::Closed)
+            MainWindow->close();
+    }
+}
+
+void Interfejs::DrawFunction()
+{
+    MainWindow->clear(sf::Color::Blue);
+    if (PoleGry)
+    {
+        PoleGry->render();
+        MainWindow->draw(*PoleGry);
+    }
+    MainWindow->display();
+}
+
+void Interfejs::CreatePlansza(std::string file)
+{
+    PoleGry = new Plansza(file);
+    Resolution pos;
+    sf::Vector2f sc = pos.scale();  // wektor skalowania
+    PoleGry->setScale(sc.x, sc.y);     // ustawienie skali wielkoœci tekstury
+}
+void Interfejs::DeletePlansza()
+{
+    delete PoleGry;
+    PoleGry = nullptr;
+}
+
+void Interfejs::CreateButtons()
+{
+
+}
+void Interfejs::CreateTextbar()
+{
+
+}
+
+void Interfejs::CreateMessageWindow(std::string tekst)
+{
+    float szer = sf::VideoMode::getDesktopMode().width;
+    float wys = sf::VideoMode::getDesktopMode().height;
+
+    sf::RenderWindow window(
+        sf::VideoMode(szer - szer / 1.5f, wys - wys / 1.4f),
+        "Informacja dla urzytkownika",
+        sf::Style::None
+        );
+
+    window.setFramerateLimit(60);
+   
+    //tutaj button i tekstbar
+
+    sf::Event event;
+    while (window.isOpen())
+    {
+        while (window.pollEvent(event))
+        {
+            if (event.type == sf::Event::Closed)
+                window.close();
+            // tutaj event buttona zamykajacy to okno
+        }
         // clear the window with black color
-        this->MainWindow->clear(sf::Color::Black);
+        window.clear(sf::Color::Cyan);
 
         // draw everything here...
-        this->PoleGry->render();
 
-        this->MainWindow->draw(*this->PoleGry);
 
         // end the current frame
-        this->MainWindow->display();
+        window.display();
     }
-}*/
-
-
-
+}

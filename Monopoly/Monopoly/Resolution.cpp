@@ -23,3 +23,12 @@ sf::Vector2f Resolution::scale()
 	v.y = h_res / 2160.0f;
 	return v;
 }
+
+int Resolution::GetW_res()
+{
+	return this->w_res;
+}
+int Resolution::GetH_res()
+{
+	return this->h_res;
+}

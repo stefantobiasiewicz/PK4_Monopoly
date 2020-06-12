@@ -29,7 +29,7 @@ void Game::Run()
 		// interfejs 
 		if (InterfejsStart)
 		{
-
+			interfejs->MainFunction();
 		}
 	}
 }
@@ -70,11 +70,19 @@ state_t DoStanInicjalizacj(Game* gra)
 state_t DoStan1(Game* gra)
 {
 	std::cout << "stan 1\n";
+	gra->InterfejsStart = 1;
+	gra->interfejs->CreateMainWindow();
+	gra->interfejs->CreatePlansza("\grafiki/planszaG.jpg");
 	return Stan2;
 }
 state_t DoStan2(Game* gra)
 {
 	std::cout << "stan 2\n";
+	if (gra->interfejs->IsOpen())
+	{
+		//gra->interfejs->CreateMessageWindow("");
+		return Stan2;
+	}
 	return StanKoncowy;
 }
 state_t DoStanKoncowy(Game* gra)
