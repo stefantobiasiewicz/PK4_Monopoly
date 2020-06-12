@@ -109,7 +109,7 @@ Klik_Kolo::Klik_Kolo(sf::Vector2f pos, std::string texture_file) : Klik_Prostoka
 	this->shape.setTexture(&texture);
 	shape.setRadius(size_x / 2);
 	shape.setPosition(pos);
-	this->setSize({ size_x, size_y });
+	this->setSize( {size_x, size_y});
 }
 Klik_Kolo::Klik_Kolo(float radius, sf::Vector2f pos, sf::Color color) : Klik_Prostokat(sf::Vector2f{radius, radius}, pos, sf::Color::Transparent)
 {
@@ -178,9 +178,15 @@ void Klik_Kolo::setOutlineColor(sf::Color color)
 	shape.setOutlineColor(color);
 }
 
+bool Klik_Kolo::getSelected()
+{
+	return isSelected;
+}
+
 button::button(sf::Vector2f size, sf::Vector2f pos, std::string def_texture_file, std::string click_texture_file) : Klik_Prostokat(pos, def_texture_file)
 {
 	Resolution res;
+	sf::Vector2f scale = res.scale();
 	if (!this->def_text.loadFromFile(def_texture_file))
 	{
 		std::cerr << "Nie zaladowano pliku z tekstura def";
@@ -189,13 +195,37 @@ button::button(sf::Vector2f size, sf::Vector2f pos, std::string def_texture_file
 	{
 		std::cerr << "Nie zaladowano pliku z tekstura click";
 	}
-	shape.setSize(size);
-	shape.setPosition(pos);
+	shape.setOrigin({ size.x * scale.x * 0.5f, size.y * scale.y * 0.5f });
+	shape.setSize({ size.x * scale.x, size.y * scale.y });
+	shape.setPosition(pos.x * 0.01 * res.GetW_res(), pos.y * 0.01 * res.GetH_res());
+}
+button::button(int win_res_x, int win_res_y, sf::Vector2f size, sf::Vector2f pos, std::string def_texture_file, std::string click_texture_file) : Klik_Prostokat(pos, def_texture_file)
+{
+	
+	Resolution res;
+	sf::Vector2f scale = res.scale();
+	res.SetW_res(win_res_x);
+	res.SetH_res(win_res_y);
+	if (!this->def_text.loadFromFile(def_texture_file))
+	{
+		std::cerr << "Nie zaladowano pliku z tekstura def";
+	}
+	if (!this->click_text.loadFromFile(click_texture_file))
+	{
+		std::cerr << "Nie zaladowano pliku z tekstura click";
+	}
+	shape.setOrigin({ size.x * scale.x * 0.5f, size.y * scale.y * 0.5f });
+	shape.setSize({ size.x * scale.x, size.y * scale.y });
+	shape.setPosition(pos.x * 0.01 * res.GetW_res(), pos.y * 0.01 * res.GetH_res());
 }
 bool button::is_mouse_on(int mouse_x, int mouse_y)
 {
 	sf::Vector2f pos = this->shape.getPosition();
-	if (mouse_x > pos.x&& mouse_x < (pos.x + this->getSize().x) && mouse_y > pos.y&& mouse_y < (pos.y + this->getSize().y))
+	float distance_x = abs(mouse_x - pos.x);
+	float distance_y = abs(mouse_y - pos.y);
+	sf::Vector2f size = this->shape.getSize();
+
+	if (distance_x<=size.x/2  && distance_y<=size.y/2)
 	{
 		shape.setTexture(&click_text);
 		return true;
@@ -205,6 +235,53 @@ bool button::is_mouse_on(int mouse_x, int mouse_y)
 		shape.setTexture(&def_text);
 		return false;
 
+	}
+}
+
+Klik_Kolo_Button::Klik_Kolo_Button(sf::Vector2f pos, std::string texture_file) : Klik_Kolo(pos, texture_file)
+{
+
+}
+
+Klik_Kolo_Button::Klik_Kolo_Button(float radius, sf::Vector2f pos, sf::Color color) : Klik_Kolo(radius, pos, color)
+{
+
+}
+
+bool Klik_Kolo_Button::click(int mouse_x, int mouse_y)
+{
+	return Klik_Prostokat::click(mouse_x, mouse_y);
+}
+
+void Klik_Kolo_Button::setSize(sf::Vector2f size)
+{
+	this->shape.setRadius(size.x);
+}
+
+sf::Vector2f Klik_Kolo_Button::getSize()
+{
+	return { shape.getRadius()*2, shape.getRadius() *2};
+}
+
+bool Klik_Kolo_Button::is_mouse_on(int mouse_x, int mouse_y)
+{
+	sf::Vector2f pos = this->shape.getPosition();
+	float center_x = pos.x + this->getSize().x / 2;
+	float center_y = pos.y + this->getSize().y / 2;
+	float promien = this->getSize().x / 2;
+
+	if (this->how_far(mouse_x, mouse_y, center_x, center_y) <= promien)
+	{
+		shape.setOutlineThickness(5.f);
+		return true;
+	}
+	else
+	{
+		if (!isSelected)
+		{
+			shape.setOutlineThickness(2.f);
+		}
+		return false;
 	}
 }
 

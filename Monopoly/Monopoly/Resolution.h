@@ -20,4 +20,7 @@ public:
 
 	int GetW_res();
 	int GetH_res();
+	void SetW_res(int w);
+	void SetH_res(int h);
+	sf::Vector2f setScale(int x, int y);
 };
