@@ -3,7 +3,7 @@
 Game::Game()
 {
 	EndOfGame = 0;
-	cur_state = StanInicjalizacj;
+	cur_state = StanInicjalizacji;
 	// inicjalizacja nastepuje w stanie inicjalizacji 
 	baza = nullptr;
 	internet = nullptr;
@@ -57,28 +57,69 @@ void Game::RunState(Game* gra)
 	cur_state = state_table[cur_state](gra);
 }
 
-state_t DoStanInicjalizacj(Game* gra)
+state_t DoStanInicjalizacji(Game* gra)
 {
 	std::cout << "stan inicjalizacji\n";
 	gra->baza = new BazaDanych;
 	// internet musi byc aktywowany po start window;
 	//gra->internet = new Internet(0,0);
 	gra->interfejs = new Interfejs(gra->baza);
-	gra->interfejs->StartWindow();
+	gra->interfejs->SetOpcjeGry(&gra->opcjegry);
+
+	gra->interfejs->CreateWaitingWindow(nullptr);
+
+//	gra->interfejs->StartWindow();
+
+	gra->InterfejsStart = 1;
+	gra->interfejs->CreateMainWindow();
+	
+	// wybor koloru planszy 
+
+
+	gra->interfejs->CreateButtons();
+
+
+
+	return Stan2;
+
+	return StanKoncowy;
+}
+state_t DoInicjalizacjaSerwera(Game* gra)
+{
+
+
+	switch (gra->baza->kolor)
+	{
+	case Rozowa:
+		gra->interfejs->CreatePlansza("\grafiki/planszaR.jpg");
+		break;
+	case Zielona:
+		gra->interfejs->CreatePlansza("\grafiki/planszaG.jpg");
+		break;
+	case Niebieska:
+		gra->interfejs->CreatePlansza("\grafiki/planszaB.jpg");
+		break;
+	case Brak:
+		std::cerr << "brak informacji o kolorze planszy :(\n";
+		break;
+	}
+
+
 	return Stan1;
 }
+state_t DoInicjalizacjaKlienta(Game* gra)
+{
+	return Stan1;
+}
+
 state_t DoStan1(Game* gra)
 {
 	std::cout << "stan 1\n";
-	gra->InterfejsStart = 1;
-	gra->interfejs->CreateMainWindow();
-	gra->interfejs->CreatePlansza("\grafiki/planszaG.jpg");
-	gra->interfejs->CreateButtons();
 	return Stan2;
 }
 state_t DoStan2(Game* gra)
 {
-	std::cout << "stan 2\n";
+	//std::cout << "stan 2\n";
 	if (gra->interfejs->IsOpen())
 	{
 		//gra->interfejs->CreateMessageWindow("");

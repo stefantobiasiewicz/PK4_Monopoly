@@ -17,6 +17,7 @@ public:
 
 class Klik_Prostokat : public Klikalny
 {
+
 	//float frame_x;
 	//float frame_y;
 	

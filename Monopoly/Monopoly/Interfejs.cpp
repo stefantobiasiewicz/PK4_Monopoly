@@ -298,12 +298,12 @@ void Interfejs::MainFunction()
 {
     if (MainWindow->isOpen())
     {
-        EventFunction();
+        EventFunction(*this->opcjegry);
         DrawFunction();
     }
 }
 
-void Interfejs::EventFunction()
+void Interfejs::EventFunction(OpcjeGry& opcje)
 {
     sf::Event event;
     while (MainWindow->pollEvent(event))
@@ -314,7 +314,7 @@ void Interfejs::EventFunction()
         // skalowanie
         EventScaleMouse(event);
         // obsluga klawiszy
-        ExecuteButtons(event);
+        ExecuteButtons(event, opcje);
     }
 }
 void Interfejs::EventScaleMouse(sf::Event& event)
@@ -366,7 +366,7 @@ void Interfejs::DeletePlansza()
 void Interfejs::CreateButtons()
 {
     // tu tworza sie wszyskie przyciski 
-    button* b = new button( sf::Vector2f(200, 200), sf::Vector2f(200, 200), "\grafiki/button_stworz.jpg", "\grafiki/button_stworz2.jpg");
+    button* b = new button( sf::Vector2f(200, 200), sf::Vector2f(70, 20), "\grafiki/button_stworz.jpg", "\grafiki/button_stworz2.jpg");
     KlikObject.push_back(b);
 }
 void Interfejs::DeleteButtons()
@@ -376,7 +376,7 @@ void Interfejs::DeleteButtons()
         delete i;
     }
 }
-void Interfejs::ExecuteButtons(sf::Event &even)
+void Interfejs::ExecuteButtons(sf::Event &even, OpcjeGry& opcje)
 {
     for (auto i : KlikObject)
     {
@@ -420,6 +420,49 @@ void Interfejs::CreateMessageWindow(std::string tekst)
 
         // draw everything here...
 
+
+        // end the current frame
+        window.display();
+    }
+}
+
+void Interfejs::SetOpcjeGry(OpcjeGry* opcje)
+{
+    this->opcjegry = opcje;
+}
+
+void Interfejs::CreateWaitingWindow(Internet* internet)
+{
+    float szer = sf::VideoMode::getDesktopMode().width;
+    float wys = sf::VideoMode::getDesktopMode().height;
+
+    sf::RenderWindow window(
+        sf::VideoMode(szer - szer / 1.5f, wys - wys / 1.6f),
+        "Informacja dla urzytkownika",
+        sf::Style::None
+    );
+
+    window.setFramerateLimit(60);
+
+    szer = szer - szer / 1.5f;
+    wys = wys - wys / 1.6f;
+    //tutaj button i tekstbar
+    button Zakoncz(szer , wys, { 400, 130 }, {50,80}, "\grafiki/button_stworz.jpg", "\grafiki/button_stworz2.jpg");
+
+    sf::Event event;
+    while (window.isOpen())
+    {
+        while (window.pollEvent(event))
+        {
+            // tutaj event buttona zamykajacy to okno
+            if(Zakoncz.event(event))
+                window.close();
+        }
+        // clear the window with black color
+        window.clear(sf::Color(179, 255, 230));
+
+        // draw everything here...
+        Zakoncz.drawTo(window);
 
         // end the current frame
         window.display();

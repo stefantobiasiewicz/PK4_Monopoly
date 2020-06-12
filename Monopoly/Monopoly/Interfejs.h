@@ -10,6 +10,15 @@
 #include "BazaDanych.h"
 #include "Resolution.h"
 #include "elementy_graficzne.h"
+#include "Internet.h"
+//struktura przechowujaca opcje gry 
+//opcje gry sa zmieniane przez przyciski / koreluja z nimi
+//przez ta strukture gra wie co chce zorobic gracz
+typedef struct 
+{
+	// trzeba dodac opcje odpowiedzialne za wszystkie button
+	bool kup_dom;
+} OpcjeGry;
 
 class Interfejs
 {
@@ -18,6 +27,8 @@ class Interfejs
 	BazaDanych* Dane;
 
 	std::vector<Klikalny*> KlikObject;
+
+	OpcjeGry* opcjegry;
 
 	//zmienne potrzebne do skalowania
 	float factorX = 1; // zmienne do podzielenia x i y myszki 
@@ -48,7 +59,7 @@ public:
 
 
 	// funkjca obslugujaca eventy
-	void EventFunction();
+	void EventFunction(OpcjeGry& opcje);
 	/*	mozna zrobic klase wirtualna do obslugi eventow
 		kazda klasa ktora obsluguje te eventy ma funkcje event ktora zostaje nadpisana
 		nasz interfejs ma wektor wskaznikow na obiekty klasy eventowej * w ktorym znajduja sie wszystkie pobiekty
@@ -70,7 +81,7 @@ public:
 	void DeleteButtons();
 
 	//funkcja obslugujaca przyciski / elementy przyciskalne
-	void ExecuteButtons(sf::Event &event);
+	void ExecuteButtons(sf::Event &event, OpcjeGry & opcje);
 
 	//funkcja rysujaca wszyskie klawisze
 	void DrawButtons(sf::RenderWindow& window);
@@ -78,7 +89,11 @@ public:
 	// funkcja tworzaca nowe okno z informacja
 	void CreateMessageWindow(std::string tekst);
 
+	// funkcja ustawiajaca wskaznik na OpcjeGry
+	void SetOpcjeGry(OpcjeGry* opcje);
 
+	// funkcja tworzaca okno poczeklani dla graczy ( tylko server ma taka opcje )
+	void CreateWaitingWindow(Internet * internet);
 
 };
 
