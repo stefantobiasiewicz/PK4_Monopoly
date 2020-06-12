@@ -2,6 +2,7 @@
 
 
 
+
 Button::Button(sf::Vector2f vect, std::string def_tex_string, std::string click_tex_string, std::string text)
 {
 

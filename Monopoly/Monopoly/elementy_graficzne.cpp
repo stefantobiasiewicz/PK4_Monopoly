@@ -173,3 +173,38 @@ void Klik_Kolo::setSelected(bool sel)
 	isSelected = sel;
 }
 
+void Klik_Kolo::setOutlineColor(sf::Color color)
+{
+	shape.setOutlineColor(color);
+}
+
+button::button(sf::Vector2f size, sf::Vector2f pos, std::string def_texture_file, std::string click_texture_file) : Klik_Prostokat(pos, def_texture_file)
+{
+	Resolution res;
+	if (!this->def_text.loadFromFile(def_texture_file))
+	{
+		std::cerr << "Nie zaladowano pliku z tekstura def";
+	}
+	if (!this->click_text.loadFromFile(click_texture_file))
+	{
+		std::cerr << "Nie zaladowano pliku z tekstura click";
+	}
+	shape.setSize(size);
+	shape.setPosition(pos);
+}
+bool button::is_mouse_on(int mouse_x, int mouse_y)
+{
+	sf::Vector2f pos = this->shape.getPosition();
+	if (mouse_x > pos.x&& mouse_x < (pos.x + this->getSize().x) && mouse_y > pos.y&& mouse_y < (pos.y + this->getSize().y))
+	{
+		shape.setTexture(&click_text);
+		return true;
+	}
+	else
+	{
+		shape.setTexture(&def_text);
+		return false;
+
+	}
+}
+

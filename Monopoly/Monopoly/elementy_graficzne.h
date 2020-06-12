@@ -1,5 +1,6 @@
 #pragma once
 #include "SFML/Graphics.hpp"
+#include "Resolution.h"
 
 class Klikalny
 {
@@ -22,7 +23,7 @@ protected:
 	bool click(int mouse_x, int mouse_y);
 	sf::RectangleShape shape;
 	sf::Texture texture;
-	Klik_Prostokat(sf::Vector2f size = sf::Vector2f{ 0.f, 0.f }, sf::Vector2f pos = sf::Vector2f{ 0.f, 0.f }, sf::Color color = sf::Color(0, 0, 0));
+	Klik_Prostokat(sf::Vector2f size, sf::Vector2f pos = sf::Vector2f{ 0.f, 0.f }, sf::Color color = sf::Color(0, 0, 0));
 	Klik_Prostokat(sf::Vector2f pos = sf::Vector2f{ 0.f, 0.f }, std::string texture_file = "");
 public:
 	sf::Vector2f pos = this->shape.getPosition();
@@ -52,5 +53,17 @@ public:
 	float how_far(float ax, float ay, float bx, float by);
 	bool click(int mouse_x, int mouse_y);
 	void setSelected(bool sel);
+	void setOutlineColor(sf::Color color);
 	
+};
+
+class button : public Klik_Prostokat
+{
+	sf::Texture def_text;
+	sf::Texture click_text;
+protected:
+	bool is_mouse_on(int mouse_x, int mouse_y);
+public:
+	button(sf::Vector2f size, sf::Vector2f pos, std::string def_texture_file, std::string click_texture_file);
+	~button() {};
 };

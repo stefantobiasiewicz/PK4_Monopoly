@@ -10,6 +10,7 @@ void Interfejs::StartWindow()
     float szer = sf::VideoMode::getDesktopMode().width;
     float wys = sf::VideoMode::getDesktopMode().height;
     sf::RenderWindow window(sf::VideoMode(szer - szer / 2, wys - wys / 3), "Monopoly Okno Startowe");
+    window.setFramerateLimit(60);
     sf::Texture window_tex;
     if (!window_tex.loadFromFile("\grafiki/start.jpg"))
     {
@@ -46,6 +47,13 @@ void Interfejs::StartWindow()
     id.setPosition(wsp_x * pos.x(35) - 200, wsp_y * pos.y(50) - 80);
     id.setFillColor({ 77, 0, 0 });
 
+    sf::Text plansza;
+    plansza.setString("Jako tworzacy gre, wybierz kolor planszy:");
+    plansza.setCharacterSize(30);
+    plansza.setFont(czcionka);
+    plansza.setPosition(wsp_x * pos.x(22), wsp_y * pos.y(58));
+    plansza.setFillColor({ 77, 0, 0 });
+
     Textbox nick_enter(40, sf::Color(77, 0, 0), false, 400, sf::Vector2f{ wsp_x * pos.x(50) - 200, wsp_y * pos.y(50) - 10 }, sf::Color(204, 204, 204));
     nick_enter.setLimit(true, 15);
     nick_enter.setFont(czcionka);
@@ -54,9 +62,12 @@ void Interfejs::StartWindow()
     IP_enter.setLimit(true, 15);
     IP_enter.setFont(czcionka);
 
-    Klik_Kolo zielony(sf::Vector2f{ wsp_x * pos.x(70) - 200, wsp_y * pos.y(70) - 10 }, "\grafiki/pionek2.png");
-    Klik_Kolo niebieski(sf::Vector2f{ wsp_x * pos.x(30) - 200, wsp_y * pos.y(30) - 10 }, "\grafiki/pionek1.png");
-    
+    Klik_Kolo zielony(30.f, sf::Vector2f{ wsp_x * pos.x(27), wsp_y * pos.y(67)}, sf::Color(179, 255, 218));
+    Klik_Kolo niebieski(30.f, sf::Vector2f{ wsp_x * pos.x(47), wsp_y * pos.y(67)}, sf::Color(153, 235, 255));
+    Klik_Kolo rozowy(30.f, sf::Vector2f{ wsp_x * pos.x(67), wsp_y * pos.y(67)}, sf::Color(255, 230, 255));
+    zielony.setOutlineColor(sf::Color(0, 0, 0));
+    niebieski.setOutlineColor(sf::Color(0, 0, 0));
+    rozowy.setOutlineColor(sf::Color(0, 0, 0));
 
 
     // dwa stany okna 
@@ -68,15 +79,15 @@ void Interfejs::StartWindow()
     wys = wys - wys / 3;
 
 
-    Button b1(sf::Vector2f(300.f * sc.x * 2, 80.f * sc.y * 2), "\grafiki/button_stworz.jpg", "\grafiki/button_stworz2.jpg", "Stwórz gre");
-    Button b2(sf::Vector2f(300.f * sc.x * 2, 80.f * sc.y * 2), "\grafiki/button_dolacz.jpg", "\grafiki/button_dolacz2.jpg", "Do³¹cz");
-    Button b3(sf::Vector2f(300.f * sc.x * 2, 80.f * sc.y * 2), "\grafiki/button_dolacz.jpg", "\grafiki/button_dolacz2.jpg", "Do³¹cz");
-    b1.scale(sc.x * 2, sc.y * 2);
-    b2.scale(sc.x * 2, sc.y * 2);
-    b3.scale(sc.x * 2, sc.y * 2);
-    b1.setPosition(szer * 0.15, wys * 0.75);
-    b2.setPosition(szer * 0.85 - (300.f * sc.x * 2), wys * 0.75);
-    b3.setPosition(szer * 0.5 - 300.f * sc.x, wys * 0.63);
+    button b1(sf::Vector2f(300.f * sc.x * 2, 80.f * sc.y * 2), sf::Vector2f( szer * 0.15, wys * 0.75 ), "\grafiki/button_stworz.jpg", "\grafiki/button_stworz2.jpg");
+    button b2(sf::Vector2f(300.f * sc.x * 2, 80.f * sc.y * 2), sf::Vector2f(szer * 0.85 - (300.f * sc.x * 2), wys * 0.75),"\grafiki/button_dolacz.jpg", "\grafiki/button_dolacz2.jpg");
+    button b3(sf::Vector2f(300.f * sc.x * 2, 80.f * sc.y * 2), sf::Vector2f(szer * 0.5 - 300.f * sc.x, wys * 0.63),"\grafiki/button_dolacz.jpg", "\grafiki/button_dolacz2.jpg");
+    //b1.scale(sc.x * 2, sc.y * 2);
+    //b2.scale(sc.x * 2, sc.y * 2);
+    //b3.scale(sc.x * 2, sc.y * 2);
+    //b1.setPosition(szer * 0.15, wys * 0.75);
+    //b2.setPosition(szer * 0.85 - (300.f * sc.x * 2), wys * 0.75);
+    //b3.setPosition(szer * 0.5 - 300.f * sc.x, wys * 0.63);
 
 
 
@@ -142,11 +153,19 @@ void Interfejs::StartWindow()
                 {
                     std::cout<<"nacisnieto zielony";
                     niebieski.setSelected(false);
+                    rozowy.setSelected(false);
                 }
                 if (niebieski.event(event) == true)
                 {
                     std::cout << "nacisnieto niebieski";
                     zielony.setSelected(false);
+                    rozowy.setSelected(false);
+                }
+                if (rozowy.event(event) == true)
+                {
+                    std::cout << "nacisnieto niebieski";
+                    zielony.setSelected(false);
+                    niebieski.setSelected(false);
                 }
             }
 
@@ -176,6 +195,8 @@ void Interfejs::StartWindow()
             window.draw(id);
             zielony.drawTo(window);
             niebieski.drawTo(window);
+            rozowy.drawTo(window);
+            window.draw(plansza);
         }
         // end the current frame
         window.display();
