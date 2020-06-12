@@ -9,7 +9,6 @@
 
 #include "BazaDanych.h"
 #include "Resolution.h"
-#include "Button.h"
 #include "elementy_graficzne.h"
 
 class Interfejs

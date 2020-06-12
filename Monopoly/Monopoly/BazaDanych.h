@@ -1,5 +1,6 @@
 #pragma once
 #include "SFML/Graphics.hpp"
+#include "SFML/Network.hpp"
 #include "Uzytkownik.h"
 #include "Karta.h"
 #include "Obiekt_Na_Planszy.h"
@@ -13,16 +14,11 @@
 #include <vld_def.h>
 #include <utility>
 
-
+typedef enum {Zielona = 0, Niebieska, Rozowa, Brak} Kolor_Planszy;
 
 class BazaDanych
 {
 public:
-	// klasa zawierajaca wszystkie obiekty do u¿ytku przez program ( Zasoby ) wymagaj¹ce pewnej implementacji z racji zasad gry 
-
-	// tu bedzie tablica wskaŸników na funkcje ( dla kart ) algorytmy dzia³ania kart
-	// wektor / tablica pól ( obiektów )
-
 	std::map<std::string, Karta*>karty_nieruchomosci;   //tablica asocjacyjna kart, kluczem nazwa karty
 	std::vector<Pole>pola;                //tablica pól na planszy
 	std::vector<Karta*>karty_szansa_kasa;  //tablica kart 'szansa' i 'kasa spoleczna' 
@@ -30,10 +26,17 @@ public:
 	std::ifstream plik_szansa_kasa;       //strumien do pliku z danymi o kartach 'szansa' i 'kasa spoleczna'
 	std::ifstream plik_pola;              //strumien do pliku z danymi o polach na planszy
 	std::map<std::string, Uzytkownik>gracze; //tablica graczy, indeksowana nickiem
+	sf::IpAddress IP;                        //ip gry
+	int ilosc_graczy;
+	Kolor_Planszy kolor;
+	bool isServer;                           //czy to jest server czy klient
 
-public:
 	BazaDanych();
 	~BazaDanych();
+	void Stworz_Mnie(std::string nick, sf::IpAddress ip, bool isServer, Kolor_Planszy kolor = Zielona);
+
+private:
+	
 	void Tworz_Ulice();
 	void Usun_Nieruchomosci();
 	void Tworz_Szansa_Kasa_Spoleczna();
@@ -42,5 +45,6 @@ public:
 	void Tworz_Obiekt_UP();
 	void Tworz_Pola();
 	void Sortuj_Pola();
+	
 };
 

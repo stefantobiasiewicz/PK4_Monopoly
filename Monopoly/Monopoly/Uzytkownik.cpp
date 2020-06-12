@@ -3,8 +3,7 @@
 
 Uzytkownik::Uzytkownik(std::string nick)
 {
-//	pionek
-	//this->nick = nick;
-	//this->pole = adres_pola_start;
-	
+	this->nick = nick;
+	this->numer_pola = 0;
+	this->portfel = 1500;
 }

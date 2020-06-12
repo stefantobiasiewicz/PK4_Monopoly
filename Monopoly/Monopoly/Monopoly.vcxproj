@@ -145,7 +145,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="BazaDanych.h" />
-    <ClInclude Include="Button.h" />
     <ClInclude Include="elementy_graficzne.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="Interfejs.h" />
@@ -160,7 +159,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BazaDanych.cpp" />
-    <ClCompile Include="Button.cpp" />
     <ClCompile Include="elementy_graficzne.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="Interfejs.cpp" />

@@ -313,3 +313,11 @@ void BazaDanych::Sortuj_Pola()
 	std::swap(pola[35], pola[36]);
 	std::swap(pola[38], pola[39]);
 }
+void BazaDanych::Stworz_Mnie(std::string nick, sf::IpAddress ip, bool isServer, Kolor_Planszy kolor)
+{
+	Uzytkownik ja(nick);
+	this->IP = ip;
+	this->kolor = kolor;
+	this->isServer = isServer;
+	gracze[nick] = ja;
+}

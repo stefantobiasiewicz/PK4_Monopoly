@@ -36,23 +36,35 @@ void Interfejs::StartWindow()
     float wsp_x = (szer - szer / 2) / szer;
     float wsp_y = (wys - wys / 3) / wys;
 
+    szer = szer - szer / 2;
+    wys = wys - wys / 3;
+
+    Kolor_Planszy kolor = Brak;
+
     sf::Text nick;
     nick.setString("Podaj nick:");
-    nick.setCharacterSize(30);
+    nick.setCharacterSize(60 * sc.y);
     nick.setFont(czcionka);
     nick.setPosition(wsp_x * pos.x(50) - 200, wsp_y * pos.y(50) - 80);
     nick.setFillColor({ 77, 0, 0 });
 
     sf::Text id;
     id.setString("Podaj swoje IP, do ktorego przylacza sie inni gracze:");
-    id.setCharacterSize(30);
+    id.setCharacterSize(60 * sc.y);
     id.setFont(czcionka);
     id.setPosition(wsp_x * pos.x(35) - 200, wsp_y * pos.y(50) - 80);
     id.setFillColor({ 77, 0, 0 });
 
+    sf::Text id_c;
+    id_c.setString("Podaj IP serwera:");
+    id_c.setCharacterSize(60 * sc.y);
+    id_c.setFont(czcionka);
+    id_c.setPosition(wsp_x * pos.x(50) - 200, wsp_y * pos.y(50) - 80);
+    id_c.setFillColor({ 77, 0, 0 });
+
     sf::Text plansza;
     plansza.setString("Jako tworzacy gre, wybierz kolor planszy:");
-    plansza.setCharacterSize(30);
+    plansza.setCharacterSize(60 * sc.y);
     plansza.setFont(czcionka);
     plansza.setPosition(wsp_x * pos.x(22), wsp_y * pos.y(58));
     plansza.setFillColor({ 77, 0, 0 });
@@ -65,12 +77,19 @@ void Interfejs::StartWindow()
     IP_enter.setLimit(true, 15);
     IP_enter.setFont(czcionka);
 
+    Textbox IP_enter_c(40, sf::Color(77, 0, 0), false, 400, sf::Vector2f{ wsp_x * pos.x(50) - 200, wsp_y * pos.y(50) - 10 }, sf::Color(204, 204, 204));
+    IP_enter_c.setLimit(true, 15);
+    IP_enter_c.setFont(czcionka);
+
     Klik_Kolo zielony(30.f, sf::Vector2f{ wsp_x * pos.x(27), wsp_y * pos.y(67)}, sf::Color(179, 255, 218));
     Klik_Kolo niebieski(30.f, sf::Vector2f{ wsp_x * pos.x(47), wsp_y * pos.y(67)}, sf::Color(153, 235, 255));
     Klik_Kolo rozowy(30.f, sf::Vector2f{ wsp_x * pos.x(67), wsp_y * pos.y(67)}, sf::Color(255, 230, 255));
+    Klik_Kolo_Button back(sf::Vector2f{ wsp_x * pos.x(5), wsp_y * pos.y(5) }, "\grafiki/button_back.png");
     zielony.setOutlineColor(sf::Color(0, 0, 0));
     niebieski.setOutlineColor(sf::Color(0, 0, 0));
     rozowy.setOutlineColor(sf::Color(0, 0, 0));
+    back.setOutlineColor(sf::Color::Black);
+    back.setSize(sf::Vector2f{20.f, 20.f});
 
 
     // dwa stany okna 
@@ -78,22 +97,13 @@ void Interfejs::StartWindow()
     // 2 onko wpisywania adresu ip 
     int state = 0;
 
-    szer = szer - szer / 2;
-    wys = wys - wys / 3;
+    
 
 
-    button b1(sf::Vector2f(300.f * sc.x * 2, 80.f * sc.y * 2), sf::Vector2f( szer * 0.15, wys * 0.75 ), "\grafiki/button_stworz.jpg", "\grafiki/button_stworz2.jpg");
-    button b2(sf::Vector2f(300.f * sc.x * 2, 80.f * sc.y * 2), sf::Vector2f(szer * 0.85 - (300.f * sc.x * 2), wys * 0.75),"\grafiki/button_dolacz.jpg", "\grafiki/button_dolacz2.jpg");
-    button b3(sf::Vector2f(300.f * sc.x * 2, 80.f * sc.y * 2), sf::Vector2f(szer * 0.5 - 300.f * sc.x, wys * 0.63),"\grafiki/button_dolacz.jpg", "\grafiki/button_dolacz2.jpg");
-    //b1.scale(sc.x * 2, sc.y * 2);
-    //b2.scale(sc.x * 2, sc.y * 2);
-    //b3.scale(sc.x * 2, sc.y * 2);
-    //b1.setPosition(szer * 0.15, wys * 0.75);
-    //b2.setPosition(szer * 0.85 - (300.f * sc.x * 2), wys * 0.75);
-    //b3.setPosition(szer * 0.5 - 300.f * sc.x, wys * 0.63);
-
-
-
+    button b1(szer, wys, sf::Vector2f(600.f, 160.f), sf::Vector2f(30,75), "\grafiki/button_stworz.jpg", "\grafiki/button_stworz2.jpg");
+    button b2(szer, wys, sf::Vector2f(600.f,160.f), sf::Vector2f(70,75),"\grafiki/button_dolacz.jpg", "\grafiki/button_dolacz2.jpg");
+    button b3(szer, wys, sf::Vector2f(600.f, 160.f), sf::Vector2f(50, 74),"\grafiki/button_dolacz.jpg", "\grafiki/button_dolacz2.jpg");
+    button b4(szer, wys, sf::Vector2f(600.f, 160.f), sf::Vector2f(50, 87), "\grafiki/button_stworz.jpg", "\grafiki/button_stworz2.jpg");
 
     sf::Event event;
     float factor_x = 1; // zmienne do podzielenia x i y myszki 
@@ -144,6 +154,23 @@ void Interfejs::StartWindow()
                 {
                     state = 0;
                     std::cout << "nacisnieto klawisz dolacz do gry\n";
+                    if (!nick_enter.getText().empty())
+                    {
+                        if (!IP_enter_c.getText().empty())
+                        {
+                            this->Dane->Stworz_Mnie(nick_enter.getText(), IP_enter_c.getText(), 0);
+                            return;
+                        }
+                    }
+                }
+                if (IP_enter_c.event(event) == true)
+                {
+                    std::cout << "nacisnieto textbox\n";
+                }
+                if (back.event(event) == true)
+                {
+                    state = 0;
+                    std::cout << "nacisnieto klawisz wroc\n";
                 }
             }
             else if (state == 2)
@@ -157,18 +184,42 @@ void Interfejs::StartWindow()
                     std::cout<<"nacisnieto zielony";
                     niebieski.setSelected(false);
                     rozowy.setSelected(false);
+                    kolor = Zielona;
                 }
                 if (niebieski.event(event) == true)
                 {
                     std::cout << "nacisnieto niebieski";
                     zielony.setSelected(false);
                     rozowy.setSelected(false);
+                    kolor = Niebieska;
                 }
                 if (rozowy.event(event) == true)
                 {
-                    std::cout << "nacisnieto niebieski";
+                    std::cout << "nacisnieto rozowy";
                     zielony.setSelected(false);
                     niebieski.setSelected(false);
+                    kolor = Rozowa;
+                }
+                if (b4.event(event) == true)
+                {
+                    std::cout << "nacisnieto klawisz stworz gre\n";
+                    if (!IP_enter.getText().empty())
+                    {
+                        if (!nick_enter.getText().empty())
+                        {
+                            if (kolor != Brak)
+                            {
+                                this->Dane->Stworz_Mnie(nick_enter.getText(), IP_enter.getText(), 1, kolor);
+                                return;
+                            }
+                        }
+                    }
+                   
+                }
+                if (back.event(event) == true)
+                {
+                    state = 0;
+                    std::cout << "nacisnieto klawisz wroc\n";
                 }
             }
 
@@ -179,7 +230,7 @@ void Interfejs::StartWindow()
 
         // draw everything here...
         window.draw(backgroud);
-        if (!state)
+        if (state == 0)
         {
             nick_enter.drawTo(window);
             window.draw(nick);
@@ -191,6 +242,9 @@ void Interfejs::StartWindow()
         else if (state == 1)
         {
             b3.drawTo(window);
+            IP_enter_c.drawTo(window);
+            window.draw(id_c);
+            back.drawTo(window);
         }
         else if (state == 2)
         {
@@ -200,6 +254,8 @@ void Interfejs::StartWindow()
             niebieski.drawTo(window);
             rozowy.drawTo(window);
             window.draw(plansza);
+            b4.drawTo(window);
+            back.drawTo(window);
         }
         // end the current frame
         window.display();

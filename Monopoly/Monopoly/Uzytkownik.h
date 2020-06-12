@@ -20,8 +20,9 @@ public:
 	int numer_pola;     //numer pola na którym stoi u¿ytkownik
 	int portfel;        //stan portfela
 
-public:
+
 	Uzytkownik(std::string nick);
+	Uzytkownik() {}
 
 
 };
