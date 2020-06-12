@@ -20,6 +20,13 @@ class Interfejs
 
 	std::vector<Klikalny*> KlikObject;
 
+	//zmienne potrzebne do skalowania
+	float factorX = 1; // zmienne do podzielenia x i y myszki 
+	float factorY = 1;
+
+	float Szer = sf::VideoMode::getDesktopMode().width;
+	float Wys = sf::VideoMode::getDesktopMode().height;
+
 public:
 
 
@@ -48,6 +55,8 @@ public:
 		nasz interfejs ma wektor wskaznikow na obiekty klasy eventowej * w ktorym znajduja sie wszystkie pobiekty
 		ktore maja byæ obsuiwane
 	*/
+	// funkcja "skalujaca myszke" potrzebna do poprawnego dzialania programu po zmianie rozmiaru okna
+	void EventScaleMouse(sf::Event& even);
 
 	// funkcja rysjujaca okno
 	void DrawFunction();
@@ -57,15 +66,20 @@ public:
 	void CreatePlansza(std::string = "\grafiki / planszaG.jpg");
 	void DeletePlansza();
 
-	// funkcja tworzaca przycisk
+	// funkcja tworzaca/usuwajaca przyciski / lub texbary
 	void CreateButtons();
+	void DeleteButtons();
 
-	// funkcja tworzaca textbaty
-	void CreateTextbar();
+	//funkcja obslugujaca przyciski / elementy przyciskalne
+	void ExecuteButtons(sf::Event &event);
 
+	//funkcja rysujaca wszyskie klawisze
+	void DrawButtons(sf::RenderWindow& window);
 
 	// funkcja tworzaca nowe okno z informacja
 	void CreateMessageWindow(std::string tekst);
+
+
 
 };
 

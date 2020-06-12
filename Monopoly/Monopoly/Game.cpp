@@ -73,6 +73,7 @@ state_t DoStan1(Game* gra)
 	gra->InterfejsStart = 1;
 	gra->interfejs->CreateMainWindow();
 	gra->interfejs->CreatePlansza("\grafiki/planszaG.jpg");
+	gra->interfejs->CreateButtons();
 	return Stan2;
 }
 state_t DoStan2(Game* gra)

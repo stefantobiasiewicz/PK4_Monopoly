@@ -8,6 +8,17 @@
 // typ wyliczeniowy do zdefiniowania stanow gry
 typedef enum { StanInicjalizacj, Stan1, Stan2, StanKoncowy, NUM_STATES } state_t;
 
+//struktura przechowujaca opcje gry 
+//opcje gry sa zmieniane przez przyciski / koreluja z nimi
+//przez ta strukture gra wie co chce zorobic gracz
+struct OpcjeGry
+{
+	// trzeba dodac opcje odpowiedzialne za wszystkie button
+	bool kup_dom;
+};
+
+
+
 class Game 
 {
 
@@ -21,6 +32,7 @@ public:
 	BazaDanych* baza;
 	Internet* internet;
 	Interfejs* interfejs;
+	OpcjeGry opcjegry;
 
 	state_t cur_state;	// bierzacy stan maszyny
 	void RunState(Game* gra);

@@ -217,6 +217,7 @@ Interfejs::~Interfejs()
 {
     DeleteMainWindow();
     DeletePlansza();
+    DeleteButtons();
 }
 
 
@@ -254,6 +255,28 @@ void Interfejs::EventFunction()
         // "close requested" event: we close the window
         if (event.type == sf::Event::Closed)
             MainWindow->close();
+        // skalowanie
+        EventScaleMouse(event);
+        // obsluga klawiszy
+        ExecuteButtons(event);
+    }
+}
+void Interfejs::EventScaleMouse(sf::Event& event)
+{
+    if (event.type == sf::Event::Resized)
+    {
+        factorX = (float)event.size.width / Szer;
+        factorY = (float)event.size.height / Wys;
+    }
+    if (event.type == sf::Event::MouseMoved)
+    {
+        event.mouseMove.x /= factorX;
+        event.mouseMove.y /= factorY;
+    }
+    if (event.type == sf::Event::MouseButtonPressed)
+    {
+        event.mouseButton.x /= factorX;
+        event.mouseButton.y /= factorY;
     }
 }
 
@@ -265,6 +288,9 @@ void Interfejs::DrawFunction()
         PoleGry->render();
         MainWindow->draw(*PoleGry);
     }
+    //rysowanie wszyskich klawiszy
+    DrawButtons(*MainWindow);
+
     MainWindow->display();
 }
 
@@ -283,11 +309,30 @@ void Interfejs::DeletePlansza()
 
 void Interfejs::CreateButtons()
 {
-
+    // tu tworza sie wszyskie przyciski 
+    button* b = new button( sf::Vector2f(200, 200), sf::Vector2f(200, 200), "\grafiki/button_stworz.jpg", "\grafiki/button_stworz2.jpg");
+    KlikObject.push_back(b);
 }
-void Interfejs::CreateTextbar()
+void Interfejs::DeleteButtons()
 {
-
+    for (auto i : KlikObject)
+    {
+        delete i;
+    }
+}
+void Interfejs::ExecuteButtons(sf::Event &even)
+{
+    for (auto i : KlikObject)
+    {
+        i->event(even);
+    }
+}
+void Interfejs::DrawButtons(sf::RenderWindow& window)
+{
+    for (auto i : KlikObject)
+    {
+        i->drawTo(window);
+    }
 }
 
 void Interfejs::CreateMessageWindow(std::string tekst)

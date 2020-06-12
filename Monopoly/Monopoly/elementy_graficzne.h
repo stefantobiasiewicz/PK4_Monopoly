@@ -8,9 +8,11 @@ protected:
 	Klikalny() {}
 	virtual bool is_mouse_on(int mouse_x, int mouse_y)=0;
 	virtual bool click(int mouse_x, int mouse_y) = 0;
-	~Klikalny() {}
+
 public:
 	bool event(sf::Event event);
+	virtual void drawTo(sf::RenderWindow& window) = 0;
+	~Klikalny() {}
 };
 
 class Klik_Prostokat : public Klikalny
