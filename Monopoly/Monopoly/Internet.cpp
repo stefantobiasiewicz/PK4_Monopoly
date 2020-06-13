@@ -2,14 +2,14 @@
 
 
 
-Internet::Internet(bool sercli, int port) // konstruktor serwera 
+Internet::Internet(bool isClient, int port) // konstruktor serwera 
 {
-	if (sercli)
+	if (isClient)
 	{
 		std::cerr << "zly konstruktor \n";
 		return;
 	}
-	this->SerCli = sercli;
+	this->isClient = isClient;
 	this->port = port;
 	this->isConnected = false;
 	this->listener.setBlocking(false);	// ustawienie trybu nie blokujacego 
@@ -20,14 +20,14 @@ Internet::Internet(bool sercli, int port) // konstruktor serwera
 		std::cerr << "nie znaleziono portu listener error \n";
 	}
 }
-Internet::Internet(bool sercli, sf::IpAddress Serv, int port) // konstruktor klienta
+Internet::Internet(bool isClient, sf::IpAddress Serv, int port) // konstruktor klienta
 {
-	if (!sercli)
+	if (!isClient)
 	{
 		std::cerr << "zly konstruktor \n";
 		return;
 	}
-	this->SerCli = sercli;
+	this->isClient = isClient;
 	this->IPserv = Serv;
 	this->port = port;
 	this->isConnected = false;
@@ -48,7 +48,7 @@ void Internet::setPort(int port)
 sf::Socket::Status Internet::setConnection()	// funkcja ³aczaca komputery 
 {
 	sf::Socket::Status status;
-	if (this->SerCli)	// klient
+	if (this->isClient)	// klient
 	{
 		status = this->sockets[0]->connect(this->IPserv, this->port , sf::seconds(10));
 		if (status != sf::Socket::Done)

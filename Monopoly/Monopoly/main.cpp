@@ -124,6 +124,8 @@ int main()
 
     *******************************************************************************/
 
+    std::cout << "\n\n" << sf::IpAddress::getLocalAddress() << "\n\n";
+
     Game Gra;
     Gra.Run();
 

@@ -37,7 +37,6 @@ class Pionek :
 	public Obiekt_Na_Planszy
 {
 public:
-	Pionek() : Obiekt_Na_Planszy(std::string("// scierzka do pliku tekstury"), sf::Vector2f(0,0) ) {}
-	Pionek(sf::Vector2f pos) : Obiekt_Na_Planszy(std::string("// scierzka do pliku tekstury"), pos) {}
-
+	int nr_pionka;
+	Pionek(std::string file , int nr) : Obiekt_Na_Planszy(file, sf::Vector2f(0, 0)), nr_pionka(nr) {}
 };

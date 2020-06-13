@@ -8,6 +8,7 @@ BazaDanych::BazaDanych()
 	Tworz_Obiekt_UP();
 	Tworz_Pola();
 	Sortuj_Pola();
+	Tworz_Pionki();
 }
 
 BazaDanych::~BazaDanych()
@@ -320,4 +321,15 @@ void BazaDanych::Stworz_Mnie(std::string nick, sf::IpAddress ip, bool isServer, 
 	this->kolor = kolor;
 	this->isServer = isServer;
 	gracze[nick] = ja;
+}
+void BazaDanych::Tworz_Pionki()
+{
+	Pionek p1("\grafiki/pionek1.png", 0);
+	Pionek p2("\grafiki/pionek2.png", 1);
+	Pionek p3("\grafiki/pionek3.png", 2);
+	Pionek p4("\grafiki/pionek4.png", 3);
+	this->pionki.push_back(p1);
+	this->pionki.push_back(p2);
+	this->pionki.push_back(p3);
+	this->pionki.push_back(p4);
 }

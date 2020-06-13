@@ -438,8 +438,8 @@ void Interfejs::CreateWaitingWindow(Internet* internet)
 
     sf::RenderWindow window(
         sf::VideoMode(szer - szer / 1.5f, wys - wys / 1.6f),
-        "Informacja dla urzytkownika",
-        sf::Style::None
+        "Informacja dla urzytkownika"
+        //sf::Style::None
     );
 
     window.setFramerateLimit(60);
@@ -447,7 +447,49 @@ void Interfejs::CreateWaitingWindow(Internet* internet)
     szer = szer - szer / 1.5f;
     wys = wys - wys / 1.6f;
     //tutaj button i tekstbar
-    button Zakoncz(szer , wys, { 400, 130 }, {50,80}, "\grafiki/button_stworz.jpg", "\grafiki/button_stworz2.jpg");
+    button Zakoncz(szer , wys, { 400, 130 }, {50,80}, "\grafiki/button_zakoncz.jpg", "\grafiki/button_zakoncz2.jpg");
+
+    Resolution res;
+    sf::Vector2f scale = res.scale();
+    res.SetH_res(wys);
+    res.SetW_res(szer);
+
+    sf::Font Czcionka;
+    if (!Czcionka.loadFromFile("BRLNSR.TTF"))
+    {
+        std::cerr << "nie zaladownao czcionki : \"BRLNSR.TTF\" \n";
+    }
+
+    sf::Text Info;
+    Info.setFont(Czcionka);
+    Info.setCharacterSize(60 * scale.y);
+    Info.setPosition(res.x(15), res.y(5));
+    Info.setFillColor(sf::Color::Black);
+    Info.setString("Aby zakonczyc czekanie na graczy\n \t kliknij \"zakoncz czekanie\"\n\nPoloczeni gracze:");
+
+    sf::Text Gracz1;
+    Gracz1.setFont(Czcionka);
+    Gracz1.setCharacterSize(60 * scale.y);
+    Gracz1.setPosition(res.x(22), res.y(40));
+    Gracz1.setFillColor(sf::Color::Black);
+    Gracz1.setString("* ");
+
+    sf::Text Gracz2;
+    Gracz2.setFont(Czcionka);
+    Gracz2.setCharacterSize(60 * scale.y);
+    Gracz2.setPosition(res.x(22), res.y(49));
+    Gracz2.setFillColor(sf::Color::Black);
+    Gracz2.setString("* ");
+
+    sf::Text Gracz3;
+    Gracz3.setFont(Czcionka);
+    Gracz3.setCharacterSize(60 * scale.y);
+    Gracz3.setPosition(res.x(22), res.y(58));
+    Gracz3.setFillColor(sf::Color::Black);
+    Gracz3.setString("* ");
+    
+    std::vector<sf::Text*> users = { &Gracz1 , &Gracz2 , &Gracz3 };
+
 
     sf::Event event;
     while (window.isOpen())
@@ -458,10 +500,41 @@ void Interfejs::CreateWaitingWindow(Internet* internet)
             if(Zakoncz.event(event))
                 window.close();
         }
+        // poloczenia z klientami 
+               
+        if (internet->setConnection() == sf::Socket::Status::Done)
+         {
+            std::cout << "poloczono;\n";
+         }
+        sf::Packet nick;
+        for (int i = 0; i < internet->getClientCount(); i++)
+        {
+            if (internet->Recive(nick, i))
+            {
+                std::string name;
+                nick >> name;
+                Uzytkownik user(name);
+                this->Dane->gracze[name] = user;
+                users[i]->setString("* " + name);
+                // odebralismy dane od gracza i stowrzylismy usera nalezy jeszcze wyslac mu plansze i pionka
+            }
+        }
+
+        
+
+
+
         // clear the window with black color
         window.clear(sf::Color(179, 255, 230));
 
         // draw everything here...
+
+        window.draw(Info);
+        window.draw(Gracz1);
+        window.draw(Gracz2);
+        window.draw(Gracz3);
+
+
         Zakoncz.drawTo(window);
 
         // end the current frame

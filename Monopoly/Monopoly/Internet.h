@@ -5,11 +5,13 @@
 #include <thread>
 #include <vector>
 
+#define INTERNET_PORT 64003
+
 class Internet
 {
 private:
 
-	bool SerCli; // serwer - 0 klient - 1
+	bool isClient; // serwer - 0 klient - 1
 
 	sf::IpAddress IPserv; // ip serwera 
 	int port;
@@ -22,8 +24,8 @@ private:
 	bool isConnected;
 
 public:
-	Internet(bool sercli , int port); // konstruktor serwera 
-	Internet(bool sercli , sf::IpAddress Serv, int port); // konstruktor klienta 
+	Internet(bool isClient, int port); // konstruktor serwera 
+	Internet(bool isClient, sf::IpAddress Serv, int port); // konstruktor klienta 
 
 	void setIP(sf::IpAddress Serv);	// ustawia ip
 	void setPort(int port);
