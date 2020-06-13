@@ -375,9 +375,23 @@ void Interfejs::CreateButtons()
     sf::Vector2f scale = res.scale();
     // tu tworza sie wszyskie przyciski
 
-    Klik_Kolo_Button *kup_domek = new Klik_Kolo_Button(sf::Vector2f{ 50, 50 }, "\grafiki/pionek1.png", "\grafiki/pionek2.png");
-    kup_domek->setSize({ scale.x * 200.f, scale.y * 200.f });
+    // przyckisk kupowania domku 
+    Klik_Kolo_Button *kup_domek = new Klik_Kolo_Button(sf::Vector2f( res.x(56.82f) , res.y(5) ), "\grafiki/button_dom.png", "\grafiki/pionek2.png");
+    kup_domek->setSize({ scale.x * 100.f, scale.y * 100.f });
     KlikObject.push_back(kup_domek);
+
+    // przycisk kupowania hotelu 
+    Klik_Kolo_Button* kup_hotel = new Klik_Kolo_Button(sf::Vector2f( res.x(56.82f) , res.y(17) ), "\grafiki/button_hotel.png", "\grafiki/pionek2.png");
+    kup_hotel->setSize({ scale.x * 100.f, scale.y * 100.f });
+    KlikObject.push_back(kup_hotel);
+
+    // przycisk zastawu
+    button* zastaw = new button(sf::Vector2f{170,170}, sf::Vector2f{ 59.34f, 30 }, "\grafiki/button_zastaw.jpg", "\grafiki/pionek2.png");
+    KlikObject.push_back(zastaw);
+
+    // przycisk rzutu kostka
+    button* kostki = new button(sf::Vector2f{170,170}, sf::Vector2f{ 59.34f, 40 }, "\grafiki/unnamed.png", "\grafiki/pionek2.png");
+    KlikObject.push_back(kostki);
 }
 void Interfejs::DeleteButtons()
 {
