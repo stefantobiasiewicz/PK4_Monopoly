@@ -157,7 +157,7 @@ state_t DoInicjalizacjaKlienta(Game* gra)
 		DaneOdebrane >> NickName;
 		DaneOdebrane >> pionek;
 		Uzytkownik user(NickName);
-		user.pionek = &gra->baza->pionki[pionek];
+		user.pionek = gra->baza->pionki[pionek];
 		gra->baza->gracze[NickName] = user;
 	}
 	DaneOdebrane >> kolor;

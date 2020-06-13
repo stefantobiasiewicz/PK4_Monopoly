@@ -26,7 +26,7 @@ public:
 	std::ifstream plik_szansa_kasa;       //strumien do pliku z danymi o kartach 'szansa' i 'kasa spoleczna'
 	std::ifstream plik_pola;              //strumien do pliku z danymi o polach na planszy
 	std::map<std::string, Uzytkownik>gracze; //tablica graczy, indeksowana nickiem
-	std::vector<Pionek> pionki;				// wektor pionkow
+	std::vector<Pionek*> pionki;				// wektor pionkow
 
 	sf::IpAddress IP;                        //ip gry
 	int ilosc_graczy;
@@ -48,6 +48,7 @@ private:
 	void Tworz_Pola();
 	void Sortuj_Pola();
 	void Tworz_Pionki();
+	void Usun_Pionki();
 	
 };
 
