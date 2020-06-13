@@ -125,7 +125,6 @@ state_t DoInicjalizacjaSerwera(Game* gra)
 
 	gra->InterfejsStart = 1;
 	gra->interfejs->CreateMainWindow();
-	gra->interfejs->CreateButtons();
 	return Stan1;
 }
 state_t DoInicjalizacjaKlienta(Game* gra)
@@ -140,6 +139,15 @@ state_t DoInicjalizacjaKlienta(Game* gra)
 	sf::Packet nick;
 	nick << gra->baza->gracze.begin()->second.nick; // wpisanie do pakietu nicku gracza 1 czyli klienta
 	gra->internet->Send(nick);	// wyslanie tego pakietu
+
+
+	sf::Packet moj_nick;
+	while (!gra->internet->Recive(moj_nick))
+	{
+		// while dziala dopoki nie odbierze danych od serwera ( obliczonego nicku )
+	}
+	std::string moj_nick_s;
+	moj_nick >> moj_nick_s;
 
 	sf::Packet DaneOdebrane;
 	while (!gra->internet->Recive(DaneOdebrane))
@@ -182,7 +190,6 @@ state_t DoInicjalizacjaKlienta(Game* gra)
 
 	gra->InterfejsStart = 1;
 	gra->interfejs->CreateMainWindow();
-	gra->interfejs->CreateButtons();
 	return Stan1;
 }
 

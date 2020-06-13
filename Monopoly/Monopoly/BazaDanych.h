@@ -27,6 +27,7 @@ public:
 	std::ifstream plik_pola;              //strumien do pliku z danymi o polach na planszy
 	std::map<std::string, Uzytkownik>gracze; //tablica graczy, indeksowana nickiem
 	std::vector<Pionek*> pionki;				// wektor pionkow
+	std::string moj_nick;                     //moj nick
 
 	sf::IpAddress IP;                        //ip gry
 	int ilosc_graczy;
@@ -36,6 +37,7 @@ public:
 	BazaDanych();
 	~BazaDanych();
 	void Stworz_Mnie(std::string nick, sf::IpAddress ip, bool isServer, Kolor_Planszy kolor = Zielona);
+	void unikalne_nicki(std::string& name);
 
 private:
 	

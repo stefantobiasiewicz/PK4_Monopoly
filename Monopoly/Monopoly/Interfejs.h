@@ -3,6 +3,8 @@
 
 #include <iostream>
 #include <string>
+#include <chrono>
+#include <Windows.h>
 
 #include "Obiekt_Na_Planszy.h"
 #include "Plansza.h"
@@ -27,6 +29,8 @@ class Interfejs
 	BazaDanych* Dane;
 
 	std::vector<Klikalny*> KlikObject;
+	std::vector<sf::Drawable*>ksztalty;
+	std::vector<sf::Texture> tekstury;
 
 	OpcjeGry* opcjegry;
 
@@ -85,6 +89,14 @@ public:
 
 	//funkcja rysujaca wszyskie klawisze
 	void DrawButtons(sf::RenderWindow& window);
+
+	//funkcja tworz¹ca ksztalty do namalowania
+	void CreateSprites();
+
+	//funkcja usuwaj¹ca kszta³ty
+	void DeleteSprites();
+
+	void DrawSprites(sf::RenderWindow& window);
 
 	// funkcja tworzaca nowe okno z informacja
 	void CreateMessageWindow(std::string tekst);

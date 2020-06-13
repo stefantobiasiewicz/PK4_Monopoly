@@ -341,3 +341,16 @@ void BazaDanych::Usun_Pionki()
 		delete i;
 	}
 }
+
+void BazaDanych::unikalne_nicki(std::string& name)
+{
+	static int liczba_takich_samych = 0;
+	for (auto i : this->gracze)
+	{
+		if (i.second.nick == name)
+		{
+			liczba_takich_samych++;
+			name = name + std::to_string(liczba_takich_samych);
+		}
+	}
+}

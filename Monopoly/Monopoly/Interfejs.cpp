@@ -274,6 +274,7 @@ Interfejs::~Interfejs()
     DeleteMainWindow();
     DeletePlansza();
     DeleteButtons();
+    DeleteSprites();
 }
 
 
@@ -282,6 +283,8 @@ void Interfejs::CreateMainWindow()
 {
     MainWindow = new sf::RenderWindow(sf::VideoMode(sf::VideoMode::getDesktopMode().width - WIDTH_MIN, sf::VideoMode::getDesktopMode().height - HEIGHT_MIN), "Monopoly");
     MainWindow->setFramerateLimit(60);
+    this->CreateButtons();
+    this->CreateSprites();
 }
 void Interfejs::DeleteMainWindow()
 {
@@ -344,6 +347,9 @@ void Interfejs::DrawFunction()
         PoleGry->render();
         MainWindow->draw(*PoleGry);
     }
+    //rysowanie wszystkich ksztaltow
+    DrawSprites(*MainWindow);
+
     //rysowanie wszyskich klawiszy
     DrawButtons(*MainWindow);
 
@@ -365,9 +371,13 @@ void Interfejs::DeletePlansza()
 
 void Interfejs::CreateButtons()
 {
-    // tu tworza sie wszyskie przyciski 
-    button* b = new button( sf::Vector2f(200, 200), sf::Vector2f(70, 20), "\grafiki/button_stworz.jpg", "\grafiki/button_stworz2.jpg");
-    KlikObject.push_back(b);
+    Resolution res;
+    sf::Vector2f scale = res.scale();
+    // tu tworza sie wszyskie przyciski
+
+    Klik_Kolo_Button *kup_domek = new Klik_Kolo_Button(sf::Vector2f{ 50, 50 }, "\grafiki/pionek1.png", "\grafiki/pionek2.png");
+    kup_domek->setSize({ scale.x * 200.f, scale.y * 200.f });
+    KlikObject.push_back(kup_domek);
 }
 void Interfejs::DeleteButtons()
 {
@@ -376,11 +386,11 @@ void Interfejs::DeleteButtons()
         delete i;
     }
 }
-void Interfejs::ExecuteButtons(sf::Event &even, OpcjeGry& opcje)
+void Interfejs::ExecuteButtons(sf::Event &event, OpcjeGry& opcje)
 {
     for (auto i : KlikObject)
     {
-        i->event(even);
+        i->event(event);
     }
 }
 void Interfejs::DrawButtons(sf::RenderWindow& window)
@@ -388,6 +398,71 @@ void Interfejs::DrawButtons(sf::RenderWindow& window)
     for (auto i : KlikObject)
     {
         i->drawTo(window);
+    }
+}
+void Interfejs::CreateSprites()
+{
+    Resolution res;
+    sf::Vector2f scale = res.scale();
+    sf::RectangleShape  *button_bar = new sf::RectangleShape;           //szary pasek z buttonami
+    button_bar->setFillColor({179, 179, 179});
+    button_bar->setSize({ scale.x * 240.f,scale.y * 2160.f });
+    button_bar->setPosition(res.x(56.25f), 0.f);
+    button_bar->setOutlineColor({ 0,0,0 });
+    button_bar->setOutlineThickness(scale.x * 5.f);
+    
+
+    sf::RectangleShape* deska = new sf::RectangleShape;
+    sf::Texture deska_t;
+    switch (this->Dane->ilosc_graczy)
+    {
+    case 2:
+        if (!deska_t.loadFromFile("\grafiki/deska2.jpg"))
+        {
+            std::cerr<<"Nie wczytano deski.\n";
+        }
+        break;
+    case 3:
+        if (!deska_t.loadFromFile("\grafiki/deska3.jpg"))
+        {
+            std::cerr << "Nie wczytano deski.\n";
+        }
+        break;
+    case 4:
+        if (!deska_t.loadFromFile("\grafiki/deska4.jpg"))
+        {
+            std::cerr << "Nie wczytano deski.\n";
+        }
+        break;
+    default:
+        if (!deska_t.loadFromFile("\grafiki/deska2.jpg"))
+        {
+            std::cerr << "Nie wczytano deski.\n";
+        }
+        break;
+    }
+    this->tekstury.push_back(deska_t);
+    deska->setTexture(&tekstury[0]);
+    deska->setSize({ scale.x * deska_t.getSize().x, scale.y * deska_t.getSize().y });
+    deska->setPosition(res.x(62.5f), 0.f);
+    this->ksztalty.push_back(deska);
+    this->ksztalty.push_back(button_bar);
+    
+
+}
+void Interfejs::DeleteSprites()
+{
+    for (auto i : ksztalty)
+    {
+        delete i;
+    }
+}
+
+void Interfejs::DrawSprites(sf::RenderWindow& window)
+{
+    for (auto i : ksztalty)
+    {
+        window.draw(*i);
     }
 }
 
@@ -438,7 +513,7 @@ void Interfejs::CreateWaitingWindow(Internet* internet)
 
     sf::RenderWindow window(
         sf::VideoMode(szer - szer / 1.5f, wys - wys / 1.6f),
-        "Informacja dla urzytkownika"
+        "Informacja dla uzytkownika"
         //sf::Style::None
     );
 
@@ -507,21 +582,24 @@ void Interfejs::CreateWaitingWindow(Internet* internet)
             std::cout << "poloczono;\n";
          }
         sf::Packet nick;
+        
         for (int i = 0; i < internet->getClientCount(); i++)
         {
             if (internet->Recive(nick, i))
             {
                 std::string name;
                 nick >> name;
+                this->Dane->unikalne_nicki(name);    //zapezpieczenie przed wpisaniem takich samych nicków
+                nick.clear();
+                nick << name;
+                internet->Send(nick, i);
                 Uzytkownik user(name);
                 this->Dane->gracze[name] = user;
                 users[i]->setString("* " + name);
                 // odebralismy dane od gracza i stowrzylismy usera nalezy jeszcze wyslac mu plansze i pionka
             }
         }
-
-        
-
+  
 
 
         // clear the window with black color
@@ -539,5 +617,10 @@ void Interfejs::CreateWaitingWindow(Internet* internet)
 
         // end the current frame
         window.display();
+        if (this->Dane->gracze.size() == 4)
+        {
+            Sleep(1000);
+            window.close();
+        }
     }
 }

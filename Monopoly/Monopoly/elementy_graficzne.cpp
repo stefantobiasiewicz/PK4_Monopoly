@@ -107,8 +107,8 @@ Klik_Kolo::Klik_Kolo(sf::Vector2f pos, std::string texture_file) : Klik_Prostoka
 	float size_x = texture.getSize().x;
 	float size_y = texture.getSize().y;
 	this->shape.setTexture(&texture);
-	shape.setRadius(size_x / 2);
-	shape.setPosition(pos);
+	this->shape.setRadius(size_x / 2);
+	this->shape.setPosition(pos);
 	this->setSize( {size_x, size_y});
 }
 Klik_Kolo::Klik_Kolo(float radius, sf::Vector2f pos, sf::Color color) : Klik_Prostokat(sf::Vector2f{radius, radius}, pos, sf::Color::Transparent)
@@ -243,14 +243,19 @@ Klik_Kolo_Button::Klik_Kolo_Button(sf::Vector2f pos, std::string texture_file) :
 
 }
 
+Klik_Kolo_Button::Klik_Kolo_Button(sf::Vector2f pos = sf::Vector2f{ 0.f, 0.f }, std::string texture_file = "", std::string texture_file_click = "") : Klik_Kolo(pos, texture_file)
+{
+	if (!texture_click.loadFromFile(texture_file_click))
+	{
+		std::cerr << "Nie zaladowano tekstury.";
+	}
+	else
+		isOutline = false;
+}
+
 Klik_Kolo_Button::Klik_Kolo_Button(float radius, sf::Vector2f pos, sf::Color color) : Klik_Kolo(radius, pos, color)
 {
 
-}
-
-bool Klik_Kolo_Button::click(int mouse_x, int mouse_y)
-{
-	return Klik_Prostokat::click(mouse_x, mouse_y);
 }
 
 void Klik_Kolo_Button::setSize(sf::Vector2f size)
@@ -263,7 +268,7 @@ sf::Vector2f Klik_Kolo_Button::getSize()
 	return { shape.getRadius()*2, shape.getRadius() *2};
 }
 
-bool Klik_Kolo_Button::is_mouse_on(int mouse_x, int mouse_y)
+bool Klik_Kolo_Button::is_mouse_on(int mouse_x, int mouse_y, bool isOutline)
 {
 	sf::Vector2f pos = this->shape.getPosition();
 	float center_x = pos.x + this->getSize().x / 2;
@@ -272,16 +277,45 @@ bool Klik_Kolo_Button::is_mouse_on(int mouse_x, int mouse_y)
 
 	if (this->how_far(mouse_x, mouse_y, center_x, center_y) <= promien)
 	{
-		shape.setOutlineThickness(5.f);
+		if (isOutline)
+			shape.setOutlineThickness(5.f);
+		else
+			shape.setTexture(&texture_click);
 		return true;
 	}
 	else
 	{
 		if (!isSelected)
 		{
-			shape.setOutlineThickness(2.f);
+			if (isOutline)
+				shape.setOutlineThickness(2.f);
+			else
+				shape.setTexture(&texture);
 		}
 		return false;
 	}
+}
+bool Klik_Kolo_Button::event(sf::Event event)
+{
+	bool czy_klikniety = false;
+	if (event.type == sf::Event::MouseMoved)
+	{
+		this->is_mouse_on(event.mouseMove.x, event.mouseMove.y, isOutline);
+	}
+	if (event.type == sf::Event::MouseButtonPressed)
+	{
+		if (event.mouseButton.button == sf::Mouse::Left)
+		{
+			if (this->click(event.mouseButton.x, event.mouseButton.y))
+			{
+				czy_klikniety = true;
+			}
+		}
+	}
+	return czy_klikniety;
+}
+bool Klik_Kolo_Button::click(int mouse_x, int mouse_y)
+{
+	return this->is_mouse_on(mouse_x, mouse_y, isOutline);
 }
 
