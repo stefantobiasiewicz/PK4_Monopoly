@@ -21,6 +21,7 @@ public:
 	void (*funkcja)(void);  //wskaŸnik na funkcjê spe³niaj¹c¹ funkcjonalnoœæ karty_nieruchomosci, na razie parametry void bo jeszcze nie wiem jakie bêd¹
 	sf::Texture tekstura;
 	sf::Texture tekstura_min;
+	sf::RectangleShape Miniatura;
 	int cena;
 	int cena_dom;
 	vector<int>czynsze;

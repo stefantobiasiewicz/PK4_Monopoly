@@ -302,6 +302,7 @@ void Interfejs::MainFunction()
     if (MainWindow->isOpen())
     {
         EventFunction(*this->opcjegry);
+        UpdateFunction();
         DrawFunction();
     }
 }
@@ -356,12 +357,28 @@ void Interfejs::DrawFunction()
     MainWindow->display();
 }
 
+void Interfejs::UpdateFunction()
+{
+
+    std::map<std::string, Uzytkownik>::iterator it = Dane->gracze.begin();
+    int i = 0;
+    for (it; it != Dane->gracze.end(); it++ )
+    {
+        miniatury[i]->ClearObject();
+        for (std::string i_k : it->second.karty_nieruchomosci)
+        {
+            miniatury[i]->SetObject(&Dane->karty_nieruchomosci[i_k]->Miniatura);
+        }
+        i++;
+    }
+}
+
 void Interfejs::CreatePlansza(std::string file)
 {
     PoleGry = new Plansza(file);
-    Resolution pos;
-    sf::Vector2f sc = pos.scale();  // wektor skalowania
-    PoleGry->setScale(sc.x, sc.y);     // ustawienie skali wielkoœci tekstury
+ //   Resolution pos;
+ //   sf::Vector2f sc = pos.scale();  // wektor skalowania
+//   PoleGry->setScale(sc.x, sc.y);     // ustawienie skali wielkoœci tekstury
 }
 void Interfejs::DeletePlansza()
 {
@@ -376,21 +393,21 @@ void Interfejs::CreateButtons()
     // tu tworza sie wszyskie przyciski
 
     // przyckisk kupowania domku 
-    Klik_Kolo_Button *kup_domek = new Klik_Kolo_Button(sf::Vector2f( res.x(56.82f) , res.y(5) ), "\grafiki/button_dom.png", "\grafiki/pionek2.png");
+    Klik_Kolo_Button *kup_domek = new Klik_Kolo_Button(sf::Vector2f( res.x(56.82f) , res.y(5) ), "\grafiki/button_dom.png", "\grafiki/button_dom2.png");
     kup_domek->setSize({ scale.x * 100.f, scale.y * 100.f });
     KlikObject.push_back(kup_domek);
 
     // przycisk kupowania hotelu 
-    Klik_Kolo_Button* kup_hotel = new Klik_Kolo_Button(sf::Vector2f( res.x(56.82f) , res.y(17) ), "\grafiki/button_hotel.png", "\grafiki/pionek2.png");
+    Klik_Kolo_Button* kup_hotel = new Klik_Kolo_Button(sf::Vector2f( res.x(56.82f) , res.y(17) ), "\grafiki/button_hotel.png", "\grafiki/button_hotel2.png");
     kup_hotel->setSize({ scale.x * 100.f, scale.y * 100.f });
     KlikObject.push_back(kup_hotel);
 
     // przycisk zastawu
-    button* zastaw = new button(sf::Vector2f{170,170}, sf::Vector2f{ 59.34f, 30 }, "\grafiki/button_zastaw.jpg", "\grafiki/pionek2.png");
+    button* zastaw = new button(sf::Vector2f{170,170}, sf::Vector2f{ 59.34f, 33 }, "\grafiki/button_zastaw.jpg", "\grafiki/button_zastaw2.jpg");
     KlikObject.push_back(zastaw);
 
     // przycisk rzutu kostka
-    button* kostki = new button(sf::Vector2f{170,170}, sf::Vector2f{ 59.34f, 40 }, "\grafiki/unnamed.png", "\grafiki/pionek2.png");
+    button* kostki = new button(sf::Vector2f{170,170}, sf::Vector2f{ 59.34f, 43 }, "\grafiki/unnamed.png", "\grafiki/unnamed2.png");
     KlikObject.push_back(kostki);
 }
 void Interfejs::DeleteButtons()
@@ -428,31 +445,52 @@ void Interfejs::CreateSprites()
 
     sf::RectangleShape* deska = new sf::RectangleShape;
     sf::Texture deska_t;
-    switch (this->Dane->ilosc_graczy)
+    
+   
+    MinKart* Miniatury;
+    button* Przycisk;
+    // stworzenie nickow graczy , oraz miniatura pionka
+    int IloscGraczy = this->Dane->ilosc_graczy;
+    switch (IloscGraczy)
     {
     case 2:
         if (!deska_t.loadFromFile("\grafiki/deska2.jpg"))
         {
-            std::cerr<<"Nie wczytano deski.\n";
+            std::cerr << "Nie wczytano deski.\n";
         }
+        Miniatury = new MinKart(scale.x * 1440.f, scale.y * 900);
+        Miniatury->setPosition(res.x(63.5f), res.y(58));
+        miniatury.push_back(Miniatury);
+        Miniatury = new MinKart(scale.x * 1440.f, scale.y * 900);
+        Miniatury->setPosition(res.x(63.5f), res.y(8));
+        miniatury.push_back(Miniatury);
+
+        Przycisk = new button({  1440.f, 900 }, { 80.f,25.f }, "\grafiki/button_zastaw.jpg", "\grafiki/button_zastaw2.jpg");
+        KlikObject.push_back(Przycisk);
+        Przycisk = new button({1440.f, 900 }, { 80.f,75.f }, "\grafiki/button_zastaw.jpg", "\grafiki/button_zastaw2.jpg");
+        KlikObject.push_back(Przycisk);
+
         break;
     case 3:
         if (!deska_t.loadFromFile("\grafiki/deska3.jpg"))
         {
             std::cerr << "Nie wczytano deski.\n";
         }
+        
         break;
     case 4:
         if (!deska_t.loadFromFile("\grafiki/deska4.jpg"))
         {
             std::cerr << "Nie wczytano deski.\n";
         }
+        
         break;
     default:
         if (!deska_t.loadFromFile("\grafiki/deska2.jpg"))
         {
             std::cerr << "Nie wczytano deski.\n";
         }
+        
         break;
     }
     this->tekstury.push_back(deska_t);
@@ -461,21 +499,148 @@ void Interfejs::CreateSprites()
     deska->setPosition(res.x(62.5f), 0.f);
     this->ksztalty.push_back(deska);
     this->ksztalty.push_back(button_bar);
-    
+    CreateUserStats();
+
+
 
 }
+
+void Interfejs::CreateUserStats()
+{
+    Resolution res;
+    sf::Vector2f scale = res.scale();
+    int IloscGraczy = this->Dane->ilosc_graczy;
+    
+    sf::Text* UserName = new sf::Text;
+
+    sf::Text* UserMoney = new sf::Text;
+
+    sf::CircleShape* UserPionek = new sf::CircleShape;
+
+   
+
+
+
+    //todo  iterowanie po mapie w celu zdob¹Ÿæa nicku i ustawienie wszystkich statystyk 
+    std::map<std::string, Uzytkownik>::iterator it = this->Dane->gracze.begin();
+
+    switch (IloscGraczy)
+    {
+    case 2:
+        //statystyka gracza 1
+        UserName->setFont(Dane->czcionka);
+        UserName->setCharacterSize(scale.y * 60.f);
+        UserName->setFillColor(sf::Color(140, 0, 0));
+        UserName->setString(it->first);
+        UserName->setPosition(res.x(67), res.y(1.2));
+        UserName->setOutlineColor(sf::Color::White);
+        UserName->setOutlineThickness(scale.x * 4.f);
+        this->teksty.push_back(UserName);
+
+        UserMoney->setFont(Dane->czcionka);
+        UserMoney->setCharacterSize(scale.y * 60.f);
+        UserMoney->setFillColor(sf::Color(140, 0, 0));
+        UserMoney->setString("portfel: 1500 PLN");
+        UserMoney->setPosition(res.x(67), res.y(3.5));
+        UserMoney->setOutlineColor(sf::Color::White);
+        UserMoney->setOutlineThickness(scale.x * 4.f);
+        this->pieniadze[UserName->getString()] = UserMoney;
+
+        UserPionek->setRadius(scale.x * 60.f);
+        UserPionek->setTexture(this->Dane->gracze[UserName->getString()].pionek->getTexture());
+        UserPionek->setPosition(res.x(63.), res.y(1.8));
+        this->ksztalty.push_back(UserPionek);
+
+        PoleGry->SetObject(Dane->gracze[UserName->getString()].pionek);
+        Dane->gracze[UserName->getString()].pionek->setPosition(Dane->pola[0].pozycja[0]);
+
+        UserName = new sf::Text;
+
+        UserMoney = new sf::Text;
+
+        UserPionek = new sf::CircleShape;
+
+        it++;
+
+        UserName->setFont(Dane->czcionka);
+        UserName->setCharacterSize(scale.y * 60.f);
+        UserName->setFillColor(sf::Color(140, 0, 0));
+        UserName->setString(it->first);
+        UserName->setPosition(res.x(67), res.y(50.9f));
+        UserName->setOutlineColor(sf::Color::White);
+        UserName->setOutlineThickness(scale.x * 4.f);
+        this->teksty.push_back(UserName);
+
+        UserMoney->setFont(Dane->czcionka);
+        UserMoney->setCharacterSize(scale.y * 60.f);
+        UserMoney->setFillColor(sf::Color(140, 0, 0));
+        UserMoney->setString("portfel: 1500 PLN");
+        UserMoney->setPosition(res.x(67), res.y(53.7f));
+        UserMoney->setOutlineColor(sf::Color::White);
+        UserMoney->setOutlineThickness(scale.x * 4.f);
+        this->pieniadze[UserName->getString()] = UserMoney;
+
+        UserPionek->setRadius(scale.x * 60.f);
+        UserPionek->setTexture(this->Dane->gracze[UserName->getString()].pionek->getTexture());
+        UserPionek->setPosition(res.x(63.), res.y(51.8));
+        this->ksztalty.push_back(UserPionek);
+
+        PoleGry->SetObject(Dane->gracze[UserName->getString()].pionek);
+        Dane->gracze[UserName->getString()].pionek->setPosition(Dane->pola[0].pozycja[1]);
+
+      
+        break;
+    case 3:
+        
+        break;
+    case 4:
+        
+        break;
+    default:
+        
+        break;
+    }
+
+
+}
+
 void Interfejs::DeleteSprites()
 {
     for (auto i : ksztalty)
     {
         delete i;
     }
+    for (std::map<std::string, sf::Text*>::iterator it = pieniadze.begin(); it != pieniadze.end(); it++)
+    {
+        delete it->second;
+    }
+    for (auto i : teksty)
+    {
+        delete i;
+    }
+    for (auto i : miniatury)
+    {
+        delete i;
+    }
 }
-
 void Interfejs::DrawSprites(sf::RenderWindow& window)
 {
     for (auto i : ksztalty)
     {
+        window.draw(*i);
+    }
+    for (auto i : teksty)
+    {
+        window.draw(*i);
+    }
+    for (std::map<std::string, sf::Text*>::iterator it = pieniadze.begin(); it != pieniadze.end(); it++)
+    {
+
+        window.draw(*it->second);
+    }
+    for (auto i : miniatury)
+    {
+        i->Render();
         window.draw(*i);
     }
 }

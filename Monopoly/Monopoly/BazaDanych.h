@@ -13,6 +13,7 @@
 #include <vld.h>
 #include <vld_def.h>
 #include <utility>
+#include "Resolution.h"
 
 typedef enum {Zielona = 0, Niebieska, Rozowa, Brak} Kolor_Planszy;
 
@@ -28,6 +29,8 @@ public:
 	std::map<std::string, Uzytkownik>gracze; //tablica graczy, indeksowana nickiem
 	std::vector<Pionek*> pionki;				// wektor pionkow
 	std::string moj_nick;                     //moj nick
+	sf::Font czcionka;
+	Resolution res;
 
 	sf::IpAddress IP;                        //ip gry
 	int ilosc_graczy;
@@ -51,6 +54,7 @@ private:
 	void Sortuj_Pola();
 	void Tworz_Pionki();
 	void Usun_Pionki();
+	void Tworz_Czcionke();
 	
 };
 

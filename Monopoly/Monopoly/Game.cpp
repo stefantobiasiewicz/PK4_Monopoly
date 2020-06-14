@@ -103,9 +103,22 @@ state_t DoInicjalizacjaSerwera(Game* gra)
 	{
 		gra->internet->Send(DaneWysylane, i);
 	}
+	//wypelniamy pionki graczom w bazie danych
+	int count = 0;
+	std::map<std::string, Uzytkownik>::iterator it = gra->baza->gracze.begin();
+	for (it;it != gra->baza->gracze.end(); it++)
+	{
+		it->second.pionek = gra->baza->pionki[count];
+		count++;
+	}
 
-
-
+	gra->baza->gracze.begin()->second.karty_nieruchomosci.push_back("ulica Wolska");
+	gra->baza->gracze.begin()->second.karty_nieruchomosci.push_back("ulica Konopacka");
+	gra->baza->gracze.begin()->second.karty_nieruchomosci.push_back("Aleje Ujazdowskie");
+	gra->baza->gracze.begin()->second.karty_nieruchomosci.push_back("Aleje Jerozolimskie");
+	gra->baza->gracze.begin()->second.karty_nieruchomosci.push_back("Dworzec Gdanski");
+	gra->baza->gracze.begin()->second.karty_nieruchomosci.push_back("Elektrownia");
+	gra->baza->gracze.begin()->second.karty_nieruchomosci.push_back("ulica Stalowa");
 	// wybor koloru planszy 
 	switch (gra->baza->kolor)
 	{

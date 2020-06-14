@@ -4,12 +4,15 @@
 
 Plansza::Plansza(std::string file)
 {
+	Resolution res;
+	sf::Vector2f scale = res.scale();
 	if (!this->tekstura.loadFromFile(file))
 		std::cerr << "nie wczytano tekstury: planszy\n";
 
 	Background.setTexture(this->tekstura);
-	auto SizeB = tekstura.getSize();
-	renderTexture.create(SizeB.x, SizeB.y);		// trzeba usttawic wielkoœæ planszy 
+	Background.setScale(scale.x, scale.y);
+	//auto SizeB = tekstura.getSize();
+	renderTexture.create(res.GetW_res(), res.GetH_res());		// trzeba usttawic wielkoœæ planszy 
 }
 
 void Plansza::SetObject(Obiekt_Na_Planszy* obj)

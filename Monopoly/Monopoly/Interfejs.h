@@ -13,6 +13,8 @@
 #include "Resolution.h"
 #include "elementy_graficzne.h"
 #include "Internet.h"
+
+#include "MinKart.h"
 //struktura przechowujaca opcje gry 
 //opcje gry sa zmieniane przez przyciski / koreluja z nimi
 //przez ta strukture gra wie co chce zorobic gracz
@@ -30,7 +32,11 @@ class Interfejs
 
 	std::vector<Klikalny*> KlikObject;
 	std::vector<sf::Drawable*>ksztalty;
+	std::vector<sf::Text*> teksty;
 	std::vector<sf::Texture> tekstury;
+	std::map<std::string, sf::Text*>  pieniadze;
+
+	std::vector<MinKart*> miniatury;
 
 	OpcjeGry* opcjegry;
 
@@ -75,6 +81,8 @@ public:
 	// funkcja rysjujaca okno
 	void DrawFunction();
 
+	// funkcja aktualizujaca wszystkie zmiany w wygladzie interfejsy
+	void UpdateFunction();
 
 	// funkcja tworzaca/usuwajaca plansze
 	void CreatePlansza(std::string = "\grafiki / planszaG.jpg");
@@ -93,6 +101,9 @@ public:
 	//funkcja tworz¹ca ksztalty do namalowania
 	void CreateSprites();
 
+	// funkcja tworzaca statystkiki gracza
+	void CreateUserStats();
+
 	//funkcja usuwaj¹ca kszta³ty
 	void DeleteSprites();
 
@@ -106,6 +117,7 @@ public:
 
 	// funkcja tworzaca okno poczeklani dla graczy ( tylko server ma taka opcje )
 	void CreateWaitingWindow(Internet * internet);
+
 
 };
 

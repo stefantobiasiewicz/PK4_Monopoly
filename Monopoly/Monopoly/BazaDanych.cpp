@@ -9,6 +9,7 @@ BazaDanych::BazaDanych()
 	Tworz_Pola();
 	Sortuj_Pola();
 	Tworz_Pionki();
+	Tworz_Czcionke();
 }
 
 BazaDanych::~BazaDanych()
@@ -58,6 +59,7 @@ void BazaDanych::Tworz_Ulice()
 				{
 					std::cerr << "blad ladowania danych - " << linia;
 				}
+				u->Miniatura.setTexture(&u->tekstura_min);
 				this->karty_nieruchomosci[u->nazwa] = u;                             //dodanie nowego elementu do mapy kart
 				
 			}
@@ -172,6 +174,7 @@ void BazaDanych::Tworz_Dworce()
 				{
 					std::cerr << "blad ladowania danych - " << linia;
 				}
+				d->Miniatura.setTexture(&d->tekstura_min);
 				this->karty_nieruchomosci[d->nazwa] = d;
 			}
 			else
@@ -215,6 +218,7 @@ void BazaDanych::Tworz_Obiekt_UP()
 				{
 					std::cerr << "blad ladowania danych - " << linia;
 				}
+				ob->Miniatura.setTexture(&ob->tekstura_min);
 				this->karty_nieruchomosci[ob->nazwa] = ob;
 			}
 			else
@@ -231,6 +235,7 @@ void BazaDanych::Tworz_Obiekt_UP()
 }
 void BazaDanych::Tworz_Pola()
 {
+
 	string linia;
 	string linia2;
 	float liczba;
@@ -248,7 +253,7 @@ void BazaDanych::Tworz_Pola()
 				{
 					plik_pola >> linia;
 					plik_pola >> linia2;
-					p.pozycja.push_back(sf::Vector2f(stof(linia.c_str()), stof(linia2.c_str())));
+					p.pozycja.push_back(sf::Vector2f(res.x(stof(linia.c_str())), res.y(stof(linia2.c_str()))));
 				}
 
 				if (i > 10 && i < 39)
@@ -261,7 +266,7 @@ void BazaDanych::Tworz_Pola()
 					{
 						plik_pola >> linia;
 						plik_pola >> linia2;
-						p.pozycja.push_back(sf::Vector2f(stof(linia.c_str()), stof(linia2.c_str())));
+						p.pozycja.push_back(sf::Vector2f(res.x(stof(linia.c_str())), res.y(stof(linia2.c_str()))));
 					}
 				}
 
@@ -325,13 +330,18 @@ void BazaDanych::Stworz_Mnie(std::string nick, sf::IpAddress ip, bool isServer, 
 }
 void BazaDanych::Tworz_Pionki()
 {
+	sf::Vector2f scale = res.scale();
 	Pionek* p = new Pionek("\grafiki/pionek1.png", 0);
+	p->setScale(scale.x, scale.y);
 	this->pionki.push_back(p);
 	p = new Pionek("\grafiki/pionek2.png", 1);
+	p->setScale(scale.x, scale.y);
 	this->pionki.push_back(p);
 	p = new Pionek("\grafiki/pionek3.png", 2);
+	p->setScale(scale.x, scale.y);
 	this->pionki.push_back(p);
 	p = new Pionek("\grafiki/pionek4.png", 3);
+	p->setScale(scale.x, scale.y);
 	this->pionki.push_back(p);
 }
 void BazaDanych::Usun_Pionki()
@@ -352,5 +362,12 @@ void BazaDanych::unikalne_nicki(std::string& name)
 			liczba_takich_samych++;
 			name = name + std::to_string(liczba_takich_samych);
 		}
+	}
+}
+void BazaDanych::Tworz_Czcionke()
+{
+	if (!czcionka.loadFromFile("BRLNSR.TTF"))
+	{
+		std::cerr << "nie zaladowno czcionki\n";
 	}
 }

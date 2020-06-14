@@ -3,6 +3,7 @@
 #include "Obiekt_Na_Planszy.h"
 #include <vector>
 #include <algorithm>
+#include "Resolution.h"
 class Plansza : public sf::Sprite
 {
 	std::vector<Obiekt_Na_Planszy*> Obiekty;
