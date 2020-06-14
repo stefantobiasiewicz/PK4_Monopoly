@@ -8,11 +8,18 @@ protected:
 	sf::RenderTexture renderTexture;	// obiekt potrzebny do renderowania widoku planszy
 	Resolution res;
 	sf::Vector2f scale;
+
+	// tymczasowo
+	sf::RectangleShape kolortla;
+	sf::Sprite back;
+	sf::Texture deska;
+
 public:
 	MinKart(int x, int y);
 	void Render();
 	void SetObject(sf::RectangleShape* obj);
 	void RemoveObject(sf::RectangleShape* obj);
 	void ClearObject();
+	void Wood();
 };
 

@@ -460,9 +460,11 @@ void Interfejs::CreateSprites()
         }
         Miniatury = new MinKart(scale.x * 1440.f, scale.y * 900);
         Miniatury->setPosition(res.x(63.5f), res.y(58));
+        Miniatury->Wood();
         miniatury.push_back(Miniatury);
         Miniatury = new MinKart(scale.x * 1440.f, scale.y * 900);
         Miniatury->setPosition(res.x(63.5f), res.y(8));
+        Miniatury->Wood();
         miniatury.push_back(Miniatury);
 
         Przycisk = new button({  1440.f, 900 }, { 82.25f ,28.83f }, "\grafiki/transparent21.png", "\grafiki/transparent2.png");
