@@ -8,13 +8,11 @@ MinKart::MinKart(int x, int y)
 	res.SetW_res(x);
 	res.SetH_res(y);
 	scale = res.scale();
-	kolortla.setFillColor(sf::Color(255,255,255,128));
-	kolortla.setSize({ 2000,2000 });
+
 }
 void MinKart::Render()
 {
 	renderTexture.clear();
-	renderTexture.draw(kolortla);
 	for (sf::RectangleShape* i : this->Obiekty)
 	{
 		renderTexture.draw(*i);	// narysowanie wszystkich obiektów

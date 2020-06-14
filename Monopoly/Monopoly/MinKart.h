@@ -8,10 +8,6 @@ protected:
 	sf::RenderTexture renderTexture;	// obiekt potrzebny do renderowania widoku planszy
 	Resolution res;
 	sf::Vector2f scale;
-
-	// tymczasowo
-	sf::RectangleShape kolortla;
-
 public:
 	MinKart(int x, int y);
 	void Render();
