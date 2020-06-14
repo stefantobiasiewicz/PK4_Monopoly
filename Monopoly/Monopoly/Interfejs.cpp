@@ -465,9 +465,9 @@ void Interfejs::CreateSprites()
         Miniatury->setPosition(res.x(63.5f), res.y(8));
         miniatury.push_back(Miniatury);
 
-        Przycisk = new button({  1440.f, 900 }, { 80.f,25.f }, "\grafiki/button_zastaw.jpg", "\grafiki/button_zastaw2.jpg");
+        Przycisk = new button({  1400.f, 870 }, { 80.f,25.f }, "\grafiki/button_zastaw.jpg", "\grafiki/button_zastaw2.jpg");
         KlikObject.push_back(Przycisk);
-        Przycisk = new button({1440.f, 900 }, { 80.f,75.f }, "\grafiki/button_zastaw.jpg", "\grafiki/button_zastaw2.jpg");
+        Przycisk = new button({1400.f, 870 }, { 80.f,75.f }, "\grafiki/button_zastaw.jpg", "\grafiki/button_zastaw2.jpg");
         KlikObject.push_back(Przycisk);
 
         break;
