@@ -88,6 +88,7 @@ protected:
 public:
 	button(sf::Vector2f size, sf::Vector2f pos, std::string def_texture_file, std::string click_texture_file);
 	button(int win_res_x, int win_res_y, sf::Vector2f size, sf::Vector2f pos, std::string def_texture_file, std::string click_texture_file);
+	void setOrigin(sf::Vector2f pos);
 	~button() {}
 
 	

@@ -126,5 +126,8 @@ int Internet::RecieveAll(sf::Packet& pack)
 
 Internet::~Internet()
 {
-
+	for (auto all : sockets)
+	{
+		delete all;
+	}
 }

@@ -671,21 +671,87 @@ void Interfejs::DrawSprites(sf::RenderWindow& window)
     }
 }
 
-void Interfejs::CreateMessageWindow(std::string tekst)
+int Interfejs::CreateMessageWindow(std::string tekst, std::vector<button*> przyciski , Karta* KartaRysowana)
 {
-    float szer = sf::VideoMode::getDesktopMode().width;
-    float wys = sf::VideoMode::getDesktopMode().height;
+    int zwracany_przycisk = 0;
+    float szer = Szer - Szer / 1.5f;
+    float wys = Wys - Wys / 1.4f;
+    Resolution res;
+
+    struct
+    {
+        float x = 0;
+        float y = 0;
+    }RozmiarPrzycisku;
+    float WysokoscPrzycisku = 0;
+    // ustawienia przyiskow dla okna bez karty
+    if (KartaRysowana == nullptr)
+    {
+        szer = Szer - Szer / 1.5f;
+        wys = Wys - Wys / 1.4f;
+        res.SetH_res(wys);
+        res.SetW_res(szer);
+        RozmiarPrzycisku.x = 30;
+        RozmiarPrzycisku.y = 16;
+        WysokoscPrzycisku = 75;
+    }
+    // ustawienie przyciskow dla okna z karta szansa
+    else if (dynamic_cast<Szansa_Kasa_Spoleczna*>(KartaRysowana))
+    {
+        szer = Szer - Szer / 1.5f;
+        wys = Wys - Wys / 2.f;
+        res.SetH_res(wys);
+        res.SetW_res(szer);
+        RozmiarPrzycisku.x = 35;
+        RozmiarPrzycisku.y = 10;
+        WysokoscPrzycisku = 92;
+        KartaRysowana->Duza_Karta.setSize({ (float)res.x(90) , (float)res.y(70) });
+        KartaRysowana->Duza_Karta.setPosition(res.x(5), res.y(5));
+    }
+    // ustawienia parametrow przyciskow dla okna z kata nieruchomosci
+    else
+    {
+        szer = Szer - Szer / 1.4f;
+        wys = Wys - Wys / 4.f;
+        res.SetH_res(wys);
+        res.SetW_res(szer);
+        RozmiarPrzycisku.x = 37;
+        RozmiarPrzycisku.y = 8;
+        WysokoscPrzycisku = 90;
+        KartaRysowana->Duza_Karta.setSize({ (float)res.x(90) , (float)res.y(80) });
+        KartaRysowana->Duza_Karta.setPosition(res.x(5), res.y(5));
+    }
+
 
     sf::RenderWindow window(
-        sf::VideoMode(szer - szer / 1.5f, wys - wys / 1.4f),
+        sf::VideoMode(szer, wys ),
         "Informacja dla urzytkownika",
         sf::Style::None
         );
-
     window.setFramerateLimit(60);
    
-   
+    sf::Vector2f scale = res.scale();
 
+    sf::Text napis;
+    napis.setFont(this->Dane->czcionka);
+    napis.setPosition(res.x(20), res.y(20));
+    napis.setCharacterSize(200);
+    napis.setScale(scale);
+    napis.setFillColor(sf::Color::Black);
+    napis.setOutlineColor(sf::Color::White);
+    napis.setOutlineThickness(res.x(2));
+    napis.setString(tekst);
+    
+    int IloscPrzyciskow = przyciski.size();
+    float procenty_x = 100 / ((float)IloscPrzyciskow + 1);
+
+    for (int i = 0; i < IloscPrzyciskow; i++)
+    {
+        przyciski[i]->setSize({ (float)res.x(RozmiarPrzycisku.x * ( procenty_x*2/100  ) ), (float)res.y(RozmiarPrzycisku.y) });
+        przyciski[i]->setOrigin({ przyciski[i]->getSize().x/2 , przyciski[i]->getSize().y / 2 });
+        przyciski[i]->setPosition({ (float)res.x(procenty_x * (i + 1)), (float)res.y(WysokoscPrzycisku) });
+
+    }
 
     sf::Event event;
     while (window.isOpen())
@@ -695,17 +761,32 @@ void Interfejs::CreateMessageWindow(std::string tekst)
             if (event.type == sf::Event::Closed)
                 window.close();
             // tutaj event buttona zamykajacy to okno
-            
+            for (int i = 0; i < IloscPrzyciskow; i++)
+            {
+                if (przyciski[i]->event(event) == true)
+                {
+                    zwracany_przycisk = i;
+                    window.close();
+                }
+            }         
         }
         // clear the window with black color
         window.clear(sf::Color::Cyan);
 
         // draw everything here...
+        if(KartaRysowana)
+            window.draw(KartaRysowana->Duza_Karta);
 
-
+        window.draw(napis);
+        for (auto i : przyciski)
+        {
+            i->drawTo(window);
+        }
+        
         // end the current frame
         window.display();
     }
+    return zwracany_przycisk; 
 }
 
 void Interfejs::CreateCardsWindow(std::string nick)
@@ -740,12 +821,12 @@ void Interfejs::CreateCardsWindow(std::string nick)
                 if (event.mouseWheelScroll.delta > 0)
                 {
                     //w gore
-                    perspektywa.move(0, -10);
+                    perspektywa.move(0, -60);
                 }
                 else if (event.mouseWheelScroll.delta < 0)
                 {
                     //w dol
-                    perspektywa.move(0, 10);
+                    perspektywa.move(0, 60);
                 }
             }
         }

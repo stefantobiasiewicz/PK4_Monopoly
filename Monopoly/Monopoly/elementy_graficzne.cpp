@@ -319,3 +319,16 @@ bool Klik_Kolo_Button::click(int mouse_x, int mouse_y)
 	return this->is_mouse_on(mouse_x, mouse_y, isOutline);
 }
 
+void button::setOrigin(sf::Vector2f pos)
+{
+	this->shape.setOrigin(pos);
+}
+
+/*
+void button::setPosition(sf::Vector2f pos)
+{
+	shape.setPosition(pos);
+	auto size = shape.getSize();
+	shape.setOrigin(pos.x + size.x/2, pos.y + size.y/2);
+}
+*/

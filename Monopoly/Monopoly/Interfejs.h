@@ -122,8 +122,8 @@ public:
 	//fukcja rysuj¹ca wektor kszta³ty
 	void DrawSprites(sf::RenderWindow& window);
 
-	// funkcja tworzaca nowe okno z informacja
-	void CreateMessageWindow(std::string tekst);
+	// funkcja tworzaca nowe okno z informacja, funkcja zwraca numer przycisku ktory zostal klikniety
+	int CreateMessageWindow(std::string tekst, std::vector<button*> przyciski, Karta* KartaRysowana = nullptr);
 
 	//funkcja tworz¹ca nowe okno pokazuj¹ce karty u¿ytkownika. 
 	void CreateCardsWindow(std::string nick);
