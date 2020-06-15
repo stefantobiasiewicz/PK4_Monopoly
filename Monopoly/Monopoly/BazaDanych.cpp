@@ -366,9 +366,9 @@ void BazaDanych::Usun_Pionki()
 void BazaDanych::unikalne_nicki(std::string& name)
 {
 	static int liczba_takich_samych = 0;
-	for (auto i : this->gracze)
+	for (std::map<std::string,Uzytkownik>::iterator it = this->gracze.begin() ; it != this->gracze.end() ; it++)
 	{
-		if (i.second.nick == name)
+		if (it->second.nick == name)
 		{
 			liczba_takich_samych++;
 			name = name + std::to_string(liczba_takich_samych);

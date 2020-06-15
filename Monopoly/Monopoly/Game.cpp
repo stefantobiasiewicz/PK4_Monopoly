@@ -96,9 +96,10 @@ state_t DoInicjalizacjaSerwera(Game* gra)
 	DaneWysylane << gra->internet->getClientCount()+1;
 	gra->baza->ilosc_graczy = gra->internet->getClientCount()+1;
 	int pionek = 0;
-	for (auto i : gra->baza->gracze)
+	std::map<std::string, Uzytkownik>::iterator it = gra->baza->gracze.begin();
+	for (it; it != gra->baza->gracze.end(); it++)
 	{
-		DaneWysylane << i.second.nick;
+		DaneWysylane << it->second.nick;
 		DaneWysylane << pionek++;
 	}
 	DaneWysylane << gra->baza->kolor;
@@ -109,7 +110,7 @@ state_t DoInicjalizacjaSerwera(Game* gra)
 	}
 	//wypelniamy pionki graczom w bazie danych
 	int count = 0;
-	std::map<std::string, Uzytkownik>::iterator it = gra->baza->gracze.begin();
+	it = gra->baza->gracze.begin();
 	for (it;it != gra->baza->gracze.end(); it++)
 	{
 		it->second.pionek = gra->baza->pionki[count];
