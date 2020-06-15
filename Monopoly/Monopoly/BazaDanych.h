@@ -29,6 +29,7 @@ public:
 	std::map<std::string, Uzytkownik>gracze; //tablica graczy, indeksowana nickiem
 	std::vector<Pionek*> pionki;				// wektor pionkow
 	std::string moj_nick;                     //moj nick
+	std::vector<std::string>nicki;             //wektor nicków
 	sf::Font czcionka;
 	Resolution res;
 
@@ -55,6 +56,7 @@ private:
 	void Tworz_Pionki();
 	void Usun_Pionki();
 	void Tworz_Czcionke();
+	void Przypisz_Wirtualne_Karty();
 	
 };
 

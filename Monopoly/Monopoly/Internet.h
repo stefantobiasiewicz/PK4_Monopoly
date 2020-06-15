@@ -37,6 +37,10 @@ public:
 
 	int getClientCount();
 
+	void SendAll(sf::Packet pack);
+
+	int RecieveAll(sf::Packet &pack);
+
 	~Internet();
 };
 
