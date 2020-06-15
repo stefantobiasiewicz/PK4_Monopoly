@@ -70,6 +70,10 @@ state_t DoStanInicjalizacji(Game* gra)
 
 
 	// wybor KONKRETNEJ inicjalizacji programu 
+	if (gra->baza->gracze.size() == 0)
+	{
+		return StanKoncowy;
+	}
 	if (gra->baza->isServer)
 	{
 		return InicjalizacjaSerwer;
@@ -143,9 +147,13 @@ state_t DoInicjalizacjaSerwera(Game* gra)
 state_t DoInicjalizacjaKlienta(Game* gra)
 {
 	// pierwsza komunikacja przez internet, podlaczenie do serwera wyslanie nickow, i odebranie danych (plansza...)
+	int count = 0;
 	gra->internet = new Internet(true, gra->baza->IP , INTERNET_PORT);
 	while (gra->internet->setConnection() != sf::Socket::Status::Done)
 	{
+		count++;
+		if (count >= 40)	// po 40 sekundacjh zostanie wylaczony program
+			return StanKoncowy;
 		cout << "proboje laczyc ponownie\n";
 	}
 	// Polaczenie 
