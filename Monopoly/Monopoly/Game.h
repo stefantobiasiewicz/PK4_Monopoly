@@ -4,9 +4,11 @@
 #include "Internet.h"
 #include <vector>
 #include <iostream>
+#include <chrono>
+#include <random>
 
 // typ wyliczeniowy do zdefiniowania stanow gry
-typedef enum { StanInicjalizacji, InicjalizacjaSerwer, InicjalizacjaKlient , Stan1, Stan2, StanKoncowy, NUM_STATES } state_t;
+typedef enum { StanInicjalizacji, InicjalizacjaSerwer, InicjalizacjaKlient , ExecuteButtons, StartGrySerwer, StartGryKlient, RuszaSie, Czeka, Stan1, Stan2, StanKoncowy, NUM_STATES } state_t;
 
 
 
@@ -43,11 +45,22 @@ state_t DoInicjalizacjaKlienta(Game* gra);
 state_t DoStan1(Game* gra);
 state_t DoStan2(Game* gra);
 state_t DoStanKoncowy(Game* gra);
+state_t DoExecuteButtons(Game* gra);
+state_t DoStartGrySerwer(Game* gra);
+state_t DoStartGryKlient(Game* gra);
+state_t DoRuszaSie(Game* gra);
+state_t DoCzeka(Game* gra);
+
 // tabela z wyszystkimi stanami gry 
 state_func_t* const state_table[NUM_STATES] = {
 	DoStanInicjalizacji,
 	DoInicjalizacjaSerwera,
 	DoInicjalizacjaKlienta,
+	DoExecuteButtons,
+	DoStartGrySerwer,
+	DoStartGryKlient,
+	DoRuszaSie,
+	DoCzeka,
 	DoStan1,
 	DoStan2,
 	DoStanKoncowy

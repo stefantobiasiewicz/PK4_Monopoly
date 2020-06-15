@@ -109,7 +109,9 @@ state_t DoInicjalizacjaSerwera(Game* gra)
 	for (it;it != gra->baza->gracze.end(); it++)
 	{
 		it->second.pionek = gra->baza->pionki[count];
+		gra->baza->nicki.push_back(it->second.nick);
 		count++;
+
 	}
 
 	gra->baza->gracze.begin()->second.karty_nieruchomosci.push_back("ulica Wolska");
@@ -179,6 +181,7 @@ state_t DoInicjalizacjaKlienta(Game* gra)
 		DaneOdebrane >> pionek;
 		Uzytkownik user(NickName);
 		user.pionek = gra->baza->pionki[pionek];
+		gra->baza->nicki.push_back(NickName);
 		gra->baza->gracze[NickName] = user;
 	}
 	DaneOdebrane >> kolor;
@@ -206,6 +209,123 @@ state_t DoInicjalizacjaKlienta(Game* gra)
 	return Stan1;
 }
 
+state_t DoExecuteButtons(Game* gra)
+{
+	if (gra->opcjegry.zakup_domku)
+	{
+		//jakas funkcja
+		gra->opcjegry.zakup_domku = false;
+	}
+	if (gra->opcjegry.zakup_hotelu)
+	{
+		//jakas funkcja
+		gra->opcjegry.zakup_hotelu = false;
+	}
+	if (gra->opcjegry.zastaw)
+	{
+		//jakas funkcja
+		gra->opcjegry.zastaw = false;
+	}
+	if (gra->opcjegry.kostki)
+	{
+		//jakas funkcja
+		gra->opcjegry.kostki = false;
+	}
+	if (gra->opcjegry.kup)
+	{
+		//jakas funkcja
+		gra->opcjegry.kup = false;
+	}
+	if (gra->opcjegry.odrzuc)
+	{
+		//jakas funkcja
+		gra->opcjegry.odrzuc = false;
+	}
+	if (gra->opcjegry.ok)
+	{
+		//jakas funkcja
+		gra->opcjegry.ok = false;
+	}
+	if (gra->opcjegry.szansa)
+	{
+		//jakas funkcja
+		gra->opcjegry.szansa = false;
+	}
+	if (gra->opcjegry.zachowaj)
+	{
+		//jakas funkcja
+		gra->opcjegry.zachowaj = false;
+	}
+	if (gra->opcjegry.karty1)
+	{
+		gra->interfejs->CreateCardsWindow(gra->baza->nicki[0]);
+		gra->opcjegry.karty1 = false;
+	}
+	if (gra->opcjegry.karty2)
+	{
+		gra->interfejs->CreateCardsWindow(gra->baza->nicki[1]);
+		gra->opcjegry.karty2 = false;
+	}
+	return Stan2;
+}
+state_t DoStartGrySerwer(Game* gra)
+{
+	//losujemy gracza ktory zaczyna
+	std::default_random_engine silnik;
+	silnik.seed(std::chrono::system_clock::now().time_since_epoch().count());
+	std::uniform_int_distribution<int> liniowy(0, gra->baza->ilosc_graczy);
+
+	int los = liniowy(silnik);
+
+	sf::Packet nick_rozpoczynajacy;
+	std::string nick_rozpoczynajacy_s = gra->baza->nicki[los];
+	nick_rozpoczynajacy << gra->baza->nicki[los];
+
+	gra->internet->SendAll(nick_rozpoczynajacy);
+	
+	if (nick_rozpoczynajacy_s == gra->baza->moj_nick)
+	{
+		return RuszaSie;
+	}
+	else
+	{
+		return Czeka;
+	}
+}
+state_t DoStartGryKlient(Game* gra)
+{
+	sf::Packet nick_rozpoczynajacy;
+	bool czy_odebrano = gra->internet->Recive(nick_rozpoczynajacy);
+	if (!czy_odebrano)
+	{
+		return StartGryKlient;
+	}
+
+	std::string nick_rozpoczynajacy_s;
+	nick_rozpoczynajacy >> nick_rozpoczynajacy_s;
+
+	if (nick_rozpoczynajacy_s == gra->baza->moj_nick)
+	{
+		return RuszaSie;
+	}
+	else
+	{
+		return Czeka;
+	}
+}
+
+state_t DoRuszaSie(Game* gra)
+{
+	return Stan2;
+}
+
+state_t DoCzeka(Game* gra)
+{
+	return Stan2;
+}
+
+
+
 state_t DoStan1(Game* gra)
 {
 	std::cout << "stan 1\n";
@@ -217,7 +337,7 @@ state_t DoStan2(Game* gra)
 	if (gra->interfejs->IsOpen())
 	{
 		//gra->interfejs->CreateMessageWindow("");
-		return Stan2;
+		return ExecuteButtons;
 	}
 	return StanKoncowy;
 }

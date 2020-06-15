@@ -22,6 +22,7 @@ public:
 	sf::Texture tekstura;
 	sf::Texture tekstura_min;
 	sf::RectangleShape Miniatura;
+	sf::RectangleShape Duza_Karta;
 	int cena;
 	int cena_dom;
 	vector<int>czynsze;

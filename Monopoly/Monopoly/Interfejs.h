@@ -21,7 +21,19 @@
 typedef struct 
 {
 	// trzeba dodac opcje odpowiedzialne za wszystkie button
-	bool kup_dom;
+	bool zakup_domku = 0;
+	bool zakup_hotelu = 0;
+	bool zastaw = 0;
+	bool kostki = 0;
+	bool karty1 = 0;
+	bool karty2 = 0;
+	bool karty3 = 0;
+	bool karty4 = 0;
+	bool ok = 0;
+	bool kup = 0;
+	bool odrzuc = 0;
+	bool szansa = 0;
+	bool zachowaj = 0;
 } OpcjeGry;
 
 class Interfejs
@@ -30,7 +42,7 @@ class Interfejs
 	Plansza* PoleGry;
 	BazaDanych* Dane;
 
-	std::vector<Klikalny*> KlikObject;
+	std::map<std::string, Klikalny*> KlikObject;
 	std::vector<sf::Drawable*>ksztalty;
 	std::vector<sf::Text*> teksty;
 	std::vector<sf::Texture> tekstury;
@@ -107,10 +119,14 @@ public:
 	//funkcja usuwaj¹ca kszta³ty
 	void DeleteSprites();
 
+	//fukcja rysuj¹ca wektor kszta³ty
 	void DrawSprites(sf::RenderWindow& window);
 
 	// funkcja tworzaca nowe okno z informacja
 	void CreateMessageWindow(std::string tekst);
+
+	//funkcja tworz¹ca nowe okno pokazuj¹ce karty u¿ytkownika. 
+	void CreateCardsWindow(std::string nick);
 
 	// funkcja ustawiajaca wskaznik na OpcjeGry
 	void SetOpcjeGry(OpcjeGry* opcje);

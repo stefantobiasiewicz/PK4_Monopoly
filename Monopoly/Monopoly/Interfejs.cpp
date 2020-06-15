@@ -395,40 +395,64 @@ void Interfejs::CreateButtons()
     // przyckisk kupowania domku 
     Klik_Kolo_Button *kup_domek = new Klik_Kolo_Button(sf::Vector2f( res.x(56.82f) , res.y(5) ), "\grafiki/button_dom.png", "\grafiki/button_dom2.png");
     kup_domek->setSize({ scale.x * 100.f, scale.y * 100.f });
-    KlikObject.push_back(kup_domek);
+    KlikObject["zakup_domku"] = kup_domek;
 
     // przycisk kupowania hotelu 
     Klik_Kolo_Button* kup_hotel = new Klik_Kolo_Button(sf::Vector2f( res.x(56.82f) , res.y(17) ), "\grafiki/button_hotel.png", "\grafiki/button_hotel2.png");
     kup_hotel->setSize({ scale.x * 100.f, scale.y * 100.f });
-    KlikObject.push_back(kup_hotel);
+    KlikObject["zakup_hotelu"] = kup_hotel;
 
     // przycisk zastawu
     button* zastaw = new button(sf::Vector2f{170,170}, sf::Vector2f{ 59.34f, 33 }, "\grafiki/button_zastaw.jpg", "\grafiki/button_zastaw2.jpg");
-    KlikObject.push_back(zastaw);
+    KlikObject["zastaw"] = zastaw;
 
     // przycisk rzutu kostka
     button* kostki = new button(sf::Vector2f{170,170}, sf::Vector2f{ 59.34f, 43 }, "\grafiki/unnamed.png", "\grafiki/unnamed2.png");
-    KlikObject.push_back(kostki);
+    KlikObject["kostki"] = kostki;
 }
 void Interfejs::DeleteButtons()
 {
     for (auto i : KlikObject)
     {
-        delete i;
+        delete i.second;
     }
 }
 void Interfejs::ExecuteButtons(sf::Event &event, OpcjeGry& opcje)
 {
-    for (auto i : KlikObject)
+    std::map<std::string, Klikalny*>::iterator it = KlikObject.begin();
+    for (it; it!= KlikObject.end(); it++)
     {
-        i->event(event);
+        if (it->first == "zakup_domku")
+        {
+            opcje.zakup_domku = it->second->event(event);
+        }
+        else if (it->first == "zakup_hotelu")
+        {
+            opcje.zakup_hotelu = it->second->event(event);
+        }
+        else if (it->first == "zastaw")
+        {
+            opcje.zastaw = it->second->event(event);
+        }
+        else if (it->first == "kostki")
+        {
+            opcje.kostki = it->second->event(event);
+        }
+        else if (it->first == "karty1")
+        {
+            opcje.karty1 = it->second->event(event);
+        }
+        else if (it->first == "karty2")
+        {
+            opcje.karty2 = it->second->event(event);
+        }
     }
 }
 void Interfejs::DrawButtons(sf::RenderWindow& window)
 {
     for (auto i : KlikObject)
     {
-        i->drawTo(window);
+        i.second->drawTo(window);
     }
 }
 void Interfejs::CreateSprites()
@@ -459,19 +483,19 @@ void Interfejs::CreateSprites()
             std::cerr << "Nie wczytano deski.\n";
         }
         Miniatury = new MinKart(scale.x * 1440.f, scale.y * 900);
-        Miniatury->setPosition(res.x(63.5f), res.y(58));
-        Miniatury->Wood();
-        miniatury.push_back(Miniatury);
-        Miniatury = new MinKart(scale.x * 1440.f, scale.y * 900);
         Miniatury->setPosition(res.x(63.5f), res.y(8));
         Miniatury->Wood();
         miniatury.push_back(Miniatury);
+        Miniatury = new MinKart(scale.x * 1440.f, scale.y * 900);
+        Miniatury->setPosition(res.x(63.5f), res.y(58));
+        Miniatury->Wood();
+        miniatury.push_back(Miniatury);
+        
 
         Przycisk = new button({  1440.f, 900 }, { 82.25f ,28.83f }, "\grafiki/transparent21.png", "\grafiki/transparent2.png");
-        KlikObject.push_back(Przycisk);
+        KlikObject["karty1"] = Przycisk;
         Przycisk = new button({1440.f, 900 }, { 82.25f , 78.83f }, "\grafiki/transparent21.png", "\grafiki/transparent2.png");
-        KlikObject.push_back(Przycisk);
-
+        KlikObject["karty2"] = Przycisk;
         break;
     case 3:
         if (!deska_t.loadFromFile("\grafiki/deska3.jpg"))
@@ -660,7 +684,8 @@ void Interfejs::CreateMessageWindow(std::string tekst)
 
     window.setFramerateLimit(60);
    
-    //tutaj button i tekstbar
+   
+
 
     sf::Event event;
     while (window.isOpen())
@@ -670,6 +695,7 @@ void Interfejs::CreateMessageWindow(std::string tekst)
             if (event.type == sf::Event::Closed)
                 window.close();
             // tutaj event buttona zamykajacy to okno
+            
         }
         // clear the window with black color
         window.clear(sf::Color::Cyan);
@@ -680,6 +706,69 @@ void Interfejs::CreateMessageWindow(std::string tekst)
         // end the current frame
         window.display();
     }
+}
+
+void Interfejs::CreateCardsWindow(std::string nick)
+{
+    float szer = sf::VideoMode::getDesktopMode().width;
+    float wys = sf::VideoMode::getDesktopMode().height;
+
+    sf::RenderWindow window(
+        sf::VideoMode(szer - szer / 2.5f, wys - wys / 3.75f),
+        "Karty gracza " + nick
+    );
+    Resolution res;
+    res.SetW_res(szer - szer / 2.5f);
+    res.SetH_res(wys - wys / 3.75f);
+
+
+
+    window.setFramerateLimit(60);
+
+    sf::View perspektywa(sf::FloatRect(0,0, res.GetW_res(), res.GetH_res()));
+
+    sf::Event event;
+    while (window.isOpen())
+    {
+        while (window.pollEvent(event))
+        {
+            if (event.type == sf::Event::Closed)
+                window.close();
+            // tutaj event buttona zamykajacy to okno
+            if (event.type == sf::Event::MouseWheelScrolled)
+            {
+                if (event.mouseWheelScroll.delta > 0)
+                {
+                    //w gore
+                    perspektywa.move(0, -10);
+                }
+                else if (event.mouseWheelScroll.delta < 0)
+                {
+                    //w dol
+                    perspektywa.move(0, 10);
+                }
+            }
+        }
+        // clear the window with black color
+        window.clear(sf::Color::Cyan);
+
+        // draw everything here...
+        window.setView(perspektywa);
+        
+        sf::Vector2f scale = res.scale();
+        for (int i = 0; i < Dane->gracze[nick].karty_nieruchomosci.size(); i++)
+        {
+            Dane->karty_nieruchomosci[Dane->gracze[nick].karty_nieruchomosci[i]]->Duza_Karta.setPosition(i % 3 * res.x(33.33) + res.x(1), i / 3 * res.y(70));
+            Dane->karty_nieruchomosci[Dane->gracze[nick].karty_nieruchomosci[i]]->Duza_Karta.setSize({1200.f * scale.x, 1500.f * scale.y});
+
+            window.draw(Dane->karty_nieruchomosci[Dane->gracze[nick].karty_nieruchomosci[i]]->Duza_Karta);
+        }
+
+
+        // end the current frame
+        window.display();
+    }
+
 }
 
 void Interfejs::SetOpcjeGry(OpcjeGry* opcje)

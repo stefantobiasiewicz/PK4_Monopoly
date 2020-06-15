@@ -105,6 +105,23 @@ int Internet::getClientCount()
 	return sockets.size();
 }
 
+void Internet::SendAll(sf::Packet pack)
+{
+	for (int i = 0; i < this->sockets.size(); i++)
+	{
+		this->Send(pack, i);
+	}
+}
+
+int Internet::RecieveAll(sf::Packet& pack)
+{
+	for (int i = 0; i < this->sockets.size(); i++)
+	{
+		if (this->Recive(pack, i))
+			return i;
+	}
+}
+
 
 
 Internet::~Internet()

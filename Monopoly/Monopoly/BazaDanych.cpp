@@ -8,6 +8,7 @@ BazaDanych::BazaDanych()
 	Tworz_Obiekt_UP();
 	Tworz_Pola();
 	Sortuj_Pola();
+	Przypisz_Wirtualne_Karty();
 	Tworz_Pionki();
 	Tworz_Czcionke();
 }
@@ -53,6 +54,7 @@ void BazaDanych::Tworz_Ulice()
 				{
 					std::cerr << "blad ladowania danych - " << linia;
 				}
+				u->Duza_Karta.setTexture(&u->tekstura);
 
 				plik_ulice_dworce_uzyt >> linia;                      //nazwa pliku z tekstur¹ - miniatur¹
 				if (!u->tekstura_min.loadFromFile("\grafiki/" + linia))
@@ -168,6 +170,7 @@ void BazaDanych::Tworz_Dworce()
 				{
 					std::cerr << "blad ladowania danych - " << linia;
 				}
+				d->Duza_Karta.setTexture(&d->tekstura);
 
 				plik_ulice_dworce_uzyt >> linia;                      //nazwa pliku z tekstur¹ - miniatur¹
 				if (!d->tekstura_min.loadFromFile("\grafiki/" + linia))
@@ -212,6 +215,7 @@ void BazaDanych::Tworz_Obiekt_UP()
 				{
 					std::cerr << "blad ladowania danych - " << linia;
 				}
+				ob->Duza_Karta.setTexture(&ob->tekstura);
 
 				plik_ulice_dworce_uzyt >> linia;                      //nazwa pliku z tekstur¹ - miniatur¹
 				if (!ob->tekstura_min.loadFromFile("\grafiki/" + linia))
@@ -319,6 +323,11 @@ void BazaDanych::Sortuj_Pola()
 	std::swap(pola[34], pola[35]);
 	std::swap(pola[35], pola[36]);
 	std::swap(pola[38], pola[39]);
+}
+void BazaDanych::Przypisz_Wirtualne_Karty()
+{
+	this->pola[4].karta = this->karty_szansa_kasa[33];
+	this->pola[38].karta = this->karty_szansa_kasa[32];
 }
 void BazaDanych::Stworz_Mnie(std::string nick, sf::IpAddress ip, bool isServer, Kolor_Planszy kolor)
 {
