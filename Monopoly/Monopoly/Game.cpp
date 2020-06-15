@@ -316,12 +316,12 @@ state_t DoStartGrySerwer(Game* gra)
 	
 	if (nick_rozpoczynajacy_s == gra->baza->moj_nick)
 	{
-		gra->interfejs->aktywny_gracz.setString("Teraz Ty sie ruszasz.");
+		//gra->interfejs->aktywny_gracz.setString("Teraz Ty sie ruszasz.");
 		return RuszaSie;
 	}
 	else
 	{
-		gra->interfejs->aktywny_gracz.setString("Teraz rusza sie gracz: " + nick_rozpoczynajacy_s);
+		//gra->interfejs->aktywny_gracz.setString("Teraz rusza sie gracz: " + nick_rozpoczynajacy_s);
 		return Czeka;
 	}
 }
@@ -340,12 +340,12 @@ state_t DoStartGryKlient(Game* gra)
 
 	if (nick_rozpoczynajacy_s == gra->baza->moj_nick)
 	{
-		gra->interfejs->aktywny_gracz.setString("Teraz Ty sie ruszasz.");
+		//gra->interfejs->aktywny_gracz.setString("Teraz Ty sie ruszasz.");
 		return RuszaSie;
 	}
 	else
 	{
-		gra->interfejs->aktywny_gracz.setString("Teraz rusza sie gracz: " + nick_rozpoczynajacy_s);
+		//gra->interfejs->aktywny_gracz.setString("Teraz rusza sie gracz: " + nick_rozpoczynajacy_s);
 		return Czeka;
 	}
 }

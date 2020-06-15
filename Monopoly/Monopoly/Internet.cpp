@@ -50,7 +50,7 @@ sf::Socket::Status Internet::setConnection()	// funkcja ³aczaca komputery
 	sf::Socket::Status status;
 	if (this->isClient)	// klient
 	{
-		status = this->sockets[0]->connect(this->IPserv, this->port , sf::seconds(1));
+		status = this->sockets[0]->connect(this->IPserv, this->port , sf::seconds(10));
 		if (status != sf::Socket::Done)
 		{
 			// error...
