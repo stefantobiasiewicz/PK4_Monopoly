@@ -150,6 +150,7 @@
     <ClInclude Include="Interfejs.h" />
     <ClInclude Include="Internet.h" />
     <ClInclude Include="Karta.h" />
+    <ClInclude Include="kostka.h" />
     <ClInclude Include="MinKart.h" />
     <ClInclude Include="Obiekt_Na_Planszy.h" />
     <ClInclude Include="Plansza.h" />
@@ -165,6 +166,7 @@
     <ClCompile Include="Interfejs.cpp" />
     <ClCompile Include="Internet.cpp" />
     <ClCompile Include="karta.cpp" />
+    <ClCompile Include="kostka.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MinKart.cpp" />
     <ClCompile Include="Obiekt_Na_Planszy.cpp" />

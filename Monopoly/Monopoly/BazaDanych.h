@@ -17,12 +17,31 @@
 
 typedef enum {Zielona = 0, Niebieska, Rozowa, Brak} Kolor_Planszy;
 
+struct Grupy_Ulic
+{
+	std::vector<std::vector<std::string>> grupy;
+
+	Grupy_Ulic()
+	{
+		std::vector<std::string> brazowe = { "ulica Konopacka", "ulica Stalowa" };
+		std::vector<std::string> niebieskie = { "ulica Radzyminska", "ulica Jagiellonska", "ulica Targowa" };
+		std::vector<std::string> rozowe = { "ulica Grochowska", "ulica Plowiecka", "ulica Marsa" };
+		std::vector<std::string> pomaranczowe = { "ulica Gorczeska", "ulica Obozowa", "ulica Wolska" };
+		std::vector<std::string> czerwone = { "ulica Slowackiego", "plac Wilsona", "ulica Mickiewicza" };
+		std::vector<std::string> zolte = { "Krakowskie Przedmiescie", "Nowy Swiat", "ulica Swietokrzyska" };
+		std::vector<std::string> zielone = { "ulica Marszalkowska", "Plac Trzech Krzyzy", "Aleje Jerozolimskie" };
+		std::vector<std::string> granatowe = { "ulica Belwederska", "Aleje Ujazdowskie" };
+
+		grupy = { brazowe, niebieskie, rozowe, pomaranczowe, czerwone, zolte, zielone, granatowe };
+	}
+};
+
 class BazaDanych
 {
 public:
 	std::map<std::string, Karta*>karty_nieruchomosci;   //tablica asocjacyjna kart, kluczem nazwa karty
 	std::vector<Pole>pola;                //tablica pól na planszy
-	std::vector<Karta*>karty_szansa_kasa;  //tablica kart 'szansa' i 'kasa spoleczna' 
+	std::vector<Szansa_Kasa_Spoleczna*>karty_szansa_kasa;  //tablica kart 'szansa' i 'kasa spoleczna' 
 	std::ifstream plik_ulice_dworce_uzyt; //strumien do pliku z danymi nieruchomosci
 	std::ifstream plik_szansa_kasa;       //strumien do pliku z danymi o kartach 'szansa' i 'kasa spoleczna'
 	std::ifstream plik_pola;              //strumien do pliku z danymi o polach na planszy
@@ -32,6 +51,9 @@ public:
 	std::vector<std::string>nicki;             //wektor nicków
 	sf::Font czcionka;
 	Resolution res;
+	Grupy_Ulic grupy_ulic;
+	std::string nick_aktywnego_gracza;        //nick gracza który w³aœnie wykonuje ruch
+
 
 	sf::IpAddress IP;                        //ip gry
 	int ilosc_graczy;
@@ -57,6 +79,6 @@ private:
 	void Usun_Pionki();
 	void Tworz_Czcionke();
 	void Przypisz_Wirtualne_Karty();
-	
+	void Przypisz_Kolory_Ulicom();
 };
 

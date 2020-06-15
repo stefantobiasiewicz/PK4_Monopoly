@@ -11,6 +11,7 @@ BazaDanych::BazaDanych()
 	Przypisz_Wirtualne_Karty();
 	Tworz_Pionki();
 	Tworz_Czcionke();
+	Przypisz_Kolory_Ulicom();
 }
 
 BazaDanych::~BazaDanych()
@@ -105,6 +106,7 @@ void BazaDanych::Tworz_Szansa_Kasa_Spoleczna()
 				{
 					std::cerr << "nie mozna zaladowac grafiki - szansa";
 				}
+				s->Duza_Karta.setTexture(&s->tekstura);
 			}
 			else
 			{
@@ -114,6 +116,7 @@ void BazaDanych::Tworz_Szansa_Kasa_Spoleczna()
 				{
 					std::cerr << "nie mozna zaladowac grafiki - kasa_spoleczna";
 				}
+				s->Duza_Karta.setTexture(&s->tekstura);
 			}
 			licznik++;
 			karty_szansa_kasa.push_back(s);
@@ -360,7 +363,6 @@ void BazaDanych::Usun_Pionki()
 		delete i;
 	}
 }
-
 void BazaDanych::unikalne_nicki(std::string& name)
 {
 	static int liczba_takich_samych = 0;
@@ -378,5 +380,29 @@ void BazaDanych::Tworz_Czcionke()
 	if (!czcionka.loadFromFile("BRLNSR.TTF"))
 	{
 		std::cerr << "nie zaladowno czcionki\n";
+	}
+}
+void BazaDanych::Przypisz_Kolory_Ulicom()
+{
+	std::map<std::string, Karta*>::iterator it = this->karty_nieruchomosci.begin();
+
+	for (it; it != this->karty_nieruchomosci.end(); it++)
+	{
+		if (it->first == "ulica Konopacka" || it->first == "ulica Stalowa")
+			it->second->kolor = Brazowe;
+		else if (it->first == "ulica Radzyminska" || it->first == "ulica Targowa" || it->first == "ulica Jagiellonska")
+			it->second->kolor = Niebieskie;
+		else if (it->first == "ulica Grochowska" || it->first == "ulica Plowiecka" || it->first == "ulica Marsa")
+			it->second->kolor = Rozowe;
+		else if (it->first == "ulica Gorczewska" || it->first == "ulica Wolska" || it->first == "ulica Obozowa")
+			it->second->kolor = Pomaranczowe;
+		else if (it->first == "ulica Slowackiego" || it->first == "ulica Mickiewicza" || it->first == "plac Wilsona")
+			it->second->kolor = Czerwone;
+		else if (it->first == "ulica Swietokrzyska" || it->first == "Krakowskie Przedmiescie" || it->first == "Nowy Swiat")
+			it->second->kolor = Zolte;
+		else if (it->first == "ulica Marszalkowska" || it->first == "Plac Trzech Krzyzy" || it->first == "Aleje Jerozolimskie")
+			it->second->kolor = Zielone;
+		else if (it->first == "ulica Belwederska" || it->first == "Aleje Ujazdowskie")
+			it->second->kolor = Granatowe;
 	}
 }

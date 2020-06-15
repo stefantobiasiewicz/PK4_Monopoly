@@ -15,6 +15,7 @@
 #include "Internet.h"
 
 #include "MinKart.h"
+#include "kostka.h"
 //struktura przechowujaca opcje gry 
 //opcje gry sa zmieniane przez przyciski / koreluja z nimi
 //przez ta strukture gra wie co chce zorobic gracz
@@ -47,6 +48,7 @@ class Interfejs
 	std::vector<sf::Text*> teksty;
 	std::vector<sf::Texture> tekstury;
 	std::map<std::string, sf::Text*>  pieniadze;
+	
 
 	std::vector<MinKart*> miniatury;
 
@@ -61,6 +63,8 @@ class Interfejs
 
 public:
 
+	Kostka* kostka;
+	sf::Text aktywny_gracz;
 
 	Interfejs(BazaDanych* res);
 	~Interfejs();
@@ -103,6 +107,7 @@ public:
 	// funkcja tworzaca/usuwajaca przyciski / lub texbary
 	void CreateButtons();
 	void DeleteButtons();
+	void DeleteKostka();
 
 	//funkcja obslugujaca przyciski / elementy przyciskalne
 	void ExecuteButtons(sf::Event &event, OpcjeGry & opcje);
