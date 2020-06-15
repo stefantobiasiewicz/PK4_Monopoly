@@ -159,6 +159,7 @@ void Interfejs::StartWindow()
                         if (!IP_enter_c.getText().empty())
                         {
                             this->Dane->Stworz_Mnie(nick_enter.getText(), IP_enter_c.getText(), 0);
+                            this->Dane->moj_nick = nick_enter.getText();
                             return;
                         }
                     }
@@ -268,6 +269,7 @@ Interfejs::Interfejs(BazaDanych* res) : Dane(res)
 {
     PoleGry = nullptr;
     MainWindow = nullptr;
+    kostka = new Kostka(res->czcionka);
 }
 Interfejs::~Interfejs()
 {
@@ -275,6 +277,7 @@ Interfejs::~Interfejs()
     DeletePlansza();
     DeleteButtons();
     DeleteSprites();
+    DeleteKostka();
 }
 
 
@@ -354,6 +357,10 @@ void Interfejs::DrawFunction()
     //rysowanie wszyskich klawiszy
     DrawButtons(*MainWindow);
 
+    MainWindow->draw(this->aktywny_gracz);
+
+    MainWindow->draw(this->kostka->wynik_rzutu);
+
     MainWindow->display();
 }
 
@@ -369,8 +376,18 @@ void Interfejs::UpdateFunction()
         {
             miniatury[i]->SetObject(&Dane->karty_nieruchomosci[i_k]->Miniatura);
         }
+        if (Dane->nick_aktywnego_gracza == Dane->moj_nick)
+        {
+            this->aktywny_gracz.setString("Teraz ty sie ruszasz!");
+        }
+        else
+        {
+            this->aktywny_gracz.setString("Teraz rusza sie gracz: " + Dane->nick_aktywnego_gracza);
+
+        }
         i++;
     }
+
 }
 
 void Interfejs::CreatePlansza(std::string file)
@@ -384,6 +401,10 @@ void Interfejs::DeletePlansza()
 {
     delete PoleGry;
     PoleGry = nullptr;
+}
+void Interfejs::DeleteKostka()
+{
+    delete kostka;
 }
 
 void Interfejs::CreateButtons()
@@ -465,6 +486,15 @@ void Interfejs::CreateSprites()
     button_bar->setPosition(res.x(56.25f), 0.f);
     button_bar->setOutlineColor({ 0,0,0 });
     button_bar->setOutlineThickness(scale.x * 5.f);
+
+    aktywny_gracz.setString("Teraz rusza sie gracz: " + Dane->nick_aktywnego_gracza);
+    aktywny_gracz.setCharacterSize(scale.y * 150.f);
+    aktywny_gracz.setFillColor({ 140, 0, 0 });
+    aktywny_gracz.setFont(Dane->czcionka);
+    aktywny_gracz.setPosition(res.x(9), res.y(14));
+    aktywny_gracz.setScale(scale);
+    aktywny_gracz.setOutlineColor({ 255, 255, 255 });
+    aktywny_gracz.setOutlineThickness(scale.x * 5.f);
     
 
     sf::RectangleShape* deska = new sf::RectangleShape;

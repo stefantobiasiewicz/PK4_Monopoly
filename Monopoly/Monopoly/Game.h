@@ -7,8 +7,10 @@
 #include <chrono>
 #include <random>
 
+#define WIEZIENIE "WIEZIENIE"
+
 // typ wyliczeniowy do zdefiniowania stanow gry
-typedef enum { StanInicjalizacji, InicjalizacjaSerwer, InicjalizacjaKlient , ExecuteButtons, StartGrySerwer, StartGryKlient, RuszaSie, Czeka, Stan1, Stan2, StanKoncowy, NUM_STATES } state_t;
+typedef enum { StanInicjalizacji, InicjalizacjaSerwer, InicjalizacjaKlient , ExecuteButtons, StartGrySerwer, StartGryKlient, RuszaSie, Czeka, Wysylanie, Stan1, Stan2, StanKoncowy, NUM_STATES } state_t;
 
 
 
@@ -28,6 +30,10 @@ public:
 	Internet* internet;
 	Interfejs* interfejs;
 	OpcjeGry opcjegry;
+	bool czy_rzucone_kostki = 0;
+	sf::Packet Dane_Do_Wyslania;
+	sf::Packet Dane_Odebrane;
+
 
 	state_t cur_state;	// bierzacy stan maszyny
 	void RunState(Game* gra);
@@ -50,6 +56,7 @@ state_t DoStartGrySerwer(Game* gra);
 state_t DoStartGryKlient(Game* gra);
 state_t DoRuszaSie(Game* gra);
 state_t DoCzeka(Game* gra);
+state_t DoWysylanie(Game* gra);
 
 // tabela z wyszystkimi stanami gry 
 state_func_t* const state_table[NUM_STATES] = {
@@ -61,6 +68,7 @@ state_func_t* const state_table[NUM_STATES] = {
 	DoStartGryKlient,
 	DoRuszaSie,
 	DoCzeka,
+	DoWysylanie,
 	DoStan1,
 	DoStan2,
 	DoStanKoncowy

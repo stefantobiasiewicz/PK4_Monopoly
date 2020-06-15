@@ -54,6 +54,9 @@
     <ClInclude Include="MinKart.h">
       <Filter>Pliki nagłówkowe</Filter>
     </ClInclude>
+    <ClInclude Include="kostka.h">
+      <Filter>Pliki nagłówkowe</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="karta.cpp">
@@ -99,6 +102,9 @@
       <Filter>Pliki źródłowe</Filter>
     </ClCompile>
     <ClCompile Include="MinKart.cpp">
+      <Filter>Pliki źródłowe</Filter>
+    </ClCompile>
+    <ClCompile Include="kostka.cpp">
       <Filter>Pliki źródłowe</Filter>
     </ClCompile>
   </ItemGroup>

@@ -19,6 +19,7 @@ public:
 	Pionek *pionek;      //pionek u¿ytkownika
 	int numer_pola;     //numer pola na którym stoi u¿ytkownik
 	int portfel;        //stan portfela
+	int wyrok = 0;    //informacja o tym ile kolejek gracz musi byæ w wiezieniu od teraz, po przejœciu do wiezienia ustawiana na 3
 
 	
 	Uzytkownik(std::string nick);

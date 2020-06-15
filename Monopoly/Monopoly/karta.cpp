@@ -34,7 +34,7 @@ using namespace std;
 	Szansa_Kasa_Spoleczna::Szansa_Kasa_Spoleczna(sf::Texture& tekstura, float x, float y, string nazwa, void (*funkcja)(void)) : Karta(tekstura, x, y)
 	{
 		this->nazwa = nazwa;
-		this->funkcja = funkcja;
+		//this->funkcja = funkcja;
 	};
 
 	void Ulica::obsluga_ruchu(Uzytkownik& uzyt)

@@ -140,7 +140,7 @@ state_t DoInicjalizacjaSerwera(Game* gra)
 
 	gra->InterfejsStart = 1;
 	gra->interfejs->CreateMainWindow();
-	return Stan1;
+	return StartGrySerwer;
 }
 state_t DoInicjalizacjaKlienta(Game* gra)
 {
@@ -163,6 +163,7 @@ state_t DoInicjalizacjaKlienta(Game* gra)
 	}
 	std::string moj_nick_s;
 	moj_nick >> moj_nick_s;
+	gra->baza->moj_nick = moj_nick_s;
 
 	sf::Packet DaneOdebrane;
 	while (!gra->internet->Recive(DaneOdebrane))
@@ -206,7 +207,7 @@ state_t DoInicjalizacjaKlienta(Game* gra)
 
 	gra->InterfejsStart = 1;
 	gra->interfejs->CreateMainWindow();
-	return Stan1;
+	return StartGryKlient;
 }
 
 state_t DoExecuteButtons(Game* gra)
@@ -279,16 +280,19 @@ state_t DoStartGrySerwer(Game* gra)
 
 	sf::Packet nick_rozpoczynajacy;
 	std::string nick_rozpoczynajacy_s = gra->baza->nicki[los];
+	gra->baza->nick_aktywnego_gracza = nick_rozpoczynajacy_s;
 	nick_rozpoczynajacy << gra->baza->nicki[los];
 
 	gra->internet->SendAll(nick_rozpoczynajacy);
 	
 	if (nick_rozpoczynajacy_s == gra->baza->moj_nick)
 	{
+		gra->interfejs->aktywny_gracz.setString("Teraz Ty sie ruszasz.");
 		return RuszaSie;
 	}
 	else
 	{
+		gra->interfejs->aktywny_gracz.setString("Teraz rusza sie gracz: " + nick_rozpoczynajacy_s);
 		return Czeka;
 	}
 }
@@ -303,29 +307,64 @@ state_t DoStartGryKlient(Game* gra)
 
 	std::string nick_rozpoczynajacy_s;
 	nick_rozpoczynajacy >> nick_rozpoczynajacy_s;
+	gra->baza->nick_aktywnego_gracza = nick_rozpoczynajacy_s;
 
 	if (nick_rozpoczynajacy_s == gra->baza->moj_nick)
 	{
+		gra->interfejs->aktywny_gracz.setString("Teraz Ty sie ruszasz.");
 		return RuszaSie;
 	}
 	else
 	{
+		gra->interfejs->aktywny_gracz.setString("Teraz rusza sie gracz: " + nick_rozpoczynajacy_s);
 		return Czeka;
 	}
 }
-
 state_t DoRuszaSie(Game* gra)
 {
+	if (gra->baza->gracze[gra->baza->moj_nick].wyrok != 0)
+	{
+		gra->baza->gracze[gra->baza->moj_nick].wyrok--;
+		gra->Dane_Do_Wyslania << WIEZIENIE;
+		gra->Dane_Do_Wyslania << gra->baza->gracze[gra->baza->moj_nick].wyrok;
+		
+		return Wysylanie;
+	}
+	if (gra->opcjegry.kostki == 1)
+	{
+		if (gra->czy_rzucone_kostki == 0)
+		{
+			gra->czy_rzucone_kostki = 1;
+			/////
+		}
+	}
+	if (gra->czy_rzucone_kostki == 0)
+	{
+		if (gra->opcjegry.zakup_domku == 1)
+		{
+
+		}
+		if (gra->opcjegry.zakup_hotelu == 1)
+		{
+
+		}
+		if (gra->opcjegry.zastaw == 1)
+		{
+
+		}
+	}
+
+	
 	return Stan2;
 }
-
 state_t DoCzeka(Game* gra)
 {
 	return Stan2;
 }
-
-
-
+state_t DoWysylanie(Game* gra)
+{
+	return Stan2;
+}
 state_t DoStan1(Game* gra)
 {
 	std::cout << "stan 1\n";
