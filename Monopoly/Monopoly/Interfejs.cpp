@@ -211,7 +211,7 @@ void Interfejs::StartWindow()
                             if (kolor != Brak)
                             {
                                 this->Dane->Stworz_Mnie(nick_enter.getText(), IP_enter.getText(), 1, kolor);
-                                this->Dane->moj_nick = nick_enter.getText();
+                               // this->Dane->moj_nick = nick_enter.getText();
                                 return;
                             }
                         }

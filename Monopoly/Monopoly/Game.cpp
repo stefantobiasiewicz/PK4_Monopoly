@@ -352,11 +352,15 @@ state_t DoStartGryKlient(Game* gra)
 }
 state_t DoRuszaSie(Game* gra)
 {
+	Resolution res;
+	sf::Vector2f scale = res.scale();
 	if (gra->baza->gracze[gra->baza->moj_nick].wyrok != 0)
 	{
 		gra->baza->gracze[gra->baza->moj_nick].wyrok--;
-		gra->Dane_Do_Wyslania << WIEZIENIE;
-		gra->Dane_Do_Wyslania << gra->baza->gracze[gra->baza->moj_nick].wyrok;
+
+		Packet_Wiezienie pakiet(gra->baza->gracze[gra->baza->moj_nick].wyrok);
+		gra->Dane_Do_Wyslania.clear();
+		gra->Dane_Do_Wyslania = pakiet.getPakiet();
 		
 		return Wysylanie;
 	}
@@ -365,7 +369,75 @@ state_t DoRuszaSie(Game* gra)
 		if (gra->czy_rzucone_kostki == 0)
 		{
 			gra->czy_rzucone_kostki = 1;
-			/////
+			//rzucamy kostk¹
+			int rzut = gra->interfejs->kostka->Rzuc();
+
+			//aktualizujemy numer pola w uzytkowniku
+			int numer_pola = gra->baza->gracze[gra->baza->moj_nick].numer_pola;
+			int numer_gracza = gra->baza->gracze[gra->baza->moj_nick].pionek->nr_pionka;
+			numer_pola += rzut;
+			if (numer_pola > 39)
+			{
+				numer_pola -= 40;
+			}
+			gra->baza->gracze[gra->baza->moj_nick].numer_pola = numer_pola;
+			
+			//zmieniamy pozycjê pionka
+			gra->baza->gracze[gra->baza->moj_nick].pionek->setPosition(res.x({ gra->baza->pola[numer_pola].pozycja[numer_gracza].x }), res.y(gra->baza->pola[numer_pola].pozycja[numer_gracza].y));
+			
+			//wykonujemy funkcjê karty przypisanej do tego pola
+			Karta* karta = gra->baza->pola[numer_pola].karta;
+		
+			if (karta)
+			{
+				if (dynamic_cast<Ulica*>(karta))
+				{
+					Funkcje_Kart_Ulica funkcje(&gra->baza->pola[numer_pola]);
+					if (karta->wlasciciel)
+					{
+						//ulica jest ju¿ kupiona
+						int czynsz = funkcje.Czynsz();
+						if (gra->baza->gracze[gra->baza->moj_nick].portfel >= czynsz)
+						{
+							//gracza stac na op³acenie czynszu
+							//wyswietlanie okna z komunikatem
+							std::vector<button*> przyciski;
+							button ok({ 100,100 }, { 0,0 }, "\grafiki/button_ok.jpg", "\grafiki/button_ok2.jpg");
+							przyciski.push_back(&ok);
+							gra->interfejs->CreateMessageWindow("Musisz zaplacic graczowi: " + karta->wlasciciel->nick + std::to_string(czynsz), przyciski);
+
+							//akt zaplaty
+							funkcje.zaplata_czynszu(czynsz, &gra->baza->gracze[gra->baza->moj_nick]);
+							
+							//przygotowanie protoko³u
+							Packet_Czynsz_Zap pakiet(gra->baza->moj_nick, karta->wlasciciel->nick, czynsz);
+							gra->Dane_Do_Wyslania.clear();
+							gra->Dane_Do_Wyslania = pakiet.getPakiet();
+							return Wysylanie;
+						}
+						else
+						{
+							//wyswietlanie okna z komunikatem
+							std::vector<button*> przyciski;
+							button poddaj_sie({ 100,100 }, { 0,0 }, "\grafiki/button_ok.jpg", "\grafiki/button_ok2.jpg");
+							przyciski.push_back(&ok);
+						}
+						
+					}
+				}
+				else if (dynamic_cast<Dworzec_Uzyt_Pub*>(gra->baza->pola[numer_pola].karta))
+				{
+
+				}
+				else if (dynamic_cast<Szansa_Kasa_Spoleczna*>(gra->baza->pola[numer_pola].karta))
+				{
+
+				}
+			}
+			else
+			{
+				//nie ma karty przypisanej temu polu
+			}
 		}
 	}
 	if (gra->czy_rzucone_kostki == 0)

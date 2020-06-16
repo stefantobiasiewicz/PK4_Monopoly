@@ -15,6 +15,7 @@
 #include <utility>
 #include "Resolution.h"
 
+
 typedef enum {Zielona = 0, Niebieska, Rozowa, Brak} Kolor_Planszy;
 
 struct Grupy_Ulic
@@ -53,6 +54,7 @@ public:
 	Resolution res;
 	Grupy_Ulic grupy_ulic;
 	std::string nick_aktywnego_gracza;        //nick gracza który w³aœnie wykonuje ruch
+
 
 
 	sf::IpAddress IP;                        //ip gry
