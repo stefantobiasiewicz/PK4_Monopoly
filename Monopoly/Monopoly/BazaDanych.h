@@ -66,6 +66,8 @@ public:
 	~BazaDanych();
 	void Stworz_Mnie(std::string nick, sf::IpAddress ip, bool isServer, Kolor_Planszy kolor = Zielona);
 	void unikalne_nicki(std::string& name);
+	void Usun_Gracza(std::string nick);
+
 
 private:
 	

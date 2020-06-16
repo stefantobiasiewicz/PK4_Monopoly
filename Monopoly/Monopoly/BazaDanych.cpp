@@ -406,3 +406,29 @@ void BazaDanych::Przypisz_Kolory_Ulicom()
 			it->second->kolor = Granatowe;
 	}
 }
+void BazaDanych::Usun_Gracza(std::string nick)
+{
+	std::map<std::string, Uzytkownik>::iterator it = gracze.begin();
+	for (int i = 0; i < gracze[nick].karty_nieruchomosci.size(); i++)
+	{
+		if (it->first != nick)   //sobie nie daje kart
+		{
+			//dodanie karty innemu uzykownikowi
+			it->second.karty_nieruchomosci.push_back(gracze[nick].karty_nieruchomosci[i]);
+			it++;
+		}
+	}
+	ilosc_graczy -= 1;
+	gracze.erase(nick);
+	
+	std::vector<std::string>::iterator _it = nicki.begin();
+	for (_it; _it != nicki.end(); _it++)
+	{
+		if (*_it == nick)
+		{
+			break;
+		}
+	}
+
+	nicki.erase(_it);
+}

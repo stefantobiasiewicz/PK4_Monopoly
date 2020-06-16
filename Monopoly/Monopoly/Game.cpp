@@ -250,7 +250,8 @@ state_t DoExecuteButtons(Game* gra)
 	{
 		//jakas funkcja
 				//jakas funkcja
-		gra->interfejs->CreateZastawWindow(0, &gra->baza->gracze[gra->baza->moj_nick]);
+		Uzytkownik* gracz = &gra->baza->gracze[gra->baza->moj_nick];
+		gra->interfejs->CreateZastawWindow(0, gracz);
 	}
 	if (gra->opcjegry.kostki)
 	{
@@ -385,7 +386,7 @@ state_t DoRuszaSie(Game* gra)
 		
 			if (karta)
 			{
-				if (dynamic_cast<Ulica*>(karta))
+				if (dynamic_cast<Ulica*>(karta) || dynamic_cast<Dworzec_Uzyt_Pub*>(karta))
 				{
 					Funkcje_Kart_Ulica funkcje(&gra->baza->pola[numer_pola]);
 					if (karta->wlasciciel)
@@ -405,24 +406,109 @@ state_t DoRuszaSie(Game* gra)
 							funkcje.zaplata_czynszu(czynsz, &gra->baza->gracze[gra->baza->moj_nick]);
 							
 							//przygotowanie protoko³u
-							Packet_Czynsz_Zap pakiet(gra->baza->moj_nick, karta->wlasciciel->nick, czynsz);
+							Packet_Czynsz_Zap pakiet(numer_pola, gra->baza->moj_nick, karta->wlasciciel->nick, czynsz);
 							gra->Dane_Do_Wyslania.clear();
 							gra->Dane_Do_Wyslania = pakiet.getPakiet();
 							return Wysylanie;
 						}
 						else
 						{
+							//uzytkownika nie stac na zaplate czynszu
 							//wyswietlanie okna z komunikatem
 							std::vector<button*> przyciski;
-							button poddaj_sie({ 100,100 }, { 0,0 }, "\grafiki/button_ok.jpg", "\grafiki/button_ok2.jpg");
-							przyciski.push_back(&ok);
+							button poddaj_sie({ 100,100 }, { 0,0 }, "\grafiki/button_poddaj.jpg", "\grafiki/button_poddaj2.jpg");
+							przyciski.push_back(&poddaj_sie);
+
+							button zastaw({ 100,100 }, { 0,0 }, "\grafiki/button_zastawp.jpg", "\grafiki/button_zastawp2.jpg");
+							przyciski.push_back(&zastaw);
+
+							//dopóki gracza nie staæ lub nie podda sie zastawia ulice
+							while (gra->baza->gracze[gra->baza->moj_nick].portfel < czynsz)
+							{
+								int decyzja = gra->interfejs->CreateMessageWindow("Nie stac cie na zaplacenie czynszu!\nPoddaj sie lub zastaw swoje nieruchomosci.", przyciski);
+								{
+									if (decyzja == 0)
+									{
+										//uzytkownik sie poddal
+										//usuwanie gracza
+										gra->baza->Usun_Gracza(gra->baza->moj_nick);
+
+										//przygotowanie protokolu
+										Packet_Usun pakiet(numer_pola, gra->baza->moj_nick);
+										gra->Dane_Do_Wyslania.clear();
+										gra->Dane_Do_Wyslania = pakiet.getPakiet();
+										return Wysylanie;
+									}
+									else
+									{
+										gra->interfejs->CreateZastawWindow(0, &gra->baza->gracze[gra->baza->moj_nick]);
+									}
+								}
+							}
+							//gracz zastawil nieruchomosci i moze zaplacic
+							funkcje.zaplata_czynszu(czynsz, &gra->baza->gracze[gra->baza->moj_nick]);
+
+							//przygotowanie pakietu
+							Packet_Czynsz_Zastaw pakiet(numer_pola, gra->baza->moj_nick, czynsz, karta->wlasciciel->nick, gra->baza->gracze[gra->baza->moj_nick].karty_nieruchomosci);
+							gra->Dane_Do_Wyslania.clear();
+							gra->Dane_Do_Wyslania = pakiet.getPakiet();
+							return Wysylanie;
 						}
 						
 					}
-				}
-				else if (dynamic_cast<Dworzec_Uzyt_Pub*>(gra->baza->pola[numer_pola].karta))
-				{
+					else  //karta nie ma wlasciciela
+					{
+						if (gra->baza->gracze[gra->baza->moj_nick].portfel < karta->cena)
+						{
+							//uzytkownika nie stac na zakup
+							//wyswietlenie stosownej informacji
+							std::vector<button*> przyciski;
+							button ok({ 100,100 }, { 0,0 }, "\grafiki/button_ok.jpg", "\grafiki/button_ok2.jpg");
+							przyciski.push_back(&ok);
 
+							gra->interfejs->CreateMessageWindow("Nie stac cie na zakup tej nieruchomosci.", przyciski);
+
+							//przygotowanie protokolu
+							Packet_Brak_Zakupu pakiet(numer_pola);
+							gra->Dane_Do_Wyslania.clear();
+							gra->Dane_Do_Wyslania = pakiet.getPakiet();
+							
+							return Wysylanie;
+
+						}
+						else
+						{
+							//gracza stac na zakup
+							//wyswietlenie propozycji zakupu
+							std::vector<button*> przyciski;
+							button odrzuc({ 100,100 }, { 0,0 }, "\grafiki/button_odrzuc.jpg", "\grafiki/button_odrzuc2.jpg");
+							przyciski.push_back(&odrzuc);
+
+							button kup({ 100,100 }, { 0,0 }, "\grafiki/button_kup.jpg", "\grafiki/button_kup2.jpg");
+							przyciski.push_back(&kup);
+
+							
+							int decyzja = gra->interfejs->CreateMessageWindow("", przyciski, karta);
+							if (decyzja == 0)
+							{
+								//uzytkownik nie chce kupic ulicy
+								//przygotowanie protokolu
+								Packet_Brak_Zakupu pakiet(numer_pola);
+								gra->Dane_Do_Wyslania.clear();
+								gra->Dane_Do_Wyslania = pakiet.getPakiet();
+							}
+							else  
+							{
+								//gracz chce kupic ulice
+								funkcje.kup(&gra->baza->gracze[gra->baza->moj_nick]);
+
+								//przygotowanie protokolu
+								Packet_Kupiono pakiet(numer_pola, gra->baza->moj_nick, karta->nazwa);
+								gra->Dane_Do_Wyslania.clear();
+								gra->Dane_Do_Wyslania = pakiet.getPakiet();
+							}
+						}
+					}
 				}
 				else if (dynamic_cast<Szansa_Kasa_Spoleczna*>(gra->baza->pola[numer_pola].karta))
 				{

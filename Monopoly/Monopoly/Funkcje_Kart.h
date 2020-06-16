@@ -19,5 +19,6 @@ public:
 
 	int Czynsz();
 	void zaplata_czynszu(int kwota, Uzytkownik* platnik);
+	void kup(Uzytkownik* nabywca);
 
 };
