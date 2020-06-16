@@ -139,6 +139,8 @@ public:
 	// funkcja tworzaca okno poczeklani dla graczy ( tylko server ma taka opcje )
 	void CreateWaitingWindow(Internet * internet);
 
+	// funkcja tworzy i obsluguje zastaw nieruchomosci / zwraca false gdy zastaw odbyl sie poprawnie i true jesli gracz sie poddal
+	bool CreateZastawWindow(bool CzyPrzymusowy, Uzytkownik* user);
 
 };
 

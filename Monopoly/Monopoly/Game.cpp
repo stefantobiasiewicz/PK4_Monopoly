@@ -250,12 +250,7 @@ state_t DoExecuteButtons(Game* gra)
 	{
 		//jakas funkcja
 				//jakas funkcja
-		std::vector<button*> przyciski;
-		button odrzuc({ 100,100 }, { 0,0 }, "\grafiki/button_odrzuc.jpg", "\grafiki/button_odrzuc2.jpg");
-		przyciski.push_back(&odrzuc);
-		gra->interfejs->CreateMessageWindow("alfa tango", przyciski);
-		gra->opcjegry.zakup_domku = false;
-		gra->opcjegry.zastaw = false;
+		gra->interfejs->CreateZastawWindow(0, &gra->baza->gracze[gra->baza->moj_nick]);
 	}
 	if (gra->opcjegry.kostki)
 	{

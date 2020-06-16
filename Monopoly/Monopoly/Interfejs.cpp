@@ -369,9 +369,10 @@ void Interfejs::UpdateFunction()
 {
 
     std::map<std::string, Uzytkownik>::iterator it = Dane->gracze.begin();
-    int i = 0;
+    int i = 0;      // 0 na gorze 1 - dolne 
     for (it; it != Dane->gracze.end(); it++ )
     {
+        this->pieniadze[it->first]->setString("portfel:" + std::to_string(it->second.portfel) + "PLN");
         miniatury[i]->ClearObject();
         for (std::string i_k : it->second.karty_nieruchomosci)
         {
@@ -513,6 +514,8 @@ void Interfejs::CreateSprites()
         {
             std::cerr << "Nie wczytano deski.\n";
         }
+
+
         Miniatury = new MinKart(scale.x * 1440.f, scale.y * 900);
         Miniatury->setPosition(res.x(63.5f), res.y(8));
         Miniatury->Wood();
@@ -521,7 +524,6 @@ void Interfejs::CreateSprites()
         Miniatury->setPosition(res.x(63.5f), res.y(58));
         Miniatury->Wood();
         miniatury.push_back(Miniatury);
-        
 
         Przycisk = new button({  1440.f, 900 }, { 82.25f ,28.83f }, "\grafiki/transparent21.png", "\grafiki/transparent2.png");
         KlikObject["karty1"] = Przycisk;
@@ -1005,4 +1007,157 @@ void Interfejs::CreateWaitingWindow(Internet* internet)
             window.close();
         }
     }
+}
+
+bool Interfejs::CreateZastawWindow(bool CzyPrzymusowy, Uzytkownik* user)
+{
+    bool GraczPrzegrywa = false;
+    float szer = Szer - Szer / 1.5f;
+    float wys = Wys - Wys / 1.4f;
+    Resolution res;
+
+    struct
+    {
+        float x = 0;
+        float y = 0;
+    }RozmiarPrzycisku;
+    float WysokoscPrzycisku = 0;
+
+    res.SetH_res(wys);
+    res.SetW_res(szer);
+    RozmiarPrzycisku.x = 30;
+    RozmiarPrzycisku.y = 16;
+    WysokoscPrzycisku = 75;
+
+    sf::RenderWindow window(
+        sf::VideoMode(szer, wys),
+        "Informacja dla urzytkownika",
+        sf::Style::None
+    );
+    window.setFramerateLimit(60);
+
+    sf::Vector2f scale = res.scale();
+
+    sf::Text napis;
+    napis.setFont(this->Dane->czcionka);
+    napis.setPosition(res.x(20), res.y(20));
+    napis.setCharacterSize(200);
+    napis.setScale(scale);
+    napis.setFillColor(sf::Color::Black);
+    napis.setOutlineColor(sf::Color::White);
+    napis.setOutlineThickness(res.x(2));
+    napis.setString("Podaj nazwe karty jaka chcesz zastawic:");
+
+
+    Textbox NazwaKarty(40, sf::Color(77, 0, 0), false, 400, sf::Vector2f{ (float)res.x(20) , (float)res.y(30) }, sf::Color(204, 204, 204));
+    NazwaKarty.setLimit(true, 30);
+    NazwaKarty.setFont(this->Dane->czcionka);
+
+
+
+    std::vector<button*> przyciski;
+    button Ok({ 100,100 }, { 0,0 }, "\grafiki/button_ok.jpg", "\grafiki/button_ok2.jpg");
+    button* AnulujPoddajSie;
+    if (CzyPrzymusowy == true)
+    {
+        //poddaj sie
+        //inna grafika przycisku
+        AnulujPoddajSie = new button({ 100,100 }, { 0,0 }, "\grafiki/button_kup.jpg", "\grafiki/button_kup2.jpg");      ////////////////////////////////////////////////////////
+    }
+    else
+    {
+        //anuluj 
+        AnulujPoddajSie = new button({ 100,100 }, { 0,0 }, "\grafiki/button_kup.jpg", "\grafiki/button_kup2.jpg");
+    }
+    przyciski.push_back(&Ok);
+    przyciski.push_back(AnulujPoddajSie);
+
+
+    int IloscPrzyciskow = przyciski.size();
+    float procenty_x = 100 / ((float)IloscPrzyciskow + 1);
+
+    for (int i = 0; i < IloscPrzyciskow; i++)
+    {
+        przyciski[i]->setSize({ (float)res.x(RozmiarPrzycisku.x * (procenty_x * 2 / 100)), (float)res.y(RozmiarPrzycisku.y) });
+        przyciski[i]->setOrigin({ przyciski[i]->getSize().x / 2 , przyciski[i]->getSize().y / 2 });
+        przyciski[i]->setPosition({ (float)res.x(procenty_x * (i + 1)), (float)res.y(WysokoscPrzycisku) });
+
+    }
+
+    sf::Event event;
+    while (window.isOpen())
+    {
+        while (window.pollEvent(event))
+        {
+            if (event.type == sf::Event::Closed)
+                window.close();
+            // tutaj event buttona zamykajacy to okno
+                if (Ok.event(event) == true)
+                {
+                    // sprawdzanie czy urzytkownik ma taka karte 
+                    std::string karta = NazwaKarty.getText();
+                    if (user->CzyMaKarte(karta))
+                    {
+                        // uzytkownik ma karte
+                        int cena = (this->Dane->karty_nieruchomosci[karta]->cena / 2);
+                        std::vector<button*> TakNie;
+                        button Tak({ 100,100 }, { 0,0 }, "\grafiki/button_ok.jpg", "\grafiki/button_ok2.jpg");
+                        button Nie({ 100,100 }, { 0,0 }, "\grafiki/button_kup.jpg", "\grafiki/button_kup2.jpg");
+                        TakNie.push_back(&Tak);
+                        TakNie.push_back(&Nie);
+                        if (this->CreateMessageWindow("Czy napewno chcesz sprzedac karte:\n" + karta + "\nza cene:" + std::to_string(cena), TakNie) == 0)
+                        {
+                            // tak sprzedaje karte
+                            user->portfel += cena;
+                            user->UsunKarte(karta);
+                            this->Dane->karty_nieruchomosci[karta]->wlasciciel = nullptr;
+                            // dodatkowo trzeba usunac domi z planszy  +  zabrac za nie hajsy 
+                        }
+                        else
+                        {
+                           // niesprzedaje karty
+                        }
+                    }
+                    else
+                    {
+                        // uzytkownik nie ma takiej kartyy
+                        std::vector<button*> Defoult;
+                        button Okk({ 100,100 }, { 0,0 }, "\grafiki/button_ok.jpg", "\grafiki/button_ok2.jpg");
+                        Defoult.push_back(&Okk);
+                        this->CreateMessageWindow("Nie posiadasz takiej Karty", Defoult);
+                    }
+
+
+                }
+                if (AnulujPoddajSie->event(event) == true)
+                {
+                    if (CzyPrzymusowy)
+                    {
+                        GraczPrzegrywa = true;
+                    }
+                    else
+                    {
+                        GraczPrzegrywa = false;
+                    }
+                    window.close();
+                }
+            NazwaKarty.event(event);
+        }
+        // clear the window with black color
+        window.clear(sf::Color::Cyan);
+
+        // draw everything here...
+
+        NazwaKarty.drawTo(window);
+        window.draw(napis);
+        for (auto i : przyciski)
+        {
+            i->drawTo(window);
+        }
+
+        // end the current frame
+        window.display();
+    }
+    delete AnulujPoddajSie;
+    return GraczPrzegrywa;
 }
