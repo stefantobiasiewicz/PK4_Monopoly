@@ -2,25 +2,27 @@
 #include "SFML/Graphics.hpp"
 #include <iostream>
 #include <map>
-
+#include"Resolution.h"
 
 class Obiekt_Na_Planszy :
 	public sf::Sprite
 {
 public:
-	sf::Texture tekstura;
+	 Obiekt_Na_Planszy(sf::Texture * tekstura);
+	 Obiekt_Na_Planszy()
+	 {
 
-	 Obiekt_Na_Planszy(std::string file, sf::Vector2f pos);
-	 
-	 std::map<std::string, std::string> file_dir;	// mapa której kluczem bêdzie string (np:domek,hotel) a w wartosæi bêdzie œcie¿ka do danej tekstury
-
+	 }
 };
 
 class Domek :
 	public Obiekt_Na_Planszy
 {
 public:
-	Domek(sf::Vector2f pos) : Obiekt_Na_Planszy(std::string("// scierzka do pliku tekstury"), pos) {}
+	Domek(sf::Texture* tekstura) : Obiekt_Na_Planszy(tekstura)
+	{
+
+	}
 
 };
 
@@ -29,14 +31,23 @@ class Hotel :
 	public Obiekt_Na_Planszy
 {
 public:
-	Hotel(sf::Vector2f pos) : Obiekt_Na_Planszy(std::string("// scierzka do pliku tekstury"), pos) {}
+	Hotel(sf::Texture* tekstura) : Obiekt_Na_Planszy(tekstura)
+	{
+
+	}
 
 };
 
 class Pionek :
 	public Obiekt_Na_Planszy
 {
+	sf::Texture tekstura;
 public:
 	int nr_pionka;
-	Pionek(std::string file , int nr) : Obiekt_Na_Planszy(file, sf::Vector2f(0, 0)), nr_pionka(nr) {}
+	Pionek(std::string file, int nr)
+	{
+		tekstura.loadFromFile(file);
+		nr_pionka = nr;
+		this->setTexture(tekstura);
+	}
 };

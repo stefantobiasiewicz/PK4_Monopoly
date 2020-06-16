@@ -37,3 +37,8 @@ void Plansza::render()
 	renderTexture.display();
 	this->setTexture(renderTexture.getTexture());	//	ustawienie tekstury planszy
 }
+
+void Plansza::ClearObject()
+{
+	this->Obiekty.clear();
+}

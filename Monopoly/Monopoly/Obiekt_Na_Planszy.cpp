@@ -1,11 +1,9 @@
 #include "Obiekt_Na_Planszy.h"
 
-Obiekt_Na_Planszy::Obiekt_Na_Planszy(std::string file, sf::Vector2f pos)
+
+Obiekt_Na_Planszy::Obiekt_Na_Planszy(sf::Texture* tekstura)
 {
-	if (!this->tekstura.loadFromFile(file))
-		std::cerr << "nie wczytano tekstury: apple\n";
-
-	this->setTexture(this->tekstura);
-	this->setPosition(pos);
-
+	Resolution res;
+	this->setTexture(*tekstura);
+	this->setScale(res.scale().x * 0.2, res.scale().y * 0.2);	
 }
