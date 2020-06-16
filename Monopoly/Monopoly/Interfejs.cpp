@@ -1049,7 +1049,7 @@ bool Interfejs::CreateZastawWindow(bool CzyPrzymusowy, Uzytkownik* user)
     napis.setString("Podaj nazwe karty jaka chcesz zastawic:");
 
 
-    Textbox NazwaKarty(40, sf::Color(77, 0, 0), false, 400, sf::Vector2f{ (float)res.x(20) , (float)res.y(30) }, sf::Color(204, 204, 204));
+    Textbox NazwaKarty(scale.x * 40, sf::Color(77, 0, 0), false, 400, sf::Vector2f{ (float)res.x(20) , (float)res.y(30) }, sf::Color(204, 204, 204));
     NazwaKarty.setLimit(true, 30);
     NazwaKarty.setFont(this->Dane->czcionka);
 

@@ -48,14 +48,14 @@
     <ClInclude Include="elementy_graficzne.h">
       <Filter>Pliki nagłówkowe</Filter>
     </ClInclude>
-    <ClInclude Include="Textbox.h">
-      <Filter>Pliki nagłówkowe</Filter>
-    </ClInclude>
     <ClInclude Include="MinKart.h">
       <Filter>Pliki nagłówkowe</Filter>
     </ClInclude>
     <ClInclude Include="kostka.h">
       <Filter>Pliki nagłówkowe</Filter>
+    </ClInclude>
+    <ClInclude Include="Textbox.h">
+      <Filter>Pliki zasobów</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

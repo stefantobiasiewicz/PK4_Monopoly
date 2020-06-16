@@ -299,12 +299,12 @@ state_t DoStartGrySerwer(Game* gra)
 	//losujemy gracza ktory zaczyna
 	std::default_random_engine silnik;
 	silnik.seed(std::chrono::system_clock::now().time_since_epoch().count());
-	std::uniform_int_distribution<int> liniowy(0, gra->baza->ilosc_graczy);
+	std::uniform_int_distribution<int> liniowy(0, gra->baza->ilosc_graczy - 1); // <----  musi byc - 1 bo w bazie jest ilosc a tablica jest indeksowana od 0 
 
 	int los = liniowy(silnik);
 
 	sf::Packet nick_rozpoczynajacy;
-	std::string nick_rozpoczynajacy_s = gra->baza->nicki[los];
+	std::string nick_rozpoczynajacy_s = gra->baza->nicki[los];				// <----- tu sie program wysypywal bo zwraca³ czasem 2  
 	gra->baza->nick_aktywnego_gracza = nick_rozpoczynajacy_s;
 	nick_rozpoczynajacy << gra->baza->nicki[los];
 
