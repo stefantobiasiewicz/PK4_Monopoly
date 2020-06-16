@@ -25,6 +25,7 @@ public:
 	Uzytkownik(std::string nick);
 	Uzytkownik() {}
 
-
+	bool CzyMaKarte(std::string karta);
+	void UsunKarte(std::string karta);
 };
 
