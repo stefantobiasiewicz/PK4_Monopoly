@@ -1055,7 +1055,7 @@ bool Interfejs::CreateZastawWindow(bool CzyPrzymusowy, Uzytkownik* user)
 
     sf::RenderWindow window(
         sf::VideoMode(szer, wys),
-        "Informacja dla urzytkownika",
+        "Informacja dla uzytkownika",
         sf::Style::None
     );
     window.setFramerateLimit(60);
