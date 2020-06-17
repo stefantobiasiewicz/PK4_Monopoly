@@ -6,8 +6,10 @@
 #include <iostream>
 #include <chrono>
 #include <random>
+#include "Funkcje_Kart.h"
+#include "Protokol.h"
 
-#define WIEZIENIE "WIEZIENIE"
+
 
 // typ wyliczeniowy do zdefiniowania stanow gry
 typedef enum { StanInicjalizacji, InicjalizacjaSerwer, InicjalizacjaKlient , ExecuteButtons, StartGrySerwer, StartGryKlient, RuszaSie, Czeka, Wysylanie, Stan1, Stan2, StanKoncowy, NUM_STATES } state_t;

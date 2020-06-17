@@ -15,6 +15,7 @@
 #include <utility>
 #include "Resolution.h"
 
+
 typedef enum {Zielona = 0, Niebieska, Rozowa, Brak} Kolor_Planszy;
 
 struct Grupy_Ulic
@@ -57,6 +58,7 @@ public:
 	sf::Texture DomekTekstura;
 	sf::Texture HotelTekstura;
 
+
 	sf::IpAddress IP;                        //ip gry
 	int ilosc_graczy;
 	Kolor_Planszy kolor;
@@ -66,6 +68,8 @@ public:
 	~BazaDanych();
 	void Stworz_Mnie(std::string nick, sf::IpAddress ip, bool isServer, Kolor_Planszy kolor = Zielona);
 	void unikalne_nicki(std::string& name);
+	void Usun_Gracza(std::string nick);
+
 
 
 	int NumerPola(std::string);
