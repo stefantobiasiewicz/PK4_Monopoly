@@ -1197,3 +1197,190 @@ bool Interfejs::CreateZastawWindow(bool CzyPrzymusowy, Uzytkownik* user)
     delete AnulujPoddajSie;
     return GraczPrzegrywa;
 }
+
+bool Interfejs::CreateDomWindow(bool isHotel, Uzytkownik* user)
+{
+    bool CzyKupiony = false;
+    float szer = Szer - Szer / 1.5f;
+    float wys = Wys - Wys / 1.4f;
+    Resolution res;
+
+    struct
+    {
+        float x = 0;
+        float y = 0;
+    }RozmiarPrzycisku;
+    float WysokoscPrzycisku = 0;
+
+    res.SetH_res(wys);
+    res.SetW_res(szer);
+    RozmiarPrzycisku.x = 30;
+    RozmiarPrzycisku.y = 16;
+    WysokoscPrzycisku = 75;
+
+    sf::RenderWindow window(
+        sf::VideoMode(szer, wys),
+        "Informacja dla uzytkownika",
+        sf::Style::None
+    );
+    window.setFramerateLimit(60);
+
+    sf::Vector2f scale = res.scale();
+
+    sf::Text napis;
+    napis.setFont(this->Dane->czcionka);
+    napis.setPosition(res.x(20), res.y(20));
+    napis.setCharacterSize(200);
+    napis.setScale(scale);
+    napis.setFillColor(sf::Color::Black);
+    napis.setOutlineColor(sf::Color::White);
+    napis.setOutlineThickness(res.x(2));
+    if (isHotel)
+    {
+        napis.setString("Podaj nazwe ulicy na ktorym chcesz postawic Hotel:");
+    }
+    else
+    {
+        napis.setString("Podaj nazwe ulicy na ktorym chcesz postawic Domek:");
+    }
+
+
+
+    Textbox NazwaUlicy(40, sf::Color(77, 0, 0), false, scale.x * 400, sf::Vector2f{ (float)res.x(20) , (float)res.y(30) }, sf::Color(204, 204, 204));
+    NazwaUlicy.setLimit(true, 30);
+    NazwaUlicy.setFont(this->Dane->czcionka);
+
+
+
+    std::vector<button*> przyciski;
+    button Tak({ 100,100 }, { 0,0 }, "\grafiki/button_tak.jpg", "\grafiki/button_tak2.jpg");
+    button Nie({ 100,100 }, { 0,0 }, "\grafiki/button_nie.jpg", "\grafiki/button_nie2.jpg");      ////////////////////////////////////////////////////////
+    
+    przyciski.push_back(&Tak);
+    przyciski.push_back(&Nie);
+
+
+    int IloscPrzyciskow = przyciski.size();
+    float procenty_x = 100 / ((float)IloscPrzyciskow + 1);
+
+    for (int i = 0; i < IloscPrzyciskow; i++)
+    {
+        przyciski[i]->setSize({ (float)res.x(RozmiarPrzycisku.x * (procenty_x * 2 / 100)), (float)res.y(RozmiarPrzycisku.y) });
+        przyciski[i]->setOrigin({ przyciski[i]->getSize().x / 2 , przyciski[i]->getSize().y / 2 });
+        przyciski[i]->setPosition({ (float)res.x(procenty_x * (i + 1)), (float)res.y(WysokoscPrzycisku) });
+
+    }
+
+    sf::Event event;
+    while (window.isOpen())
+    {
+        while (window.pollEvent(event))
+        {
+            if (event.type == sf::Event::Closed)
+                window.close();
+            // tutaj event buttona zamykajacy to okno
+            if (Tak.event(event) == true)
+            {
+                // sprawdzanie czy urzytkownik ma taka karte 
+                std::string ulica = NazwaUlicy.getText();
+                int NumerUlicy = this->Dane->NumerPola(ulica);
+                Pole* KtorePole = this->Dane->pola[NumerUlicy];
+                if (dynamic_cast<Ulica*>(KtorePole->karta))
+                {
+                    if (user->CzyMaKarte(ulica))
+                    {
+                        if (user->portfel >= KtorePole->karta->cena_dom )
+                        {
+                            //moze kupic 
+                            std::vector<button*> taknie;
+                            button nak({ 100,100 }, { 0,0 }, "\grafiki/button_tak.jpg", "\grafiki/button_tak2.jpg");
+                            button nie({ 100,100 }, { 0,0 }, "\grafiki/button_nie.jpg", "\grafiki/button_nie2.jpg");      ////////////////////////////////////////////////////////
+
+                            taknie.push_back(&nak);
+                            taknie.push_back(&nie);
+                            if (this->CreateMessageWindow("Czy napewno chcesz kupic obiekt na ulicy:\n" + ulica, taknie) == 0)
+                            {
+                                //kupiono domek 
+
+                                // jesli za duzo domkow to nie mozna kupowac
+                                if (KtorePole->domy == 5)
+                                {
+                                    //za duzo domkow
+                                    std::vector<button*> Defoult;
+                                    button Okk({ 100,100 }, { 0,0 }, "\grafiki/button_ok.jpg", "\grafiki/button_ok2.jpg");
+                                    Defoult.push_back(&Okk);
+                                    this->CreateMessageWindow("Co za duzo to nie zdrowo\nnie mozesz juz tutaj kupic posiadlosci", Defoult);
+                                    window.close();
+                                }
+                                else
+                                {
+                                    if (isHotel && KtorePole->domy == 4)
+                                    {
+                                        user->portfel -= KtorePole->karta->cena_dom;
+                                        KtorePole->domy++;
+                                    }
+                                    else if (!isHotel && KtorePole->domy < 4)
+                                    {
+                                        // dokonywany zakup domu 
+                                        user->portfel -= KtorePole->karta->cena_dom;
+                                        KtorePole->domy++;
+                                    }
+                                }
+
+                            }
+                            else
+                            {
+                                //nie kupiono domku 
+                            }
+                        }
+                        else
+                        {
+                            // nie ma wystarczajaco pieniedzy 
+                            std::vector<button*> Defoult;
+                            button Okk({ 100,100 }, { 0,0 }, "\grafiki/button_ok.jpg", "\grafiki/button_ok2.jpg");
+                            Defoult.push_back(&Okk);
+                            this->CreateMessageWindow("Nie posiadasz tego miejsca", Defoult);
+                        }
+                    }
+                    else
+                    {
+                        //nie ma tej karty
+                        std::vector<button*> Defoult;
+                        button Okk({ 100,100 }, { 0,0 }, "\grafiki/button_ok.jpg", "\grafiki/button_ok2.jpg");
+                        Defoult.push_back(&Okk);
+                        this->CreateMessageWindow("Nie posiadasz tego miejsca", Defoult);
+                    }
+                }
+                else
+                {
+                    // nie ta karta
+                    std::vector<button*> Defoult;
+                    button Okk({ 100,100 }, { 0,0 }, "\grafiki/button_ok.jpg", "\grafiki/button_ok2.jpg");
+                    Defoult.push_back(&Okk);
+                    this->CreateMessageWindow("Na tym polu nie da sie kupic posiadlosci", Defoult);
+                }
+                window.close();
+            }
+            if (Nie.event(event) == true)
+            {
+                window.close();
+            }
+            NazwaUlicy.event(event);
+        }
+        // clear the window with black color
+        window.clear(sf::Color::Cyan);
+
+        // draw everything here...
+
+        NazwaUlicy.drawTo(window);
+        window.draw(napis);
+        for (auto i : przyciski)
+        {
+            i->drawTo(window);
+        }
+
+        // end the current frame
+        window.display();
+    }
+    return CzyKupiony;
+}

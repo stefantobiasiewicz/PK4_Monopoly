@@ -142,6 +142,9 @@ public:
 	// funkcja tworzy i obsluguje zastaw nieruchomosci / zwraca false gdy zastaw odbyl sie poprawnie i true jesli gracz sie poddal
 	bool CreateZastawWindow(bool CzyPrzymusowy, Uzytkownik* user);
 
+	// funkcja tworzy i obsluguje okno kupowania domku / hotelu
+	bool CreateDomWindow(bool isHotel, Uzytkownik* user);
+
 };
 
 

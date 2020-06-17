@@ -225,26 +225,14 @@ state_t DoExecuteButtons(Game* gra)
 	if (gra->opcjegry.zakup_domku)
 	{
 		//jakas funkcja
-		std::vector<button*> przyciski;
-		button ok({ 100,100 }, { 0,0 } , "\grafiki/button_ok.jpg","\grafiki/button_ok2.jpg" );
-		button kup({ 100,100 }, { 0,0 }, "\grafiki/button_kup.jpg", "\grafiki/button_kup2.jpg");
-		button odrzuc({ 100,100 }, { 0,0 }, "\grafiki/button_odrzuc.jpg", "\grafiki/button_odrzuc2.jpg");
-		przyciski.push_back(&kup);
-		przyciski.push_back(&odrzuc);
-		gra->interfejs->CreateMessageWindow("", przyciski, gra->baza->karty_nieruchomosci["ulica Wolska"]);
+		gra->interfejs->CreateDomWindow(false, &gra->baza->gracze[gra->baza->moj_nick]);
 		gra->opcjegry.zakup_domku = false;
 	}
 	if (gra->opcjegry.zakup_hotelu)
 	{
 		//jakas funkcja
 				//jakas funkcja
-		std::vector<button*> przyciski;
-		button ok({ 100,100 }, { 0,0 }, "\grafiki/button_ok.jpg", "\grafiki/button_ok2.jpg");
-		button kup({ 100,100 }, { 0,0 }, "\grafiki/button_kup.jpg", "\grafiki/button_kup2.jpg");
-		przyciski.push_back(&kup);
-		przyciski.push_back(&ok);
-		gra->interfejs->CreateMessageWindow("", przyciski, gra->baza->karty_szansa_kasa[2]);
-		gra->opcjegry.zakup_domku = false;
+		gra->interfejs->CreateDomWindow(true, &gra->baza->gracze[gra->baza->moj_nick]);
 		gra->opcjegry.zakup_hotelu = false;
 	}
 	if (gra->opcjegry.zastaw)
