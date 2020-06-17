@@ -380,16 +380,16 @@ state_t DoRuszaSie(Game* gra)
 			gra->baza->gracze[gra->baza->moj_nick].numer_pola = numer_pola;
 			
 			//zmieniamy pozycjê pionka
-			gra->baza->gracze[gra->baza->moj_nick].pionek->setPosition(res.x({ gra->baza->pola[numer_pola].pozycja[numer_gracza].x }), res.y(gra->baza->pola[numer_pola].pozycja[numer_gracza].y));
+			gra->baza->gracze[gra->baza->moj_nick].pionek->setPosition(res.x({ gra->baza->pola[numer_pola]->pozycja[numer_gracza].x }), res.y(gra->baza->pola[numer_pola]->pozycja[numer_gracza].y));
 			
 			//wykonujemy funkcjê karty przypisanej do tego pola
-			Karta* karta = gra->baza->pola[numer_pola].karta;
+			Karta* karta = gra->baza->pola[numer_pola]->karta;
 		
 			if (karta)
 			{
 				if (dynamic_cast<Ulica*>(karta) || dynamic_cast<Dworzec_Uzyt_Pub*>(karta))
 				{
-					Funkcje_Kart_Ulica funkcje(&gra->baza->pola[numer_pola]);
+					Funkcje_Kart_Ulica funkcje(gra->baza->pola[numer_pola]);
 					if (karta->wlasciciel)
 					{
 						//ulica jest ju¿ kupiona
@@ -511,7 +511,7 @@ state_t DoRuszaSie(Game* gra)
 						}
 					}
 				}
-				else if (dynamic_cast<Szansa_Kasa_Spoleczna*>(gra->baza->pola[numer_pola].karta))
+				else if (dynamic_cast<Szansa_Kasa_Spoleczna*>(gra->baza->pola[numer_pola]->karta))
 				{
 
 				}
