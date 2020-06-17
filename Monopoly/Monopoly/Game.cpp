@@ -625,7 +625,19 @@ state_t DoCzeka(Game* gra)
 }
 state_t DoWysylanie(Game* gra)
 {
-	return Stan2;
+	// przypadek gdy program jest serverem 
+	if (gra->baza->isServer)
+	{
+		//wysylamy dane do kazdego gracza
+		gra->internet->SendAll(gra->Dane_Do_Wyslania);
+	}
+	//przypadek gdy program jest klientem
+	else
+	{
+		//wysylamy dane na server
+		gra->internet->Send(gra->Dane_Do_Wyslania);
+	}
+	return Czeka;
 }
 state_t DoStan1(Game* gra)
 {
