@@ -143,7 +143,7 @@ public:
 	bool CreateZastawWindow(bool CzyPrzymusowy, Uzytkownik* user);
 
 	// funkcja tworzy i obsluguje okno kupowania domku / hotelu
-	bool CreateDomWindow(bool isHotel, Uzytkownik* user);
+	std::string CreateDomWindow(bool isHotel, Uzytkownik* user);
 
 };
 

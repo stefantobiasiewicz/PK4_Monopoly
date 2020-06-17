@@ -118,8 +118,8 @@ state_t DoInicjalizacjaSerwera(Game* gra)
 		count++;
 
 	}
-
-	gra->baza->gracze[gra->baza->moj_nick].karty_nieruchomosci.push_back("ulica Wolska");
+	/*
+		gra->baza->gracze[gra->baza->moj_nick].karty_nieruchomosci.push_back("ulica Wolska");
 	gra->baza->pola[39]->domy = 3;
 	gra->baza->gracze[gra->baza->moj_nick].karty_nieruchomosci.push_back("ulica Konopacka");
 	gra->baza->gracze[gra->baza->moj_nick].karty_nieruchomosci.push_back("Aleje Ujazdowskie");
@@ -127,6 +127,8 @@ state_t DoInicjalizacjaSerwera(Game* gra)
 	gra->baza->gracze[gra->baza->moj_nick].karty_nieruchomosci.push_back("Dworzec Gdanski");
 	gra->baza->gracze[gra->baza->moj_nick].karty_nieruchomosci.push_back("Elektrownia");
 	gra->baza->gracze[gra->baza->moj_nick].karty_nieruchomosci.push_back("ulica Stalowa");
+	*/
+
 	// wybor koloru planszy 
 	switch (gra->baza->kolor)
 	{
@@ -227,22 +229,21 @@ state_t DoExecuteButtons(Game* gra)
 	if (gra->opcjegry.zakup_domku)
 	{
 		//jakas funkcja
-		gra->interfejs->CreateDomWindow(false, &gra->baza->gracze[gra->baza->moj_nick]);
+
 		gra->opcjegry.zakup_domku = false;
 	}
 	if (gra->opcjegry.zakup_hotelu)
 	{
 		//jakas funkcja
 				//jakas funkcja
-		gra->interfejs->CreateDomWindow(true, &gra->baza->gracze[gra->baza->moj_nick]);
+
 		gra->opcjegry.zakup_hotelu = false;
 	}
 	if (gra->opcjegry.zastaw)
 	{
 		//jakas funkcja
 				//jakas funkcja
-		Uzytkownik* gracz = &gra->baza->gracze[gra->baza->moj_nick];
-		gra->interfejs->CreateZastawWindow(0, gracz);
+		
 	}
 	if (gra->opcjegry.kostki)
 	{
@@ -339,6 +340,8 @@ state_t DoStartGryKlient(Game* gra)
 }
 state_t DoRuszaSie(Game* gra)
 {
+	if (!gra->interfejs->IsOpen())
+		return StanKoncowy;
 	Resolution res;
 	sf::Vector2f scale = res.scale();
 	if (gra->baza->gracze[gra->baza->moj_nick].wyrok != 0)
@@ -467,8 +470,12 @@ state_t DoRuszaSie(Game* gra)
 							gra->interfejs->CreateMessageWindow("Musisz zaplacic graczowi: " + karta->wlasciciel->nick + " " + std::to_string(czynsz), przyciski);
 
 							//akt zaplaty
-							Funkcje_Kart_Ulica funkcje(gra->baza->pola[numer_pola]);
-							funkcje.zaplata_czynszu(czynsz, &gra->baza->gracze[gra->baza->moj_nick]);
+							if (gra->baza->isServer)
+							{
+								Funkcje_Kart_Ulica funkcje(gra->baza->pola[numer_pola]);
+								funkcje.zaplata_czynszu(czynsz, &gra->baza->gracze[gra->baza->moj_nick]);
+							}
+
 							
 							//przygotowanie protoko³u
 							Packet_Czynsz_Zap pakiet(numer_pola, gra->baza->gracze[gra->baza->moj_nick].portfel, gra->baza->moj_nick, karta->wlasciciel->nick, czynsz);
@@ -567,8 +574,11 @@ state_t DoRuszaSie(Game* gra)
 							else  
 							{
 								//gracz chce kupic ulice
-								Funkcje_Kart_Ulica funkcje(gra->baza->pola[numer_pola]);
-								funkcje.kup(&gra->baza->gracze[gra->baza->moj_nick]);
+								if (gra->baza->isServer)
+								{
+									Funkcje_Kart_Ulica funkcje(gra->baza->pola[numer_pola]);
+									funkcje.kup(&gra->baza->gracze[gra->baza->moj_nick]);
+								}
 
 								//przygotowanie protokolu
 								Packet_Kupiono pakiet(numer_pola, gra->baza->gracze[gra->baza->moj_nick].portfel, gra->baza->moj_nick, karta->nazwa);
@@ -594,14 +604,27 @@ state_t DoRuszaSie(Game* gra)
 	
 		if (gra->opcjegry.zakup_domku == 1)
 		{
-
+			std::string ulica = gra->interfejs->CreateDomWindow(false, &gra->baza->gracze[gra->baza->moj_nick]);
+			if (ulica != "")
+			{
+				Packet_Pierwszy pakiet(gra->baza->gracze[gra->baza->moj_nick].portfel, gra->baza->NumerPola(ulica), gra->baza->pola[gra->baza->NumerPola(ulica)]->domy, gra->baza->gracze[gra->baza->moj_nick].karty_nieruchomosci);
+			}
 		}
 		if (gra->opcjegry.zakup_hotelu == 1)
 		{
+			std::string ulica = gra->interfejs->CreateDomWindow(false, &gra->baza->gracze[gra->baza->moj_nick]);
 
+			gra->interfejs->CreateDomWindow(true, &gra->baza->gracze[gra->baza->moj_nick]);
+			if (ulica != "")
+			{
+				Packet_Pierwszy pakiet(gra->baza->gracze[gra->baza->moj_nick].portfel, gra->baza->NumerPola(ulica), gra->baza->pola[gra->baza->NumerPola(ulica)]->domy, gra->baza->gracze[gra->baza->moj_nick].karty_nieruchomosci);
+			}
 		}
 		if (gra->opcjegry.zastaw == 1)
 		{
+			Uzytkownik* gracz = &gra->baza->gracze[gra->baza->moj_nick];
+			gra->interfejs->CreateZastawWindow(0, gracz);
+
 
 		}
 	
@@ -611,6 +634,9 @@ state_t DoRuszaSie(Game* gra)
 }
 state_t DoCzeka(Game* gra)
 {
+	if (!gra->interfejs->IsOpen())
+		return StanKoncowy;
+	gra->czy_rzucone_kostki = 0;
 	std::string typ;
 	gra->Dane_Odebrane.clear();
 	if (gra->baza->isServer)
@@ -640,10 +666,12 @@ state_t DoCzeka(Game* gra)
 	else if (typ == CZYNSZ)
 	{
 		Packet_Czynsz_Zap pakiet(gra->Dane_Odebrane);
-		gra->baza->gracze[pakiet.getNickPlatnika()].portfel = pakiet.getPortfel();
+		//gra->baza->gracze[pakiet.getNickPlatnika()].portfel = pakiet.getPortfel();
 		gra->baza->gracze[pakiet.getNickPlatnika()].numer_pola = pakiet.getNumerPola();
 		Funkcje_Kart_Ulica funkcje(gra->baza->pola[pakiet.getNumerPola()]);
 		funkcje.zaplata_czynszu(pakiet.getKwota(), &gra->baza->gracze[pakiet.getNickPlatnika()]);
+		gra->baza->gracze[pakiet.getNickPlatnika()].portfel = pakiet.getPortfel();
+
 		sf::Vector2f pozycja_pionka = gra->baza->pola[pakiet.getNumerPola()]->pozycja[gra->baza->gracze[pakiet.getNickPlatnika()].pionek->nr_pionka];
 		gra->baza->gracze[pakiet.getNickPlatnika()].pionek->setPosition(pozycja_pionka);
 	}
@@ -659,12 +687,13 @@ state_t DoCzeka(Game* gra)
 	if (typ == CZYNSZZASTAW)
 	{
 		Packet_Czynsz_Zastaw pakiet(gra->Dane_Odebrane);
-		gra->baza->gracze[pakiet.getNickPlatnika()].portfel = pakiet.getPortfel();
 		gra->baza->gracze[pakiet.getNickPlatnika()].numer_pola = pakiet.getNumerPola();
 
 		Funkcje_Kart_Ulica funkcje(gra->baza->pola[pakiet.getNumerPola()]);
+		//gra->baza->gracze[pakiet.getNickPlatnika()].portfel = pakiet.getPortfel();
 		funkcje.zaplata_czynszu(pakiet.getKwota(), &gra->baza->gracze[pakiet.getNickPlatnika()]);
 		funkcje.zastaw(&gra->baza->gracze[pakiet.getNickPlatnika()], pakiet.getNazwyUlic(), gra->baza);
+
 
 		sf::Vector2f pozycja_pionka = gra->baza->pola[pakiet.getNumerPola()]->pozycja[gra->baza->gracze[pakiet.getNickPlatnika()].pionek->nr_pionka];
 		gra->baza->gracze[pakiet.getNickPlatnika()].pionek->setPosition(pozycja_pionka);
@@ -674,7 +703,7 @@ state_t DoCzeka(Game* gra)
 		Packet_Brak_Zakupu pakiet(gra->Dane_Odebrane);
 
 		gra->baza->gracze[gra->baza->nick_aktywnego_gracza].numer_pola = pakiet.getNumerPola();
-		gra->baza->gracze[gra->baza->nick_aktywnego_gracza].portfel = pakiet.getPortfel();
+		//gra->baza->gracze[gra->baza->nick_aktywnego_gracza].portfel = pakiet.getPortfel();
 
 		sf::Vector2f pozycja_pionka = gra->baza->pola[pakiet.getNumerPola()]->pozycja[gra->baza->gracze[gra->baza->nick_aktywnego_gracza].pionek->nr_pionka];
 		gra->baza->gracze[gra->baza->nick_aktywnego_gracza].pionek->setPosition(pozycja_pionka);
@@ -684,10 +713,12 @@ state_t DoCzeka(Game* gra)
 		Packet_Kupiono pakiet(gra->Dane_Odebrane);
 
 		gra->baza->gracze[pakiet.getNickNabywcy()].numer_pola = pakiet.getNumerPola();
-		gra->baza->gracze[pakiet.getNickNabywcy()].portfel = pakiet.getPortfel();
+		//gra->baza->gracze[pakiet.getNickNabywcy()].portfel = pakiet.getPortfel();
+
 
 		Funkcje_Kart_Ulica funkcje(gra->baza->pola[pakiet.getNumerPola()]);
 		funkcje.kup(&gra->baza->gracze[pakiet.getNickNabywcy()]);
+
 
 		sf::Vector2f pozycja_pionka = gra->baza->pola[pakiet.getNumerPola()]->pozycja[gra->baza->gracze[gra->baza->nick_aktywnego_gracza].pionek->nr_pionka];
 		gra->baza->gracze[gra->baza->nick_aktywnego_gracza].pionek->setPosition(pozycja_pionka);
@@ -701,6 +732,8 @@ state_t DoCzeka(Game* gra)
 		Funkcje_Kart_Ulica funkcje(gra->baza->pola[pakiet.getNumerPolaDomy()]);
 		funkcje.zastaw(&gra->baza->gracze[gra->baza->nick_aktywnego_gracza], pakiet.getNazwyUlic(), gra->baza);
 		funkcje.dodaj_dom(pakiet.getLiczbaDomow());
+		gra->baza->gracze[gra->baza->nick_aktywnego_gracza].portfel = pakiet.getPortfel();
+
 
 		return Czeka;
 	}
@@ -722,11 +755,13 @@ state_t DoCzeka(Game* gra)
 	}
 	else
 	{
-		Czeka;
+		return Czeka;
 	}
 }
 state_t DoWysylanie(Game* gra)
 {
+	if (!gra->interfejs->IsOpen())
+		return StanKoncowy;
 	sf::Packet kopia;
 	kopia = gra->Dane_Do_Wyslania;
 	std::string typ;
@@ -763,20 +798,30 @@ state_t DoWysylanie(Game* gra)
 }
 state_t DoDelegujDoRuchu(Game* gra)
 {
+	if (!gra->interfejs->IsOpen())
+		return StanKoncowy;
 	std::string nick_nastepnego;
-	std::map<std::string, Uzytkownik>::iterator it = gra->baza->gracze.find(gra->baza->nick_aktywnego_gracza);
-	if (it == gra->baza->gracze.end())
+
+	std::string nick_aktywnego = gra->baza->nick_aktywnego_gracza;
+	for (int i = 0; i < gra->baza->nicki.size(); i++)
 	{
-		it = gra->baza->gracze.begin();
-		nick_nastepnego = it->first;
+		if (gra->baza->nicki[i] == nick_aktywnego)
+		{
+			if (i == gra->baza->nicki.size() - 1)
+			{
+				gra->baza->nick_aktywnego_gracza = gra->baza->nicki[0];
+				nick_nastepnego = gra->baza->nicki[0];
+			}
+			else
+			{
+				i++;
+				gra->baza->nick_aktywnego_gracza = gra->baza->nicki[i];
+				nick_nastepnego = gra->baza->nicki[i];
+			}
+			
+		}
 	}
-	else
-	{
-		it++;
-		nick_nastepnego = it->first;
-	}
-	
-	gra->baza->nick_aktywnego_gracza = nick_nastepnego;
+
 
 	Packet_Nastepny pakiet(nick_nastepnego);
 	gra->Dane_Do_Wyslania.clear();

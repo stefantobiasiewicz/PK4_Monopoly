@@ -8,7 +8,7 @@ sf::Packet Protokol::getPakiet()
 Protokol::Protokol(sf::Packet& otrzymany_pakiet)
 {
 	pakiet = otrzymany_pakiet;
-	rozpakuj();
+//	this->rozpakuj();
 }
 
 

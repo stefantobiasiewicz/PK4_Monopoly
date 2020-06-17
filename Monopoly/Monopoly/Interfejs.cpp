@@ -1190,9 +1190,10 @@ bool Interfejs::CreateZastawWindow(bool CzyPrzymusowy, Uzytkownik* user)
     return GraczPrzegrywa;
 }
 
-bool Interfejs::CreateDomWindow(bool isHotel, Uzytkownik* user)
+std::string Interfejs::CreateDomWindow(bool isHotel, Uzytkownik* user)
 {
     bool CzyKupiony = false;
+    std::string zwracany = "";
     float szer = Szer - Szer / 1.5f;
     float wys = Wys - Wys / 1.4f;
     Resolution res;
@@ -1275,6 +1276,7 @@ bool Interfejs::CreateDomWindow(bool isHotel, Uzytkownik* user)
             {
                 // sprawdzanie czy urzytkownik ma taka karte 
                 std::string ulica = NazwaUlicy.getText();
+                zwracany = ulica;
                 int NumerUlicy = this->Dane->NumerPola(ulica);
                 Pole* KtorePole = this->Dane->pola[NumerUlicy];
                 if (dynamic_cast<Ulica*>(KtorePole->karta))
@@ -1374,5 +1376,5 @@ bool Interfejs::CreateDomWindow(bool isHotel, Uzytkownik* user)
         // end the current frame
         window.display();
     }
-    return CzyKupiony;
+    return zwracany;
 }
