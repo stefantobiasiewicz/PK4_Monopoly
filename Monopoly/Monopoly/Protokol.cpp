@@ -30,10 +30,11 @@ void Packet_Wiezienie::rozpakuj()
 	pakiet >> liczba_kolejek;
 }
 
-Packet_Czynsz_Zap::Packet_Czynsz_Zap(int numer_pola, std::string nick_plat, std::string nick_odb, int kwota)
+Packet_Czynsz_Zap::Packet_Czynsz_Zap(int numer_pola, int portfel, std::string nick_plat, std::string nick_odb, int kwota)
 {
 	pakiet << CZYNSZ;
 	pakiet << numer_pola;
+	pakiet << portfel;
 	pakiet << nick_plat;
 	pakiet << kwota;
 	pakiet << nick_odb;
@@ -44,10 +45,17 @@ void Packet_Czynsz_Zap::rozpakuj()
 	std::string pom;
 	pakiet >> pom;
 	pakiet >> numer_pola;
+	pakiet >> portfel;
 	pakiet >> nick_platnika;
 	pakiet >> kwota;
 	pakiet >> nick_wlasciciela;
 }
+
+int Packet_Czynsz_Zap::getPortfel()
+{
+	return portfel;
+}
+
 
 std::string Packet_Czynsz_Zap::getNickPlatnika()
 {
@@ -92,10 +100,11 @@ void Packet_Usun::rozpakuj()
 	pakiet >> nick;
 }
 
-Packet_Czynsz_Zastaw::Packet_Czynsz_Zastaw(int numer_pola, std::string nick_platnika, int kwota, std::string nick_odbiorcy, std::vector<std::string>nazwy_ulic)
+Packet_Czynsz_Zastaw::Packet_Czynsz_Zastaw(int numer_pola, int portfel, std::string nick_platnika, int kwota, std::string nick_odbiorcy, std::vector<std::string>nazwy_ulic)
 {
 	pakiet << CZYNSZZASTAW;
 	pakiet << numer_pola;
+	pakiet << portfel;
 	pakiet << nick_platnika;
 	pakiet << kwota;
 	pakiet << nick_odbiorcy;
@@ -111,6 +120,7 @@ void Packet_Czynsz_Zastaw::rozpakuj()
 	std::string pom;
 	pakiet >> pom;
 	pakiet >> numer_pola;
+	pakiet >> portfel;
 	pakiet >> nick_platnika;
 	pakiet >> kwota;
 	pakiet >> nick_odbiorcy;
@@ -153,10 +163,17 @@ int Packet_Czynsz_Zastaw::getLiczbaUlic()
 	return liczba_ulic;
 }
 
-Packet_Brak_Zakupu::Packet_Brak_Zakupu(int numer_pola)
+int Packet_Czynsz_Zastaw::getPortfel()
+{
+	return portfel;
+}
+
+
+Packet_Brak_Zakupu::Packet_Brak_Zakupu(int numer_pola, int portfel)
 {
 	pakiet << BRAKZAKUPU;
 	pakiet << numer_pola;
+	pakiet << portfel;
 }
 
 
@@ -165,6 +182,7 @@ void Packet_Brak_Zakupu::rozpakuj()
 	std::string pom;
 	pakiet >> pom;
 	pakiet >> numer_pola;
+	pakiet >> portfel;
 }
 
 int Packet_Brak_Zakupu::getNumerPola()
@@ -172,10 +190,17 @@ int Packet_Brak_Zakupu::getNumerPola()
 	return numer_pola;
 }
 
-Packet_Kupiono::Packet_Kupiono(int numer_pola, std::string nick, std::string nazwa)
+int Packet_Brak_Zakupu::getPortfel()
+{
+	return portfel;
+}
+
+
+Packet_Kupiono::Packet_Kupiono(int numer_pola, int portfel, std::string nick, std::string nazwa)
 {
 	pakiet << KUPIONO;
 	pakiet << numer_pola;
+	pakiet << portfel;
 	pakiet << nick;
 	pakiet << nazwa;
 }
@@ -195,11 +220,18 @@ std::string Packet_Kupiono::getNazwaNieruchomosci()
 	return nazwa_nieruchomosci;
 }
 
+int Packet_Kupiono::getPortfel()
+{
+	return portfel;
+}
+
+
 void Packet_Kupiono::rozpakuj()
 {
 	std::string pom;
 	pakiet >> pom;
 	pakiet >> numer_pola;
+	pakiet >> portfel;
 	pakiet >> nick_nabywcy;
 	pakiet >> nazwa_nieruchomosci;
 }

@@ -294,7 +294,7 @@ state_t DoExecuteButtons(Game* gra)
 		gra->interfejs->CreateCardsWindow(gra->baza->nicki[1]);
 		gra->opcjegry.karty2 = false;
 	}
-	return Stan2;
+	return RuszaSie;
 }
 state_t DoStartGrySerwer(Game* gra)
 {
@@ -375,25 +375,98 @@ state_t DoRuszaSie(Game* gra)
 			numer_pola += rzut;
 			if (numer_pola > 39)
 			{
+				gra->baza->gracze[gra->baza->moj_nick].portfel += 200;
 				numer_pola -= 40;
 			}
 			gra->baza->gracze[gra->baza->moj_nick].numer_pola = numer_pola;
 			
 			//zmieniamy pozycjê pionka
-			gra->baza->gracze[gra->baza->moj_nick].pionek->setPosition(res.x({ gra->baza->pola[numer_pola]->pozycja[numer_gracza].x }), res.y(gra->baza->pola[numer_pola]->pozycja[numer_gracza].y));
+			gra->baza->gracze[gra->baza->moj_nick].pionek->setPosition({ gra->baza->pola[numer_pola]->pozycja[numer_gracza].x , gra->baza->pola[numer_pola]->pozycja[numer_gracza].y });
 			
 			//wykonujemy funkcjê karty przypisanej do tego pola
 			Karta* karta = gra->baza->pola[numer_pola]->karta;
 		
+			if (karta == nullptr)
+			{
+				if (numer_pola == 10 || numer_pola == 20 || numer_pola == 30)
+				{
+					//TODO co wtedy
+					Packet_Brak_Zakupu pakiet(numer_pola, gra->baza->gracze[gra->baza->moj_nick].portfel);
+					gra->Dane_Do_Wyslania.clear();
+					gra->Dane_Do_Wyslania = pakiet.getPakiet();
+					return Wysylanie;
+				}
+				else
+				{
+					//szansza lub kasa spoleczna
+					if (gra->baza->pola[numer_pola]->nazwa == "Kasa Spoleczna")
+					{
+						//karta to "kasa spo³eczna"
+						Funkcje_Kart_Kasa_Szansa funkcje(gra->baza->pola[numer_pola]);
+						int los = funkcje.losujKASA();
+						funkcje.setKarta(gra->baza->karty_szansa_kasa[los]);
+
+						std::vector<button*> przyciski;
+						button ok({ 100,100 }, { 0,0 }, "\grafiki/button_ok.jpg", "\grafiki/button_ok2.jpg");
+						przyciski.push_back(&ok);
+
+						gra->interfejs->CreateMessageWindow("", przyciski, karta);
+						//TODO napisac funkcjê kart kasa/szansa (grupy funkcji)
+
+						Packet_Brak_Zakupu pakiet(numer_pola, gra->baza->gracze[gra->baza->moj_nick].portfel);
+						gra->Dane_Do_Wyslania.clear();
+						gra->Dane_Do_Wyslania = pakiet.getPakiet();
+						return Wysylanie;
+
+					}
+					else
+					{
+						//to jest karta "Szansa"
+						Funkcje_Kart_Kasa_Szansa funkcje(gra->baza->pola[numer_pola]);
+						int los = funkcje.losujSZANSA();
+						funkcje.setKarta(gra->baza->karty_szansa_kasa[los]);
+
+						std::vector<button*> przyciski;
+						button ok({ 100,100 }, { 0,0 }, "\grafiki/button_ok.jpg", "\grafiki/button_ok2.jpg");
+						przyciski.push_back(&ok);
+
+						gra->interfejs->CreateMessageWindow("", przyciski, karta);
+						//TODO napisac funkcjê kart kasa/szansa (grupy funkcji)
+
+						Packet_Brak_Zakupu pakiet(numer_pola, gra->baza->gracze[gra->baza->moj_nick].portfel);
+						gra->Dane_Do_Wyslania.clear();
+						gra->Dane_Do_Wyslania = pakiet.getPakiet();
+						return Wysylanie;
+
+					}
+				}
+			}
+
 			if (karta)
 			{
 				if (dynamic_cast<Ulica*>(karta) || dynamic_cast<Dworzec_Uzyt_Pub*>(karta))
 				{
-					Funkcje_Kart_Ulica funkcje(gra->baza->pola[numer_pola]);
+					int czynsz;
 					if (karta->wlasciciel)
 					{
-						//ulica jest ju¿ kupiona
-						int czynsz = funkcje.Czynsz();
+						if (dynamic_cast<Ulica*>(karta))
+						{
+							//jest to ulica i jest ju¿ kupiona
+							Funkcje_Kart_Ulica funkcje(gra->baza->pola[numer_pola]);
+							czynsz = funkcje.Czynsz();
+						}
+						else if (karta->nazwa != "Elektrownia" && karta->nazwa != "Wodociagi")
+						{
+							//jest to dworzec i jest juz kupiony
+							Funkcje_Kart_Dworzec funkcje(gra->baza->pola[numer_pola]);
+							czynsz = funkcje.Czynsz();
+						}
+						else
+						{
+							//jest to elektrownia lub wodociagi i jest ju¿ kupione
+							Funkcje_Kart_UP funkcje(gra->baza->pola[numer_pola]);
+							czynsz = funkcje.Czynsz(rzut);
+						}
 						if (gra->baza->gracze[gra->baza->moj_nick].portfel >= czynsz)
 						{
 							//gracza stac na op³acenie czynszu
@@ -401,13 +474,14 @@ state_t DoRuszaSie(Game* gra)
 							std::vector<button*> przyciski;
 							button ok({ 100,100 }, { 0,0 }, "\grafiki/button_ok.jpg", "\grafiki/button_ok2.jpg");
 							przyciski.push_back(&ok);
-							gra->interfejs->CreateMessageWindow("Musisz zaplacic graczowi: " + karta->wlasciciel->nick + std::to_string(czynsz), przyciski);
+							gra->interfejs->CreateMessageWindow("Musisz zaplacic graczowi: " + karta->wlasciciel->nick + " " + std::to_string(czynsz), przyciski);
 
 							//akt zaplaty
+							Funkcje_Kart_Ulica funkcje(gra->baza->pola[numer_pola]);
 							funkcje.zaplata_czynszu(czynsz, &gra->baza->gracze[gra->baza->moj_nick]);
 							
 							//przygotowanie protoko³u
-							Packet_Czynsz_Zap pakiet(numer_pola, gra->baza->moj_nick, karta->wlasciciel->nick, czynsz);
+							Packet_Czynsz_Zap pakiet(numer_pola, gra->baza->gracze[gra->baza->moj_nick].portfel, gra->baza->moj_nick, karta->wlasciciel->nick, czynsz);
 							gra->Dane_Do_Wyslania.clear();
 							gra->Dane_Do_Wyslania = pakiet.getPakiet();
 							return Wysylanie;
@@ -447,10 +521,11 @@ state_t DoRuszaSie(Game* gra)
 								}
 							}
 							//gracz zastawil nieruchomosci i moze zaplacic
+							Funkcje_Kart_Ulica funkcje(gra->baza->pola[numer_pola]);
 							funkcje.zaplata_czynszu(czynsz, &gra->baza->gracze[gra->baza->moj_nick]);
 
 							//przygotowanie pakietu
-							Packet_Czynsz_Zastaw pakiet(numer_pola, gra->baza->moj_nick, czynsz, karta->wlasciciel->nick, gra->baza->gracze[gra->baza->moj_nick].karty_nieruchomosci);
+							Packet_Czynsz_Zastaw pakiet(numer_pola, gra->baza->gracze[gra->baza->moj_nick].portfel, gra->baza->moj_nick, czynsz, karta->wlasciciel->nick, gra->baza->gracze[gra->baza->moj_nick].karty_nieruchomosci);
 							gra->Dane_Do_Wyslania.clear();
 							gra->Dane_Do_Wyslania = pakiet.getPakiet();
 							return Wysylanie;
@@ -470,7 +545,7 @@ state_t DoRuszaSie(Game* gra)
 							gra->interfejs->CreateMessageWindow("Nie stac cie na zakup tej nieruchomosci.", przyciski);
 
 							//przygotowanie protokolu
-							Packet_Brak_Zakupu pakiet(numer_pola);
+							Packet_Brak_Zakupu pakiet(numer_pola, gra->baza->gracze[gra->baza->moj_nick].portfel);
 							gra->Dane_Do_Wyslania.clear();
 							gra->Dane_Do_Wyslania = pakiet.getPakiet();
 							
@@ -494,36 +569,39 @@ state_t DoRuszaSie(Game* gra)
 							{
 								//uzytkownik nie chce kupic ulicy
 								//przygotowanie protokolu
-								Packet_Brak_Zakupu pakiet(numer_pola);
+								Packet_Brak_Zakupu pakiet(numer_pola, gra->baza->gracze[gra->baza->moj_nick].portfel);
 								gra->Dane_Do_Wyslania.clear();
 								gra->Dane_Do_Wyslania = pakiet.getPakiet();
+								return Wysylanie;
 							}
 							else  
 							{
 								//gracz chce kupic ulice
+								Funkcje_Kart_Ulica funkcje(gra->baza->pola[numer_pola]);
 								funkcje.kup(&gra->baza->gracze[gra->baza->moj_nick]);
 
 								//przygotowanie protokolu
-								Packet_Kupiono pakiet(numer_pola, gra->baza->moj_nick, karta->nazwa);
+								Packet_Kupiono pakiet(numer_pola, gra->baza->gracze[gra->baza->moj_nick].portfel, gra->baza->moj_nick, karta->nazwa);
 								gra->Dane_Do_Wyslania.clear();
 								gra->Dane_Do_Wyslania = pakiet.getPakiet();
+								return Wysylanie;
 							}
 						}
 					}
 				}
-				else if (dynamic_cast<Szansa_Kasa_Spoleczna*>(gra->baza->pola[numer_pola]->karta))
+				else
 				{
-
+					//domiar podatkowy lub podatek dochodowy
+					Packet_Brak_Zakupu pakiet(numer_pola, gra->baza->gracze[gra->baza->moj_nick].portfel);
+					gra->Dane_Do_Wyslania.clear();
+					gra->Dane_Do_Wyslania = pakiet.getPakiet();
+					return Wysylanie;
 				}
-			}
-			else
-			{
-				//nie ma karty przypisanej temu polu
+				
 			}
 		}
 	}
-	if (gra->czy_rzucone_kostki == 0)
-	{
+	
 		if (gra->opcjegry.zakup_domku == 1)
 		{
 
@@ -536,10 +614,10 @@ state_t DoRuszaSie(Game* gra)
 		{
 
 		}
-	}
+	
 
 	
-	return Stan2;
+	return ExecuteButtons;
 }
 state_t DoCzeka(Game* gra)
 {

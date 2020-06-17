@@ -39,17 +39,19 @@ class Packet_Czynsz_Zap : public Protokol
 	std::string nick_platnika;
 	std::string nick_wlasciciela;
 	int kwota;
+	int portfel;
 
 	virtual void rozpakuj();
 
 public:
-	Packet_Czynsz_Zap(int numer_pola, std::string nick_plat, std::string nick_odb, int kwota);
+	Packet_Czynsz_Zap(int numer_pola, int portfel, std::string nick_plat, std::string nick_odb, int kwota);
 	Packet_Czynsz_Zap(sf::Packet& otrzymany_pakiet) : Protokol(otrzymany_pakiet) {}
 	~Packet_Czynsz_Zap() {}
 	std::string getNickPlatnika();
 	std::string getNickOdbiorcy();
 	int getKwota();
 	int getNumerPola();
+	int getPortfel();
 };
 
 class Packet_Usun : public Protokol
@@ -75,11 +77,12 @@ class Packet_Czynsz_Zastaw : public Protokol
 	int kwota;
 	std::vector<std::string> nazwy_ulic;
 	int liczba_ulic;
+	int portfel;
 
 	virtual void rozpakuj();
 
 public:
-	Packet_Czynsz_Zastaw(int numer_pola, std::string nick_platnika, int kwota, std::string nick_odbiorcy, std::vector<std::string>nazwy_ulic);
+	Packet_Czynsz_Zastaw(int numer_pola, int portfel, std::string nick_platnika, int kwota, std::string nick_odbiorcy, std::vector<std::string>nazwy_ulic);
 	Packet_Czynsz_Zastaw(sf::Packet& otrzymany_pakiet) : Protokol(otrzymany_pakiet) {}
 	~Packet_Czynsz_Zastaw() {}
 	
@@ -89,21 +92,26 @@ public:
 	int getKwota();
 	std::vector<std::string> getNazwyUlic();
 	int getLiczbaUlic();
+	int getPortfel();
+
 
 };
 
 class Packet_Brak_Zakupu : public Protokol
 {
 	int numer_pola;
+	int portfel;
 
 	virtual void rozpakuj();
 
 public:
-	Packet_Brak_Zakupu(int numer_pola);
+	Packet_Brak_Zakupu(int numer_pola, int portfel);
 	Packet_Brak_Zakupu(sf::Packet& otrzymany_pakiet) : Protokol(otrzymany_pakiet) {}
 	~Packet_Brak_Zakupu() {}
 
 	int getNumerPola();
+	int getPortfel();
+
 };
 
 class Packet_Kupiono : public Protokol
@@ -111,16 +119,19 @@ class Packet_Kupiono : public Protokol
 	int numer_pola;
 	std::string nick_nabywcy;
 	std::string nazwa_nieruchomosci;
+	int portfel;
 
 
 	virtual void rozpakuj();
 
 public:
-	Packet_Kupiono(int numer_pola, std::string nick, std::string nazwa);
+	Packet_Kupiono(int numer_pola, int portfel, std::string nick, std::string nazwa);
 	Packet_Kupiono(sf::Packet& otrzymany_pakiet) : Protokol(otrzymany_pakiet) {}
 	~Packet_Kupiono() {}
 
 	int getNumerPola();
 	std::string getNickNabywcy();
 	std::string getNazwaNieruchomosci();
+	int getPortfel();
+
 };

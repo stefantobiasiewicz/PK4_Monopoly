@@ -23,3 +23,71 @@ void Funkcje_Kart_Ulica::kup(Uzytkownik* nabywca)
 	nabywca->karty_nieruchomosci.push_back(karta->nazwa);
 	karta->wlasciciel = nabywca;
 }
+
+int Funkcje_Kart_Dworzec::Czynsz()
+{
+	int ile_dworcow = 0;
+	
+	if (karta->wlasciciel->CzyMaKarte("Dworzec Gdanski"))
+		ile_dworcow++;
+	if (karta->wlasciciel->CzyMaKarte("Dworzec Wschodni"))
+		ile_dworcow++;
+	if (karta->wlasciciel->CzyMaKarte("Dworzec Zachodni"))
+		ile_dworcow++;
+	if (karta->wlasciciel->CzyMaKarte("Dworzec Centralny"))
+		ile_dworcow++;
+
+	return ile_dworcow * 25;
+
+}
+
+int Funkcje_Kart_UP::Czynsz(int rzut)
+{
+	int ile_UP = 0;
+
+	if (karta->wlasciciel->CzyMaKarte("Elektrownia"))
+		ile_UP++;
+	if (karta->wlasciciel->CzyMaKarte("Wodociagi"))
+		ile_UP++;
+
+	if (ile_UP == 1)
+	{
+		return 4 * rzut;
+	}
+	else
+	{
+		return 10 * rzut;
+	}
+}
+
+int Funkcje_Kart_Kasa_Szansa::losujKASA()
+{
+	std::default_random_engine silnik;
+	silnik.seed(std::chrono::system_clock::now().time_since_epoch().count());
+	uniform_int_distribution<int>liniowy(16, 31);
+
+	int los = liniowy(silnik);
+
+	return los;
+}
+
+int Funkcje_Kart_Kasa_Szansa::losujSZANSA()
+{
+	std::default_random_engine silnik;
+	silnik.seed(std::chrono::system_clock::now().time_since_epoch().count());
+	uniform_int_distribution<int>liniowy(0, 15);
+
+	int los = liniowy(silnik);
+
+	return los;
+}
+
+
+void Funkcje_Kart_Kasa_Szansa::setKarta(Szansa_Kasa_Spoleczna* k)
+{
+	karta = k;
+}
+
+
+
+
