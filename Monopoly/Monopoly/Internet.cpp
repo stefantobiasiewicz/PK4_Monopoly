@@ -120,6 +120,7 @@ int Internet::RecieveAll(sf::Packet& pack)
 		if (this->Recive(pack, i))
 			return i;
 	}
+	return -1;
 }
 
 

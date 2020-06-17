@@ -4,6 +4,7 @@
 #include <random>
 #include "Karta.h"
 #include "Pole.h"
+#include "BazaDanych.h"
 
 class Funkcje_Kart
 {
@@ -23,6 +24,8 @@ public:
 	int Czynsz();
 	void zaplata_czynszu(int kwota, Uzytkownik* platnik);
 	void kup(Uzytkownik* nabywca);
+	void zastaw(Uzytkownik* gracz, std::vector<std::string>nazwy_ulic, BazaDanych * baza);
+	void dodaj_dom(int liczba);
 
 };
 

@@ -7,6 +7,8 @@
 #define CZYNSZZASTAW "CZYNSZZASTAW"
 #define BRAKZAKUPU "BRAKZAKUPU"
 #define KUPIONO "KUPIONO"
+#define NASTEPNY "NASTEPNY"
+#define PIERWSZY "PIERWSZY"
 
 class Protokol
 {
@@ -133,5 +135,45 @@ public:
 	std::string getNickNabywcy();
 	std::string getNazwaNieruchomosci();
 	int getPortfel();
+
+};
+
+class Packet_Nastepny : public Protokol
+{
+
+	std::string nastepny;
+	virtual void rozpakuj();
+
+public:
+	Packet_Nastepny(std::string nick_nastepnego);
+	Packet_Nastepny(sf::Packet& otrzymany_pakiet) : Protokol(otrzymany_pakiet) {}
+	~Packet_Nastepny() {}
+
+	std::string GetNastepny();
+
+};
+
+class Packet_Pierwszy : public Protokol
+{
+
+	int portfel;
+	int numer_pola_domy;
+	int liczba_domow;
+	int liczba_ulic;
+	std::vector<std::string> nazwy_ulic;
+
+
+	virtual void rozpakuj();
+
+public:
+	Packet_Pierwszy(int portfel, int numer_pola_domy, int liczba_domow, std::vector<std::string>nazwy);
+	Packet_Pierwszy(sf::Packet& otrzymany_pakiet) : Protokol(otrzymany_pakiet) {}
+	~Packet_Pierwszy() {}
+
+	int getPortfel();
+	int getNumerPolaDomy();
+	int getLiczbaDomow();
+	int getLiczbaUlic();
+	std::vector<std::string> getNazwyUlic();
 
 };

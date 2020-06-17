@@ -25,8 +25,6 @@ int Packet_Wiezienie::getLiczbaKolejek()
 
 void Packet_Wiezienie::rozpakuj()
 {
-	std::string pom;
-	pakiet >> pom;
 	pakiet >> liczba_kolejek;
 }
 
@@ -42,8 +40,6 @@ Packet_Czynsz_Zap::Packet_Czynsz_Zap(int numer_pola, int portfel, std::string ni
 
 void Packet_Czynsz_Zap::rozpakuj()
 {
-	std::string pom;
-	pakiet >> pom;
 	pakiet >> numer_pola;
 	pakiet >> portfel;
 	pakiet >> nick_platnika;
@@ -94,8 +90,6 @@ int Packet_Usun::getNumerPola()
 
 void Packet_Usun::rozpakuj()
 {
-	std::string pom;
-	pakiet >> pom;
 	pakiet >> numer_pola;
 	pakiet >> nick;
 }
@@ -117,8 +111,6 @@ Packet_Czynsz_Zastaw::Packet_Czynsz_Zastaw(int numer_pola, int portfel, std::str
 
 void Packet_Czynsz_Zastaw::rozpakuj()
 {
-	std::string pom;
-	pakiet >> pom;
 	pakiet >> numer_pola;
 	pakiet >> portfel;
 	pakiet >> nick_platnika;
@@ -179,8 +171,6 @@ Packet_Brak_Zakupu::Packet_Brak_Zakupu(int numer_pola, int portfel)
 
 void Packet_Brak_Zakupu::rozpakuj()
 {
-	std::string pom;
-	pakiet >> pom;
 	pakiet >> numer_pola;
 	pakiet >> portfel;
 }
@@ -228,8 +218,6 @@ int Packet_Kupiono::getPortfel()
 
 void Packet_Kupiono::rozpakuj()
 {
-	std::string pom;
-	pakiet >> pom;
 	pakiet >> numer_pola;
 	pakiet >> portfel;
 	pakiet >> nick_nabywcy;
@@ -237,6 +225,69 @@ void Packet_Kupiono::rozpakuj()
 }
 
 
+Packet_Nastepny::Packet_Nastepny(std::string nick_nastepnego)
+{
+	pakiet << NASTEPNY;
+	pakiet << nick_nastepnego;
+}
+
+void Packet_Nastepny::rozpakuj()
+{
+	pakiet >> nastepny;
+}
+
+std::string Packet_Nastepny::GetNastepny()
+{
+	return this->nastepny;
+}
+
+Packet_Pierwszy::Packet_Pierwszy(int portfel, int numer_pola_domy, int liczba_domow, std::vector<std::string>nazwy)
+{
+	pakiet << PIERWSZY;
+	pakiet << portfel;
+	pakiet << numer_pola_domy;
+	pakiet << liczba_domow;
+	pakiet << nazwy.size();
+	for (int i = 0; i < nazwy.size(); i++)
+	{
+		pakiet << nazwy[i];
+	}
+}
+
+void Packet_Pierwszy::rozpakuj()
+{
+	pakiet >> portfel;
+	pakiet >> numer_pola_domy;
+	pakiet >> liczba_domow;
+	pakiet >> liczba_ulic;
+	for (int i = 0; i < liczba_ulic; i++)
+	{
+		std::string temp;
+		pakiet >> temp;
+		nazwy_ulic.push_back(temp);
+	}
+}
+
+int Packet_Pierwszy::getPortfel()
+{
+	return portfel;
+}
+int Packet_Pierwszy::getNumerPolaDomy()
+{
+	return numer_pola_domy;
+}
+int Packet_Pierwszy::getLiczbaDomow()
+{
+	return liczba_domow;
+}
+int Packet_Pierwszy::getLiczbaUlic()
+{
+	return liczba_ulic;
+}
+std::vector<std::string> Packet_Pierwszy::getNazwyUlic()
+{
+	return nazwy_ulic;
+}
 
 
 

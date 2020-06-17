@@ -1073,26 +1073,18 @@ bool Interfejs::CreateZastawWindow(bool CzyPrzymusowy, Uzytkownik* user)
     napis.setString("Podaj nazwe karty jaka chcesz zastawic:");
 
 
-    Textbox NazwaKarty(40, sf::Color(77, 0, 0), false, scale.x * 400, sf::Vector2f{ (float)res.x(20) , (float)res.y(30) }, sf::Color(204, 204, 204));
+    Textbox NazwaKarty(40, sf::Color(77, 0, 0), false, 400, sf::Vector2f{ (float)res.x(20) , (float)res.y(30) }, sf::Color(204, 204, 204));
     NazwaKarty.setLimit(true, 30);
     NazwaKarty.setFont(this->Dane->czcionka);
 
 
 
     std::vector<button*> przyciski;
-    button Ok({ 100,100 }, { 0,0 }, "\grafiki/button_ok.jpg", "\grafiki/button_ok2.jpg");
+    button Ok({ 100,100 }, { 0,0 }, "\grafiki/button_zastawp.jpg", "\grafiki/button_zastawp2.jpg");
     button* AnulujPoddajSie;
-    if (CzyPrzymusowy == true)
-    {
-        //poddaj sie
-        //inna grafika przycisku
-        AnulujPoddajSie = new button({ 100,100 }, { 0,0 }, "\grafiki/button_kup.jpg", "\grafiki/button_kup2.jpg");      ////////////////////////////////////////////////////////
-    }
-    else
-    {
-        //anuluj 
-        AnulujPoddajSie = new button({ 100,100 }, { 0,0 }, "\grafiki/button_kup.jpg", "\grafiki/button_kup2.jpg");
-    }
+    
+    AnulujPoddajSie = new button({ 100,100 }, { 0,0 }, "\grafiki/button_zakonczp.jpg", "\grafiki/button_zakonczp2.jpg");      ////////////////////////////////////////////////////////
+    
     przyciski.push_back(&Ok);
     przyciski.push_back(AnulujPoddajSie);
 
@@ -1125,8 +1117,8 @@ bool Interfejs::CreateZastawWindow(bool CzyPrzymusowy, Uzytkownik* user)
                         // uzytkownik ma karte
                         int cena = (this->Dane->karty_nieruchomosci[karta]->cena / 2);
                         std::vector<button*> TakNie;
-                        button Tak({ 100,100 }, { 0,0 }, "\grafiki/button_ok.jpg", "\grafiki/button_ok2.jpg");
-                        button Nie({ 100,100 }, { 0,0 }, "\grafiki/button_kup.jpg", "\grafiki/button_kup2.jpg");
+                        button Tak({ 100,100 }, { 0,0 }, "\grafiki/button_tak.jpg", "\grafiki/button_tak2.jpg");
+                        button Nie({ 100,100 }, { 0,0 }, "\grafiki/button_nie.jpg", "\grafiki/button_nie2.jpg");
                         TakNie.push_back(&Tak);
                         TakNie.push_back(&Nie);
                         if (this->CreateMessageWindow("Czy napewno chcesz sprzedac karte:\n" + karta + "\nza cene:" + std::to_string(cena), TakNie) == 0)
@@ -1157,10 +1149,10 @@ bool Interfejs::CreateZastawWindow(bool CzyPrzymusowy, Uzytkownik* user)
                     else
                     {
                         // uzytkownik nie ma takiej kartyy
-                        std::vector<button*> Defoult;
+                        std::vector<button*> Default;
                         button Okk({ 100,100 }, { 0,0 }, "\grafiki/button_ok.jpg", "\grafiki/button_ok2.jpg");
-                        Defoult.push_back(&Okk);
-                        this->CreateMessageWindow("Nie posiadasz takiej Karty", Defoult);
+                        Default.push_back(&Okk);
+                        this->CreateMessageWindow("Nie posiadasz takiej Karty", Default);
                     }
 
 

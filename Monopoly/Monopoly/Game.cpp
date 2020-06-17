@@ -222,6 +222,8 @@ state_t DoInicjalizacjaKlienta(Game* gra)
 
 state_t DoExecuteButtons(Game* gra)
 {
+	if (!gra->interfejs->IsOpen())
+		return StanKoncowy;
 	if (gra->opcjegry.zakup_domku)
 	{
 		//jakas funkcja
@@ -621,24 +623,188 @@ state_t DoRuszaSie(Game* gra)
 }
 state_t DoCzeka(Game* gra)
 {
-	return Stan2;
+	std::string typ;
+	gra->Dane_Odebrane.clear();
+	if (gra->baza->isServer)
+	{
+		if (gra->internet->RecieveAll(gra->Dane_Odebrane) == -1)
+			return Czeka;
+		else
+		{
+			gra->internet->SendAll(gra->Dane_Odebrane);
+		}
+	}
+	else
+	{
+		if (!gra->internet->Recive(gra->Dane_Odebrane))
+		{
+			return Czeka;
+		}
+	}
+
+	gra->Dane_Odebrane >> typ;
+
+	if (typ == WIEZIENIE)
+	{
+		Packet_Wiezienie pakiet(gra->Dane_Odebrane);
+		gra->baza->gracze[gra->baza->nick_aktywnego_gracza].wyrok = pakiet.getLiczbaKolejek();
+	}
+	else if (typ == CZYNSZ)
+	{
+		Packet_Czynsz_Zap pakiet(gra->Dane_Odebrane);
+		gra->baza->gracze[pakiet.getNickPlatnika()].portfel = pakiet.getPortfel();
+		gra->baza->gracze[pakiet.getNickPlatnika()].numer_pola = pakiet.getNumerPola();
+		Funkcje_Kart_Ulica funkcje(gra->baza->pola[pakiet.getNumerPola()]);
+		funkcje.zaplata_czynszu(pakiet.getKwota(), &gra->baza->gracze[pakiet.getNickPlatnika()]);
+		sf::Vector2f pozycja_pionka = gra->baza->pola[pakiet.getNumerPola()]->pozycja[gra->baza->gracze[pakiet.getNickPlatnika()].pionek->nr_pionka];
+		gra->baza->gracze[pakiet.getNickPlatnika()].pionek->setPosition(pozycja_pionka);
+	}
+	else if (typ == USUN)
+	{
+		Packet_Usun pakiet(gra->Dane_Odebrane);
+		gra->baza->Usun_Gracza(pakiet.getNick());
+		std::vector<button*> przyciski;
+		button ok({ 100,100 }, { 0,0 }, "\grafiki/button_ok.jpg", "\grafiki/button_ok2.jpg");
+		przyciski.push_back(&ok);
+		gra->interfejs->CreateMessageWindow("Gracz " + pakiet.getNick() + " przegral,\nnie byl w stanie zaplacic czynszu za: \n" + gra->baza->pola[pakiet.getNumerPola()]->nazwa, przyciski);
+	}
+	if (typ == CZYNSZZASTAW)
+	{
+		Packet_Czynsz_Zastaw pakiet(gra->Dane_Odebrane);
+		gra->baza->gracze[pakiet.getNickPlatnika()].portfel = pakiet.getPortfel();
+		gra->baza->gracze[pakiet.getNickPlatnika()].numer_pola = pakiet.getNumerPola();
+
+		Funkcje_Kart_Ulica funkcje(gra->baza->pola[pakiet.getNumerPola()]);
+		funkcje.zaplata_czynszu(pakiet.getKwota(), &gra->baza->gracze[pakiet.getNickPlatnika()]);
+		funkcje.zastaw(&gra->baza->gracze[pakiet.getNickPlatnika()], pakiet.getNazwyUlic(), gra->baza);
+
+		sf::Vector2f pozycja_pionka = gra->baza->pola[pakiet.getNumerPola()]->pozycja[gra->baza->gracze[pakiet.getNickPlatnika()].pionek->nr_pionka];
+		gra->baza->gracze[pakiet.getNickPlatnika()].pionek->setPosition(pozycja_pionka);
+	}
+	if (typ == BRAKZAKUPU)
+	{
+		Packet_Brak_Zakupu pakiet(gra->Dane_Odebrane);
+
+		gra->baza->gracze[gra->baza->nick_aktywnego_gracza].numer_pola = pakiet.getNumerPola();
+		gra->baza->gracze[gra->baza->nick_aktywnego_gracza].portfel = pakiet.getPortfel();
+
+		sf::Vector2f pozycja_pionka = gra->baza->pola[pakiet.getNumerPola()]->pozycja[gra->baza->gracze[gra->baza->nick_aktywnego_gracza].pionek->nr_pionka];
+		gra->baza->gracze[gra->baza->nick_aktywnego_gracza].pionek->setPosition(pozycja_pionka);
+	}
+	if (typ == KUPIONO)
+	{
+		Packet_Kupiono pakiet(gra->Dane_Odebrane);
+
+		gra->baza->gracze[pakiet.getNickNabywcy()].numer_pola = pakiet.getNumerPola();
+		gra->baza->gracze[pakiet.getNickNabywcy()].portfel = pakiet.getPortfel();
+
+		Funkcje_Kart_Ulica funkcje(gra->baza->pola[pakiet.getNumerPola()]);
+		funkcje.kup(&gra->baza->gracze[pakiet.getNickNabywcy()]);
+
+		sf::Vector2f pozycja_pionka = gra->baza->pola[pakiet.getNumerPola()]->pozycja[gra->baza->gracze[gra->baza->nick_aktywnego_gracza].pionek->nr_pionka];
+		gra->baza->gracze[gra->baza->nick_aktywnego_gracza].pionek->setPosition(pozycja_pionka);
+	}
+	if (typ == PIERWSZY)
+	{
+		Packet_Pierwszy pakiet(gra->Dane_Odebrane);
+
+		gra->baza->gracze[gra->baza->nick_aktywnego_gracza].portfel = pakiet.getPortfel();
+		
+		Funkcje_Kart_Ulica funkcje(gra->baza->pola[pakiet.getNumerPolaDomy()]);
+		funkcje.zastaw(&gra->baza->gracze[gra->baza->nick_aktywnego_gracza], pakiet.getNazwyUlic(), gra->baza);
+		funkcje.dodaj_dom(pakiet.getLiczbaDomow());
+
+		return Czeka;
+	}
+	if(typ == NASTEPNY)                //serwer nigdy nie dostanie tego pakietu
+	{
+		Packet_Nastepny pakiet(gra->Dane_Odebrane);
+		gra->baza->nick_aktywnego_gracza = pakiet.GetNastepny();
+
+		if (pakiet.GetNastepny() == gra->baza->moj_nick)
+			return RuszaSie;
+		else
+		{
+			return Czeka;
+		}
+	}
+	if (gra->baza->isServer)
+	{
+		return DelegujDoRuchu;
+	}
+	else
+	{
+		Czeka;
+	}
 }
 state_t DoWysylanie(Game* gra)
 {
-	// przypadek gdy program jest serverem 
-	if (gra->baza->isServer)
+	sf::Packet kopia;
+	kopia = gra->Dane_Do_Wyslania;
+	std::string typ;
+	kopia >> typ;
+
+	if (typ == PIERWSZY)
 	{
-		//wysylamy dane do kazdego gracza
-		gra->internet->SendAll(gra->Dane_Do_Wyslania);
+		if (gra->baza->isServer)     //server
+		{
+			gra->internet->SendAll(gra->Dane_Do_Wyslania);
+			return RuszaSie;
+		}
+		else                        //klient
+		{
+			gra->internet->Send(gra->Dane_Do_Wyslania);
+			return RuszaSie;
+		}
 	}
-	//przypadek gdy program jest klientem
 	else
 	{
-		//wysylamy dane na server
-		gra->internet->Send(gra->Dane_Do_Wyslania);
+		if (gra->baza->isServer)
+		{
+			gra->internet->SendAll(gra->Dane_Do_Wyslania);
+			return DelegujDoRuchu;
+		}
+		else
+		{
+			gra->internet->Send(gra->Dane_Do_Wyslania);
+			return Czeka;
+		}
 	}
+	
 	return Czeka;
 }
+state_t DoDelegujDoRuchu(Game* gra)
+{
+	std::string nick_nastepnego;
+	std::map<std::string, Uzytkownik>::iterator it = gra->baza->gracze.find(gra->baza->nick_aktywnego_gracza);
+	if (it == gra->baza->gracze.end())
+	{
+		it = gra->baza->gracze.begin();
+		nick_nastepnego = it->first;
+	}
+	else
+	{
+		it++;
+		nick_nastepnego = it->first;
+	}
+	
+	gra->baza->nick_aktywnego_gracza = nick_nastepnego;
+
+	Packet_Nastepny pakiet(nick_nastepnego);
+	gra->Dane_Do_Wyslania.clear();
+	gra->Dane_Do_Wyslania = pakiet.getPakiet();
+	gra->internet->SendAll(gra->Dane_Do_Wyslania);
+
+	if (nick_nastepnego == gra->baza->moj_nick)
+	{
+		return RuszaSie;
+	}
+	else
+	{
+		return Czeka;
+	}
+}
+
 state_t DoStan1(Game* gra)
 {
 	std::cout << "stan 1\n";
