@@ -17,7 +17,7 @@ public:
 
 	void SetObject(Obiekt_Na_Planszy* obj);
 	void RemoveObject(Obiekt_Na_Planszy* obj);
-
+	void ClearObject();
 	void render();	// zmien znazwe na render()
 
 };

@@ -2,6 +2,10 @@
 
 BazaDanych::BazaDanych()
 {
+
+	DomekTekstura.loadFromFile("\grafiki/dom.png");
+	HotelTekstura.loadFromFile("\grafiki/hotel.png");
+
 	Tworz_Ulice();
 	Tworz_Szansa_Kasa_Spoleczna();
 	Tworz_Dworce();
@@ -19,6 +23,10 @@ BazaDanych::~BazaDanych()
 	Usun_Nieruchomosci();
 	Usun_Szansa_Kasa_Spoleczna();
 	Usun_Pionki();
+	for (Pole* p : this->pola)
+	{
+		delete p;
+	}
 }
 
 void BazaDanych::Tworz_Ulice()
@@ -253,19 +261,20 @@ void BazaDanych::Tworz_Pola()
 		{
 			for (int i = 0; i < 40; i++)
 			{
-				Pole p;
-				getline(plik_pola, p.nazwa);
+				Pole*p = new Pole;
+					//this->DomekTekstura,this->HotelTekstura);
+				getline(plik_pola, p->nazwa);
 
 				for (int j = 0; j < 4; j++)
 				{
 					plik_pola >> linia;
 					plik_pola >> linia2;
-					p.pozycja.push_back(sf::Vector2f(res.x(stof(linia.c_str())), res.y(stof(linia2.c_str()))));
+					p->pozycja.push_back(sf::Vector2f(res.x(stof(linia.c_str())), res.y(stof(linia2.c_str()))));
 				}
 
 				if (i > 10 && i < 39)
 				{
-					p.karta = this->karty_nieruchomosci[p.nazwa];
+					p->karta = this->karty_nieruchomosci[p->nazwa];
 				}
 				if (i == 39)
 				{
@@ -273,9 +282,11 @@ void BazaDanych::Tworz_Pola()
 					{
 						plik_pola >> linia;
 						plik_pola >> linia2;
-						p.pozycja.push_back(sf::Vector2f(res.x(stof(linia.c_str())), res.y(stof(linia2.c_str()))));
+						p->pozycja.push_back(sf::Vector2f(res.x(stof(linia.c_str())), res.y(stof(linia2.c_str()))));
 					}
 				}
+
+				p->StworzDomki(&this->DomekTekstura, &this->HotelTekstura);
 
 				this->pola.push_back(p);
 				getline(plik_pola, linia);
@@ -329,8 +340,8 @@ void BazaDanych::Sortuj_Pola()
 }
 void BazaDanych::Przypisz_Wirtualne_Karty()
 {
-	this->pola[4].karta = this->karty_szansa_kasa[33];
-	this->pola[38].karta = this->karty_szansa_kasa[32];
+	this->pola[4]->karta = this->karty_szansa_kasa[33];
+	this->pola[38]->karta = this->karty_szansa_kasa[32];
 }
 void BazaDanych::Stworz_Mnie(std::string nick, sf::IpAddress ip, bool isServer, Kolor_Planszy kolor)
 {
@@ -406,29 +417,15 @@ void BazaDanych::Przypisz_Kolory_Ulicom()
 			it->second->kolor = Granatowe;
 	}
 }
-void BazaDanych::Usun_Gracza(std::string nick)
-{
-	std::map<std::string, Uzytkownik>::iterator it = gracze.begin();
-	for (int i = 0; i < gracze[nick].karty_nieruchomosci.size(); i++)
-	{
-		if (it->first != nick)   //sobie nie daje kart
-		{
-			//dodanie karty innemu uzykownikowi
-			it->second.karty_nieruchomosci.push_back(gracze[nick].karty_nieruchomosci[i]);
-			it++;
-		}
-	}
-	ilosc_graczy -= 1;
-	gracze.erase(nick);
-	
-	std::vector<std::string>::iterator _it = nicki.begin();
-	for (_it; _it != nicki.end(); _it++)
-	{
-		if (*_it == nick)
-		{
-			break;
-		}
-	}
 
-	nicki.erase(_it);
+
+
+int BazaDanych::NumerPola(std::string NazwaPola)
+{
+	for (int i = 0; i < this->pola.size() ;i++)
+	{
+		if (pola[i]->nazwa == NazwaPola)
+			return i;
+	}
+	return 100;		//niech zwroci 100 w razie bledu 
 }

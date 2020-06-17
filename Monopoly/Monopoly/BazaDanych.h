@@ -41,7 +41,7 @@ class BazaDanych
 {
 public:
 	std::map<std::string, Karta*>karty_nieruchomosci;   //tablica asocjacyjna kart, kluczem nazwa karty
-	std::vector<Pole>pola;                //tablica pól na planszy
+	std::vector<Pole*>pola;                //tablica pól na planszy
 	std::vector<Szansa_Kasa_Spoleczna*>karty_szansa_kasa;  //tablica kart 'szansa' i 'kasa spoleczna' 
 	std::ifstream plik_ulice_dworce_uzyt; //strumien do pliku z danymi nieruchomosci
 	std::ifstream plik_szansa_kasa;       //strumien do pliku z danymi o kartach 'szansa' i 'kasa spoleczna'
@@ -55,6 +55,8 @@ public:
 	Grupy_Ulic grupy_ulic;
 	std::string nick_aktywnego_gracza;        //nick gracza który w³aœnie wykonuje ruch
 
+	sf::Texture DomekTekstura;
+	sf::Texture HotelTekstura;
 
 
 	sf::IpAddress IP;                        //ip gry
@@ -68,6 +70,9 @@ public:
 	void unikalne_nicki(std::string& name);
 	void Usun_Gracza(std::string nick);
 
+
+
+	int NumerPola(std::string);
 
 private:
 	
@@ -84,5 +89,7 @@ private:
 	void Tworz_Czcionke();
 	void Przypisz_Wirtualne_Karty();
 	void Przypisz_Kolory_Ulicom();
+
+
 };
 

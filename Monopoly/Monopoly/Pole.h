@@ -22,11 +22,16 @@ public:
 	std::vector<Pionek>gracze;           //wektor pionków stoj¹cych na tym polu
 	Karta* karta;                      //karta przypisana temu polu, null jesli nie ma karty do tego pola
 	
+	std::vector<Domek> domki;
+	std::vector<Hotel> hotel;
+
+
 	int domy;                      //liczba domów, 5 domów jest traktowane jak hotel
 
 public:
 	Pole();
 	Pole(std::vector<sf::Vector2f>pozycja, Karta* karta);
-	void Graj();                        //funkcja obs³uguj¹ca zatrzymanie pionka na tym polu
+	void StworzDomki(sf::Texture* dom, sf::Texture* hote);
+	~Pole();
 };
 

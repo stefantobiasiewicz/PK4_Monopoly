@@ -211,6 +211,9 @@ return 0;
 
    // return 0;
     //*****************************************************************************
+/*
+
+
     BazaDanych Dorotka;
     Interfejs komunikacja(&Dorotka);
 
@@ -312,7 +315,7 @@ return 0;
    std::cout << endl << baza.pola[5].nazwa;
     system("pause");
     return 0;
-
+    */
 }
 
 

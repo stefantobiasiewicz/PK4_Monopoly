@@ -367,11 +367,33 @@ void Interfejs::DrawFunction()
 
 void Interfejs::UpdateFunction()
 {
+    // usuwanie wszystkich obiektow z planszy 
+    this->PoleGry->ClearObject();
+    // dodawwanie wszystkich obiektow do plansz\y 
+    
+    for (Pole* p : this->Dane->pola)
+    {
+        if (p->domy == 5)
+        {
+            this->PoleGry->SetObject(&p->hotel[0]);
+        }
+        else
+        {
+            for (int i = 0; i < p->domy ; i++)
+            {
+                this->PoleGry->SetObject(&p->domki[i]);
+            }
+        }
+    }
+
+    
+
 
     std::map<std::string, Uzytkownik>::iterator it = Dane->gracze.begin();
     int i = 0;      // 0 na gorze 1 - dolne 
     for (it; it != Dane->gracze.end(); it++ )
     {
+        this->PoleGry->SetObject(it->second.pionek); // dodanie pionka na planszy 
         this->pieniadze[it->first]->setString("portfel:" + std::to_string(it->second.portfel) + "PLN");
         miniatury[i]->ClearObject();
         for (std::string i_k : it->second.karty_nieruchomosci)
@@ -389,6 +411,8 @@ void Interfejs::UpdateFunction()
         }
         i++;
     }
+
+
 
 }
 
@@ -611,7 +635,7 @@ void Interfejs::CreateUserStats()
         this->ksztalty.push_back(UserPionek);
 
         PoleGry->SetObject(Dane->gracze[UserName->getString()].pionek);
-        Dane->gracze[UserName->getString()].pionek->setPosition(Dane->pola[0].pozycja[0]);
+        Dane->gracze[UserName->getString()].pionek->setPosition(Dane->pola[0]->pozycja[0]);
 
         UserName = new sf::Text;
 
@@ -645,7 +669,7 @@ void Interfejs::CreateUserStats()
         this->ksztalty.push_back(UserPionek);
 
         PoleGry->SetObject(Dane->gracze[UserName->getString()].pionek);
-        Dane->gracze[UserName->getString()].pionek->setPosition(Dane->pola[0].pozycja[1]);
+        Dane->gracze[UserName->getString()].pionek->setPosition(Dane->pola[0]->pozycja[1]);
 
       
         break;
@@ -1049,7 +1073,7 @@ bool Interfejs::CreateZastawWindow(bool CzyPrzymusowy, Uzytkownik* user)
     napis.setString("Podaj nazwe karty jaka chcesz zastawic:");
 
 
-    Textbox NazwaKarty(scale.x * 40, sf::Color(77, 0, 0), false, 400, sf::Vector2f{ (float)res.x(20) , (float)res.y(30) }, sf::Color(204, 204, 204));
+    Textbox NazwaKarty(40, sf::Color(77, 0, 0), false, scale.x * 400, sf::Vector2f{ (float)res.x(20) , (float)res.y(30) }, sf::Color(204, 204, 204));
     NazwaKarty.setLimit(true, 30);
     NazwaKarty.setFont(this->Dane->czcionka);
 
@@ -1109,9 +1133,21 @@ bool Interfejs::CreateZastawWindow(bool CzyPrzymusowy, Uzytkownik* user)
                         {
                             // tak sprzedaje karte
                             user->portfel += cena;
+
+                            // zliczenie pieniedzy za domki 
+                            int nr_pola = this->Dane->NumerPola(karta);
+                            if (nr_pola > 40)
+                                std::cerr << "blad szukania pola exit 100\n";
+                            int IloscDomkow = this->Dane->pola[nr_pola]->domy;
+                            int CenaZaDom = this->Dane->pola[nr_pola]->karta->cena_dom;
+                            user->portfel += IloscDomkow * CenaZaDom;
+
+                            // usuwanie domkow z planszy
+                            this->Dane->pola[nr_pola]->domy = 0;   // wyzerowanie ilosci domkow i hoteli na polu 
+
                             user->UsunKarte(karta);
                             this->Dane->karty_nieruchomosci[karta]->wlasciciel = nullptr;
-                            // dodatkowo trzeba usunac domi z planszy  +  zabrac za nie hajsy 
+                            
                         }
                         else
                         {

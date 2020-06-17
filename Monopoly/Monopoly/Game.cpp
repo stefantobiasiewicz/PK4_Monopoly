@@ -119,13 +119,14 @@ state_t DoInicjalizacjaSerwera(Game* gra)
 
 	}
 
-	gra->baza->gracze.begin()->second.karty_nieruchomosci.push_back("ulica Wolska");
-	gra->baza->gracze.begin()->second.karty_nieruchomosci.push_back("ulica Konopacka");
-	gra->baza->gracze.begin()->second.karty_nieruchomosci.push_back("Aleje Ujazdowskie");
-	gra->baza->gracze.begin()->second.karty_nieruchomosci.push_back("Aleje Jerozolimskie");
-	gra->baza->gracze.begin()->second.karty_nieruchomosci.push_back("Dworzec Gdanski");
-	gra->baza->gracze.begin()->second.karty_nieruchomosci.push_back("Elektrownia");
-	gra->baza->gracze.begin()->second.karty_nieruchomosci.push_back("ulica Stalowa");
+	gra->baza->gracze[gra->baza->moj_nick].karty_nieruchomosci.push_back("ulica Wolska");
+	gra->baza->pola[39]->domy = 3;
+	gra->baza->gracze[gra->baza->moj_nick].karty_nieruchomosci.push_back("ulica Konopacka");
+	gra->baza->gracze[gra->baza->moj_nick].karty_nieruchomosci.push_back("Aleje Ujazdowskie");
+	gra->baza->gracze[gra->baza->moj_nick].karty_nieruchomosci.push_back("Aleje Jerozolimskie");
+	gra->baza->gracze[gra->baza->moj_nick].karty_nieruchomosci.push_back("Dworzec Gdanski");
+	gra->baza->gracze[gra->baza->moj_nick].karty_nieruchomosci.push_back("Elektrownia");
+	gra->baza->gracze[gra->baza->moj_nick].karty_nieruchomosci.push_back("ulica Stalowa");
 	// wybor koloru planszy 
 	switch (gra->baza->kolor)
 	{
