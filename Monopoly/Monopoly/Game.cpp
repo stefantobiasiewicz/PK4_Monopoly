@@ -118,16 +118,7 @@ state_t DoInicjalizacjaSerwera(Game* gra)
 		count++;
 
 	}
-	/*
-		gra->baza->gracze[gra->baza->moj_nick].karty_nieruchomosci.push_back("ulica Wolska");
-	gra->baza->pola[39]->domy = 3;
-	gra->baza->gracze[gra->baza->moj_nick].karty_nieruchomosci.push_back("ulica Konopacka");
-	gra->baza->gracze[gra->baza->moj_nick].karty_nieruchomosci.push_back("Aleje Ujazdowskie");
-	gra->baza->gracze[gra->baza->moj_nick].karty_nieruchomosci.push_back("Aleje Jerozolimskie");
-	gra->baza->gracze[gra->baza->moj_nick].karty_nieruchomosci.push_back("Dworzec Gdanski");
-	gra->baza->gracze[gra->baza->moj_nick].karty_nieruchomosci.push_back("Elektrownia");
-	gra->baza->gracze[gra->baza->moj_nick].karty_nieruchomosci.push_back("ulica Stalowa");
-	*/
+
 
 	// wybor koloru planszy 
 	switch (gra->baza->kolor)
@@ -838,24 +829,16 @@ state_t DoDelegujDoRuchu(Game* gra)
 	}
 }
 
-state_t DoStan1(Game* gra)
-{
-	std::cout << "stan 1\n";
-	return Stan2;
-}
-state_t DoStan2(Game* gra)
-{
-	//std::cout << "stan 2\n";
-	if (gra->interfejs->IsOpen())
-	{
-		//gra->interfejs->CreateMessageWindow("");
-		return ExecuteButtons;
-	}
-	return StanKoncowy;
-}
+
 state_t DoStanKoncowy(Game* gra)
 {
 	gra->EndOfGame = 1;
 	std::cout << "stan koncowy\n";
-	return Stan1;
+	if (gra->interfejs->IsOpen())
+	{
+	
+		return ExecuteButtons;
+	}
+	return StanKoncowy;
+
 }

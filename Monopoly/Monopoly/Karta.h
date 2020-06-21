@@ -15,7 +15,7 @@ typedef enum { Brazowe = 0, Niebieskie, Rozowe, Pomaranczowe, Czerwone, Zolte, Z
 
 using namespace std;
 
-class Karta : public sf::Sprite
+class Karta : public sf::Sprite 
 {
 public:
 	string nazwa;
@@ -29,8 +29,6 @@ public:
 	vector<int>czynsze;              //tablica czynszów [0] - dla 0 domów, [1] - dla jednego domu, [2] - dla 2 domów, ... , [5] - z hotelem
 	Uzytkownik * wlasciciel;     //nick wlasciciela nieruchomosci, jeœli takowa nieruchomoœæ zosta³a ju¿ kupiona
 	Kolor_ulicy kolor = BezKoloru;
-	
-	virtual void obsluga_ruchu(Uzytkownik &uzyt)=0;
 
 protected:
 	Karta() {}
@@ -43,8 +41,7 @@ class Ulica : public Karta
 public:
 	Ulica() {}
 	Ulica(sf::Texture& tekstura, float x, float y, int cena, int cena_dom, vector<int>& czynsze, string nazwa);
-	void obsluga_ruchu(Uzytkownik& uzyt);
-	bool zakupy(Uzytkownik &uzyt);
+
 
 };
 
@@ -54,7 +51,7 @@ public:
 
 	Dworzec_Uzyt_Pub() {}
 	Dworzec_Uzyt_Pub(sf::Texture& tekstura, float x, float y, int cena, vector<int>& czynsze, string nazwa);
-	void obsluga_ruchu(Uzytkownik &uzyt) {};
+
 };
 
 class Szansa_Kasa_Spoleczna : public Karta
@@ -63,6 +60,6 @@ public:
 
 	Szansa_Kasa_Spoleczna() {}
 	Szansa_Kasa_Spoleczna(sf::Texture& tekstura, float x, float y, string nazwa, void (*funkcja)(void));
-	void obsluga_ruchu(Uzytkownik& uzyt) {};
+
 };
 

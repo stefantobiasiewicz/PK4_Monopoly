@@ -37,40 +37,6 @@ using namespace std;
 		//this->funkcja = funkcja;
 	};
 
-	void Ulica::obsluga_ruchu(Uzytkownik& uzyt)
-	{
-		if (this->wlasciciel == nullptr && uzyt.portfel >= this->cena)
-		{
-			zakupy(uzyt);
-		}
-		else
-		{
-			if (this->wlasciciel != &uzyt)
-			{
-				//pobierz_czynsz();
-			}
-			else
-			{
-				std::cout << "Nie mozesz kupic tego obiektu!";
-			}
-		}
-	}
+	
 
-	bool Ulica::zakupy(Uzytkownik& uzyt)
-	{
-		bool decyzja;
-		std::cout << "Czy chcesz zakupic obiekt o nazwie: " << this->nazwa << "?" << std::endl;
-		cin >> decyzja;
-		if (decyzja)
-		{
-			uzyt.portfel = uzyt.portfel - this->cena;
-			uzyt.karty_nieruchomosci.push_back(this->nazwa);
-			this->wlasciciel = &uzyt;
-			return 1;
-		}
-		else
-		{
-			return 0;
-		}
-	}
 	

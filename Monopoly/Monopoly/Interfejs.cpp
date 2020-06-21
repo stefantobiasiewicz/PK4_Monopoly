@@ -948,7 +948,7 @@ void Interfejs::CreateWaitingWindow(Internet* internet)
     Info.setCharacterSize(60 * scale.y);
     Info.setPosition(res.x(15), res.y(5));
     Info.setFillColor(sf::Color::Black);
-    Info.setString("Aby zakonczyc czekanie na graczy\n \t kliknij \"zakoncz czekanie\"\n\nPoloczeni gracze:");
+    Info.setString("Aby zakonczyc czekanie na graczy\n \t kliknij \"zakoncz czekanie\"\n\nPolaczeni gracze:");
 
     sf::Text Gracz1;
     Gracz1.setFont(Czcionka);

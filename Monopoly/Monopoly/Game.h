@@ -12,7 +12,8 @@
 
 
 // typ wyliczeniowy do zdefiniowania stanow gry
-typedef enum { StanInicjalizacji, InicjalizacjaSerwer, InicjalizacjaKlient , ExecuteButtons, StartGrySerwer, StartGryKlient, RuszaSie, Czeka, Wysylanie, DelegujDoRuchu, Stan1, Stan2, StanKoncowy, NUM_STATES } state_t;
+typedef enum { StanInicjalizacji, InicjalizacjaSerwer, InicjalizacjaKlient , ExecuteButtons, StartGrySerwer,
+StartGryKlient, RuszaSie, Czeka, Wysylanie,DelegujDoRuchu, StanKoncowy, NUM_STATES } state_t;
 
 
 
@@ -50,8 +51,6 @@ typedef state_t state_func_t(Game* gra);
 state_t DoStanInicjalizacji(Game* gra);
 state_t DoInicjalizacjaSerwera(Game* gra);
 state_t DoInicjalizacjaKlienta(Game* gra);
-state_t DoStan1(Game* gra);
-state_t DoStan2(Game* gra);
 state_t DoStanKoncowy(Game* gra);
 state_t DoExecuteButtons(Game* gra);
 state_t DoStartGrySerwer(Game* gra);
@@ -73,7 +72,5 @@ state_func_t* const state_table[NUM_STATES] = {
 	DoCzeka,
 	DoWysylanie,
 	DoDelegujDoRuchu,
-	DoStan1,
-	DoStan2,
 	DoStanKoncowy
 };

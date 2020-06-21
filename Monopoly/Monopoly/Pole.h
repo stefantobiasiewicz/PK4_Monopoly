@@ -19,7 +19,6 @@ class Pole
 public:
 	string nazwa;                           //nazwa taka sama jak nazwa odpowiadaj¹cej karty_nieruchomosci
 	std::vector<sf::Vector2f>pozycja;   //wspó³rzêdne gdzie nale¿y narysowaæ dany pionek w ka¿dym z czterech segmentów pola
-	std::vector<Pionek>gracze;           //wektor pionków stoj¹cych na tym polu
 	Karta* karta;                      //karta przypisana temu polu, null jesli nie ma karty do tego pola
 	
 	std::vector<Domek> domki;

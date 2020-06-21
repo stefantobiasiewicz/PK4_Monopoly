@@ -24,13 +24,6 @@ sf::Vector2f Resolution::scale()
 	return v;
 }
 
-sf::Vector2f Resolution::setScale(int x, int y)
-{
-	sf::Vector2f v;
-	v.x = w_res / 3840.0f;
-	v.y = h_res / 2160.0f;
-	return v;
-}
 
 int Resolution::GetW_res()
 {
